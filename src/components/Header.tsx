@@ -1,57 +1,94 @@
-import { useEffect, useState } from 'react';
-import { CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
+import { useEffect, useState } from "react"
+import { CheckCircle, XCircle } from "lucide-react"
+
+import { Badge } from "@/components/ui/badge"
 
 interface Props {
-  title: string;
-  subtitle?: string;
-  systemOk?: boolean;
+  title: string
+  subtitle?: string
+  systemOk?: boolean
 }
 
-export default function Header({ title, subtitle, systemOk = true }: Props) {
-  const [now, setNow] = useState(new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
+export default function Header({
+  title,
+  subtitle,
+  systemOk = true,
+}: Props) {
+  const [now, setNow] = useState(new Date())
 
-  const dateStr = now.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  const timeStr = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  const dateStr = now.toLocaleDateString("ru-RU", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })
+
+  const timeStr = now.toLocaleTimeString("ru-RU", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  })
 
   return (
-    <div style={{
-      background: 'var(--panel)',
-      borderBottom: '1px solid var(--border)',
-      padding: '14px 24px',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    }}>
+    <header className="flex items-center justify-between border-b bg-card px-6 py-3.5">
+      {/* Title */}
       <div>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', lineHeight: 1.2 }}>{title}</h1>
-        {subtitle && <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>{subtitle}</p>}
+        <h1 className="text-2xl font-bold leading-tight text-foreground">
+          {title}
+        </h1>
+
+        {subtitle && (
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {subtitle}
+          </p>
+        )}
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 12, color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{dateStr}</div>
-          <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', fontVariantNumeric: 'tabular-nums' }}>{timeStr}</div>
-        </div>
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 6,
-          padding: '6px 12px', borderRadius: 6,
-          background: systemOk ? 'var(--success-light)' : 'var(--error-light)',
-        }}>
-          {systemOk
-            ? <CheckCircle size={16} color="var(--success)" />
-            : <XCircle size={16} color="var(--error)" />
-          }
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: systemOk ? 'var(--success)' : 'var(--error)' }}>
-              {systemOk ? 'Система работает' : 'Ошибка системы'}
-            </div>
-            <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
-              {systemOk ? 'Все линии в норме' : 'Проверьте подключение'}
-            </div>
+
+      {/* Right side */}
+      <div className="flex items-center gap-5">
+        {/* Date / time */}
+        <div className="text-right">
+          <div className="text-xs capitalize text-muted-foreground">
+            {dateStr}
+          </div>
+
+          <div className="text-2xl font-bold tabular-nums text-foreground">
+            {timeStr}
           </div>
         </div>
+
+        {/* System status */}
+        <Badge
+          variant={systemOk ? "success" : "destructive"}
+          className="h-auto gap-2 rounded-md px-3 py-1.5"
+        >
+          {systemOk ? (
+            <CheckCircle className="size-4 shrink-0" />
+          ) : (
+            <XCircle className="size-4 shrink-0" />
+          )}
+
+          <div className="text-left">
+            <div className="text-xs font-semibold leading-tight">
+              {systemOk ? "Система работает" : "Ошибка системы"}
+            </div>
+
+            <div className="mt-0.5 text-[11px] font-normal opacity-80">
+              {systemOk
+                ? "Все линии в норме"
+                : "Проверьте подключение"}
+            </div>
+          </div>
+        </Badge>
       </div>
-    </div>
-  );
+    </header>
+  )
 }

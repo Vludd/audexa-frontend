@@ -50,23 +50,21 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column',
-      height: '100vh', overflow: 'hidden', background: 'var(--bg)',
-    }}>
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+    <div className="flex h-screen min-h-[700px] min-w-[1200px] flex-col overflow-hidden bg-background">
+      <div className="flex min-h-0 flex-1 overflow-hidden">
         <Sidebar current={page} onChange={setPage} />
-        <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--bg)' }}>
+
+        <main className="flex min-w-0 flex-1 flex-col overflow-hidden bg-background">
           {page === 'dashboard' && (
             <Dashboard
               rooms={rooms}
-              scenarios={mockScenarios}
               schedule={schedule}
               system={mockSystemStatus}
               onStopAll={handleStopAll}
               onNavigate={p => setPage(p as Page)}
             />
           )}
+
           {page === 'rooms' && (
             <Rooms
               rooms={rooms}
@@ -77,6 +75,7 @@ export default function App() {
               onVolumeChange={handleVolume}
             />
           )}
+
           {page === 'scenarios' && (
             <Scenarios
               scenarios={mockScenarios}
@@ -84,15 +83,25 @@ export default function App() {
               onStop={handleScenarioStop}
             />
           )}
+
           {page === 'schedule' && (
-            <Schedule schedule={schedule} onToggle={handleScheduleToggle} />
+            <Schedule
+              schedule={schedule}
+              onToggle={handleScheduleToggle}
+            />
           )}
-          {page === 'audiofiles' && <AudioFiles files={mockAudioFiles} />}
+
+          {page === 'audiofiles' && (
+            <AudioFiles files={mockAudioFiles} />
+          )}
+
           {page === 'settings' && <Settings />}
+
           {page === 'logs' && <Logs logs={mockLogs} />}
         </main>
       </div>
+
       <StatusBar status={mockSystemStatus} />
     </div>
-  );
+  )
 }
