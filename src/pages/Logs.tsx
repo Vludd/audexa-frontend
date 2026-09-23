@@ -32,7 +32,7 @@ export default function Logs({ logs }: Props) {
         onFilterChange={setFilter}
       />
 
-      <div className="min-h-0 flex-1 overflow-auto p-5">
+      <div className="min-h-0 flex-1 overflow-auto p-4">
         <LogViewer logs={filtered} />
 
         <div className="mt-2 text-xs text-muted-foreground">

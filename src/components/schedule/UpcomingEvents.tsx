@@ -13,7 +13,7 @@ export default function UpcomingEvents({
   items,
 }: Props) {
   return (
-    <aside className="w-[240px] shrink-0 overflow-auto border-l bg-card p-4">
+    <aside className="w-[230px] shrink-0 overflow-auto border-l bg-card p-3.5">
       <div className="mb-4 flex items-center justify-between">
         <div className="text-sm font-semibold">
           Ближайшие события

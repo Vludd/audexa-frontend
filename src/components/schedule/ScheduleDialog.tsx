@@ -82,7 +82,7 @@ export default function ScheduleDialog({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-5 py-2">
+        <div className="space-y-4 py-1">
           <FormRow label="Время запуска">
             <Input
               type="time"

@@ -21,7 +21,7 @@ export default function RoomToolbar({
   onViewChange,
 }: Props) {
   return (
-    <div className="mb-4 flex items-center gap-3">
+    <div className="mb-3 flex items-center gap-2.5">
       <div className="relative w-full max-w-[280px]">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 
@@ -29,7 +29,7 @@ export default function RoomToolbar({
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
           placeholder="Поиск комнаты..."
-          className="pl-9"
+          className="h-8 pl-9"
         />
       </div>
 

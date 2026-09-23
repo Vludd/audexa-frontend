@@ -6,88 +6,77 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* ─────────────────────────────────────────────────────────────
-     Audexa design tokens
-     ───────────────────────────────────────────────────────────── */
+  /* Audexa — compact desktop control panel */
+  --background: #f5f7fa;
+  --foreground: #1e293b;
 
-  /* Surfaces */
-  --background: #f4f7fa;
-  --foreground: #17345f;
   --card: #ffffff;
-  --card-foreground: #17345f;
+  --card-foreground: #1e293b;
   --popover: #ffffff;
-  --popover-foreground: #17345f;
+  --popover-foreground: #1e293b;
 
-  /* Brand / actions */
-  --primary: #1565c0;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
 
-  --secondary: #eef3f8;
-  --secondary-foreground: #17345f;
+  --secondary: #eef2f7;
+  --secondary-foreground: #334155;
 
-  /*
-   * Пока оставляем accent синим ради совместимости
-   * со старыми страницами Audexa.
-   */
-  --accent: #1565c0;
+  --accent: #2563eb;
   --accent-foreground: #ffffff;
 
-  /* Neutral UI */
-  --muted: #eef3f8;
-  --muted-foreground: #68768a;
+  --muted: #f1f4f8;
+  --muted-foreground: #64748b;
 
-  --border: #d9e1ea;
-  --input: #d9e1ea;
-  --ring: #1565c0;
+  --border: #dbe2ea;
+  --input: #d5dde7;
+  --ring: #2563eb;
 
-  /* Semantic states */
-  --success: #18b968;
-  --success-light: #e6f9ef;
+  --success: #16a34a;
+  --success-light: #ecfdf3;
 
-  --warning: #f2b01e;
-  --warning-light: #fef8e7;
+  --warning: #d97706;
+  --warning-light: #fff7e6;
 
-  --destructive: #e53935;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
 
-  --error: #e53935;
-  --error-light: #fdeaea;
+  --error: #dc2626;
+  --error-light: #fef2f2;
 
-  /* Legacy aliases.
-     Будем удалять их по мере рефакторинга страниц. */
   --bg: var(--background);
   --panel: var(--card);
   --accent-dark: var(--primary);
-  --accent-light: #e3f0ff;
+  --accent-light: #eff6ff;
   --text: var(--foreground);
   --text-secondary: var(--muted-foreground);
 
-  /* Layout */
-  --sidebar-width: 220px;
+  --sidebar-width: 228px;
   --radius: 0.5rem;
 
-  /* Charts */
-  --chart-1: #1565c0;
-  --chart-2: #18b968;
-  --chart-3: #f2b01e;
-  --chart-4: #7c5cff;
-  --chart-5: #e53935;
+  --chart-1: #2563eb;
+  --chart-2: #16a34a;
+  --chart-3: #d97706;
+  --chart-4: #7c3aed;
+  --chart-5: #dc2626;
 
-  /* Sidebar */
   --sidebar: #ffffff;
-  --sidebar-foreground: #17345f;
-  --sidebar-primary: #1565c0;
+  --sidebar-foreground: #334155;
+  --sidebar-primary: #2563eb;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eaf2fb;
-  --sidebar-accent-foreground: #17345f;
-  --sidebar-border: #d9e1ea;
-  --sidebar-ring: #1565c0;
+  --sidebar-accent: #eff4fa;
+  --sidebar-accent-foreground: #1e293b;
+  --sidebar-border: #dbe2ea;
+  --sidebar-ring: #2563eb;
 }
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
 }
 
 html {
@@ -97,13 +86,11 @@ html {
 body {
   min-width: 1200px;
   min-height: 700px;
-
   background: var(--background);
   color: var(--foreground);
-
   font-family: 'Geist Variable', system-ui, sans-serif;
-  font-size: 14px;
-
+  font-size: 13px;
+  line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -120,31 +107,27 @@ button {
 }
 
 ::selection {
-  background: #d9eaff;
-  color: #17345f;
+  background: #dbeafe;
+  color: #1e3a8a;
 }
 
-/* Scrollbar */
-
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c6d0dc;
+  background: #c8d2de;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9eacbc;
+  background: #aab8c8;
 }
-
-/* Tailwind / shadcn theme */
 
 @theme inline {
   --font-heading: var(--font-sans);
@@ -168,7 +151,6 @@ button {
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
-
   --color-destructive: var(--destructive);
 
   --color-accent-foreground: var(--accent-foreground);
@@ -201,58 +183,40 @@ button {
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/*
- * Dark theme
- *
- * Пока не используем в интерфейсе, но оставляем корректную основу.
- */
-
 .dark {
-  --background: #101923;
-  --foreground: #edf4fb;
-
-  --card: #172331;
-  --card-foreground: #edf4fb;
-
-  --popover: #172331;
-  --popover-foreground: #edf4fb;
-
-  --primary: #4d9cff;
-  --primary-foreground: #08111b;
-
-  --secondary: #202e3d;
-  --secondary-foreground: #edf4fb;
-
-  --muted: #202e3d;
-  --muted-foreground: #9aabc0;
-
-  --accent: #4d9cff;
-  --accent-foreground: #08111b;
-
-  --border: #2a394a;
-  --input: #2a394a;
-  --ring: #4d9cff;
-
-  --destructive: #ff625e;
+  --background: #0f1720;
+  --foreground: #e5edf6;
+  --card: #17212d;
+  --card-foreground: #e5edf6;
+  --popover: #17212d;
+  --popover-foreground: #e5edf6;
+  --primary: #60a5fa;
+  --primary-foreground: #0b1220;
+  --secondary: #202c3a;
+  --secondary-foreground: #e5edf6;
+  --muted: #202c3a;
+  --muted-foreground: #9aaabd;
+  --accent: #60a5fa;
+  --accent-foreground: #0b1220;
+  --border: #2b3a4b;
+  --input: #2b3a4b;
+  --ring: #60a5fa;
+  --destructive: #f87171;
   --destructive-foreground: #ffffff;
-
-  /* Legacy aliases */
   --bg: var(--background);
   --panel: var(--card);
   --accent-dark: var(--primary);
-  --accent-light: #1d3855;
+  --accent-light: #1b3654;
   --text: var(--foreground);
   --text-secondary: var(--muted-foreground);
-
-  /* Sidebar */
-  --sidebar: #141f2b;
-  --sidebar-foreground: #edf4fb;
-  --sidebar-primary: #4d9cff;
-  --sidebar-primary-foreground: #08111b;
-  --sidebar-accent: #203247;
-  --sidebar-accent-foreground: #edf4fb;
-  --sidebar-border: #2a394a;
-  --sidebar-ring: #4d9cff;
+  --sidebar: #131d28;
+  --sidebar-foreground: #e5edf6;
+  --sidebar-primary: #60a5fa;
+  --sidebar-primary-foreground: #0b1220;
+  --sidebar-accent: #1d2c3c;
+  --sidebar-accent-foreground: #e5edf6;
+  --sidebar-border: #2b3a4b;
+  --sidebar-ring: #60a5fa;
 }
 
 @layer base {

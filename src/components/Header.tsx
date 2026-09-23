@@ -9,18 +9,11 @@ interface Props {
   systemOk?: boolean
 }
 
-export default function Header({
-  title,
-  subtitle,
-  systemOk = true,
-}: Props) {
+export default function Header({ title, subtitle, systemOk = true }: Props) {
   const [now, setNow] = useState(new Date())
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(new Date())
-    }, 1000)
-
+    const timer = setInterval(() => setNow(new Date()), 1000)
     return () => clearInterval(timer)
   }, [])
 
@@ -38,53 +31,43 @@ export default function Header({
   })
 
   return (
-    <header className="flex items-center justify-between border-b bg-card px-6 py-3.5">
-      {/* Title */}
-      <div>
-        <h1 className="text-2xl font-bold leading-tight text-foreground">
+    <header className="flex min-h-[64px] shrink-0 items-center justify-between border-b bg-card px-5">
+      <div className="min-w-0">
+        <h1 className="text-[22px] font-bold leading-6 tracking-[-0.02em] text-foreground">
           {title}
         </h1>
-
         {subtitle && (
-          <p className="mt-0.5 text-sm text-muted-foreground">
+          <p className="mt-1 truncate text-xs text-muted-foreground">
             {subtitle}
           </p>
         )}
       </div>
 
-      {/* Right side */}
-      <div className="flex items-center gap-5">
-        {/* Date / time */}
+      <div className="flex shrink-0 items-center gap-4">
         <div className="text-right">
-          <div className="text-xs capitalize text-muted-foreground">
+          <div className="text-[11px] capitalize leading-4 text-muted-foreground">
             {dateStr}
           </div>
-
-          <div className="text-2xl font-bold tabular-nums text-foreground">
+          <div className="text-[22px] font-bold leading-6 tabular-nums text-foreground">
             {timeStr}
           </div>
         </div>
 
-        {/* System status */}
         <Badge
           variant={systemOk ? "success" : "destructive"}
-          className="h-auto gap-2 rounded-md px-3 py-1.5"
+          className="h-auto rounded-md px-2.5 py-1.5"
         >
           {systemOk ? (
-            <CheckCircle className="size-4 shrink-0" />
+            <CheckCircle className="size-3.5 shrink-0" />
           ) : (
-            <XCircle className="size-4 shrink-0" />
+            <XCircle className="size-3.5 shrink-0" />
           )}
-
           <div className="text-left">
-            <div className="text-xs font-semibold leading-tight">
+            <div className="text-[11px] font-semibold leading-3.5">
               {systemOk ? "Система работает" : "Ошибка системы"}
             </div>
-
-            <div className="mt-0.5 text-[11px] font-normal opacity-80">
-              {systemOk
-                ? "Все линии в норме"
-                : "Проверьте подключение"}
+            <div className="text-[10px] font-normal leading-3 opacity-75">
+              {systemOk ? "Все линии в норме" : "Проверьте подключение"}
             </div>
           </div>
         </Badge>

@@ -14,9 +14,9 @@ export default function ScenarioSettings({
   scenario,
 }: Props) {
   return (
-    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-      <div className="rounded-lg border bg-card p-4">
-        <div className="mb-4 text-sm font-semibold">
+    <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
+      <div className="rounded-lg border bg-card p-3.5">
+        <div className="mb-3 text-sm font-semibold">
           Настройки сценария
         </div>
 
@@ -57,8 +57,8 @@ export default function ScenarioSettings({
         </FieldRow>
       </div>
 
-      <div className="rounded-lg border bg-card p-4">
-        <div className="mb-4 text-sm font-semibold">
+      <div className="rounded-lg border bg-card p-3.5">
+        <div className="mb-3 text-sm font-semibold">
           Дополнительные опции
         </div>
 

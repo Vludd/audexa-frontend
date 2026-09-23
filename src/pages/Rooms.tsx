@@ -61,7 +61,7 @@ export default function Rooms({
         subtitle="Управление аудиолиниями комнат"
       />
 
-      <main className="min-h-0 flex-1 overflow-auto p-5">
+      <main className="min-h-0 flex-1 overflow-auto p-4">
         <RoomToolbar
           query={query}
           viewGrid={viewGrid}
@@ -76,7 +76,7 @@ export default function Rooms({
         />
 
         {viewGrid ? (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-3">
             {filtered.map((room) => (
               <RoomCard
                 key={room.id}

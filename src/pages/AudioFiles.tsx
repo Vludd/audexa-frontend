@@ -38,7 +38,7 @@ export default function AudioFiles({ files }: Props) {
         onImport={() => {}}
       />
 
-      <div className="min-h-0 flex-1 overflow-auto p-5">
+      <div className="min-h-0 flex-1 overflow-auto p-4">
         <AudioTable
           files={filtered}
           selected={selected}

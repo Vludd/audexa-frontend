@@ -34,15 +34,15 @@ export default function RoomCard({
   return (
     <Card
       className={cn(
-        "transition-shadow",
-        isPlaying &&
-          "border-emerald-400 shadow-[0_0_0_1px_rgba(52,211,153,0.25)]",
+        "transition-all border-1",
+        isPlaying && "border-emerald-500 bg-emerald-50",
+
         room.status === "error" && "border-destructive/50",
         room.status === "waiting" && "border-amber-400/70",
       )}
     >
-      <CardContent className="p-4">
-        <div className="mb-3 flex items-start justify-between">
+      <CardContent className="p-3.5">
+        <div className="mb-2.5 flex items-start justify-between">
           <div className="min-w-0">
             <div className="text-2xl font-bold leading-none">
               {String(room.id).padStart(2, "0")}
@@ -69,13 +69,13 @@ export default function RoomCard({
         </div>
 
         <div
-          className="mb-3 truncate text-[11px] text-muted-foreground"
+          className="mb-2.5 truncate text-[11px] text-muted-foreground"
           title={room.file}
         >
           {room.file}
         </div>
 
-        <div className="mb-3 flex items-center gap-2">
+        <div className="mb-2.5 flex items-center gap-2">
           <input
             type="range"
             min={0}

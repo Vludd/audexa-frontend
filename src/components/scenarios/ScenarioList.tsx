@@ -27,8 +27,8 @@ export default function ScenarioList({
   onSelect,
 }: Props) {
   return (
-    <aside className="w-[240px] shrink-0 overflow-auto border-r bg-card">
-      <div className="border-b px-4 py-3 text-xs font-semibold text-muted-foreground">
+    <aside className="w-[220px] shrink-0 overflow-auto border-r bg-card">
+      <div className="border-b px-3.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
         Список сценариев
       </div>
 
@@ -41,7 +41,7 @@ export default function ScenarioList({
             type="button"
             onClick={() => onSelect(scenario.id)}
             className={cn(
-              "w-full border-l-2 px-4 py-3 text-left transition-colors",
+              "w-full border-l-2 px-3.5 py-2.5 text-left transition-colors",
               active
                 ? "border-primary bg-primary/10"
                 : "border-transparent hover:bg-muted/60",

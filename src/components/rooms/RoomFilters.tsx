@@ -47,7 +47,7 @@ export default function RoomFilters({
   onChange,
 }: Props) {
   return (
-    <div className="mb-4 flex flex-wrap gap-2">
+    <div className="mb-3 flex flex-wrap gap-1.5">
       {filters.map((filter) => {
         const active = value === filter.value
 
@@ -56,19 +56,25 @@ export default function RoomFilters({
             key={filter.value}
             type="button"
             size="sm"
-            variant={active ? "secondary" : "outline"}
+            variant="outline"
             onClick={() => onChange(filter.value)}
             className={cn(
-              "rounded-full",
+              "rounded-full border transition-colors",
+              active &&
+                filter.value === "all" &&
+                "border-blue-300 bg-blue-50 text-blue-700 shadow-sm hover:bg-blue-100",
               active &&
                 filter.value === "playing" &&
-                "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100",
+                "border-emerald-300 bg-emerald-50 text-emerald-700 shadow-sm hover:bg-emerald-100",
               active &&
                 filter.value === "waiting" &&
-                "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100",
+                "border-amber-300 bg-amber-50 text-amber-700 shadow-sm hover:bg-amber-100",
+              active &&
+                filter.value === "stopped" &&
+                "border-slate-300 bg-slate-100 text-slate-800 shadow-sm hover:bg-slate-200",
               active &&
                 filter.value === "error" &&
-                "border-red-200 bg-red-50 text-red-700 hover:bg-red-100",
+                "border-red-300 bg-red-50 text-red-700 shadow-sm hover:bg-red-100",
             )}
           >
             {filter.value !== "all" && (

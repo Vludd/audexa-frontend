@@ -16,9 +16,9 @@ export default function SyncLineCard({
   onStop,
 }: Props) {
   return (
-    <Card className="mt-5 border-primary/40">
-      <CardContent className="flex items-center gap-4 p-4">
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+    <Card className="mt-4 border-primary/40">
+      <CardContent className="flex items-center gap-3 p-3.5">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
           <span className="text-base font-bold text-primary">
             31
           </span>

@@ -24,7 +24,7 @@ export default function ScenarioQuickActions({
   onStop,
 }: Props) {
   return (
-    <aside className="w-[210px] shrink-0 border-l bg-card p-4">
+    <aside className="w-[200px] shrink-0 border-l bg-card p-3.5">
       <div className="mb-3 text-sm font-semibold">
         Быстрый запуск
       </div>

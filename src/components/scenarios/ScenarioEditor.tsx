@@ -32,12 +32,12 @@ export default function ScenarioEditor({
   const duration = totalDuration(scenario)
 
   return (
-    <section className="min-w-0 flex-1 overflow-auto p-5">
+    <section className="min-w-0 flex-1 overflow-auto p-4">
       {/* Header */}
-      <div className="mb-4 flex items-start gap-4">
+      <div className="mb-3 flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h2 className="truncate text-xl font-bold">
+            <h2 className="truncate text-lg font-bold">
               {scenario.name}
             </h2>
 
@@ -51,7 +51,7 @@ export default function ScenarioEditor({
             </Button>
           </div>
 
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-0.5 text-xs text-muted-foreground">
             {scenario.description}
           </p>
         </div>
@@ -83,7 +83,7 @@ export default function ScenarioEditor({
       <ScenarioStepsTable steps={scenario.steps} />
 
       {/* Step controls */}
-      <div className="my-4 flex items-center gap-2">
+      <div className="my-3 flex items-center gap-2">
         <Button type="button" size="sm">
           <Plus className="size-3.5" />
           Добавить шаг
@@ -134,7 +134,7 @@ function InfoPill({
   active?: boolean
 }) {
   return (
-    <div className="min-w-[90px] rounded-lg border bg-muted/40 px-3 py-1.5 text-center">
+    <div className="min-w-[84px] rounded-md border bg-muted/40 px-2.5 py-1.5 text-center">
       <div className="text-[10px] text-muted-foreground">
         {label}
       </div>

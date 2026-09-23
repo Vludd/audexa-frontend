@@ -14,8 +14,8 @@ export default function Settings() {
         subtitle="Конфигурация аудиосистемы и оборудования"
       />
 
-      <div className="min-h-0 flex-1 overflow-auto p-5">
-        <div className="grid grid-cols-2 gap-4">
+      <div className="min-h-0 flex-1 overflow-auto p-4">
+        <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
           <AudioDeviceSettings />
           <LineMappingSettings />
 
@@ -23,7 +23,7 @@ export default function Settings() {
           <LoggingSettings />
         </div>
 
-        <div className="mt-4">
+        <div className="mt-3">
           <SettingsActions />
         </div>
       </div>

@@ -51,9 +51,9 @@ export default function Dashboard({
         subtitle="Платформа центрального управления и автоматизации звука"
       />
 
-      <main className="min-h-0 flex-1 overflow-auto p-5">
+      <main className="min-h-0 flex-1 overflow-auto p-4">
         {/* Stats */}
-        <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[repeat(4,minmax(0,1fr))_auto]">
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[repeat(4,minmax(0,1fr))_auto]">
           <StatCard
             icon={Volume2}
             value={rooms.length}
@@ -83,7 +83,7 @@ export default function Dashboard({
             variant="destructive"
             size="lg"
             onClick={onStopAll}
-            className="h-auto min-h-20 px-7 text-base font-bold"
+            className="h-[68px] px-6 text-sm font-bold"
           >
             <Square className="size-[18px]" fill="currentColor" />
             ОСТАНОВИТЬ ВСЁ
@@ -91,7 +91,7 @@ export default function Dashboard({
         </div>
 
         {/* Main content */}
-        <div className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid min-w-0 grid-cols-1 gap-3 xl:grid-cols-[minmax(0,1fr)_300px]">
           {/* Left */}
           <div className="flex min-w-0 flex-col gap-3">
             {currentRoom && (
@@ -293,11 +293,11 @@ function StatCard({
             : "bg-primary/10 text-primary",
         )}
       >
-        <Icon className="size-7" />
+        <Icon className="size-6" />
       </div>
 
       <div>
-        <div className="text-[28px] font-bold leading-none">
+        <div className="text-[25px] font-bold leading-none">
           {value}
         </div>
 
@@ -318,13 +318,13 @@ function Panel({
 }) {
   return (
     <Card>
-      <CardHeader className="border-b px-4 py-3">
+      <CardHeader className="border-b px-4 py-2.5">
         <CardTitle className="text-sm">
           {title}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="p-4">
+      <CardContent className="p-3.5">
         {children}
       </CardContent>
     </Card>
