@@ -1,8 +1,10 @@
 import { useState } from "react"
 
-import type { Room, RoomStatus } from "@/types"
-import Header from "@/components/Header"
+import type { Room } from "@/types"
+import type { RoomOperation } from "@/hooks/useRooms"
 
+import Header from "@/components/Header"
+import RoomDialog from "@/components/rooms/RoomDialog"
 import RoomCard from "@/components/rooms/RoomCard"
 import RoomFilters, {
   type RoomFilter,
@@ -14,23 +16,54 @@ import SyncLineCard from "@/components/rooms/SyncLineCard"
 interface Props {
   rooms: Room[]
   syncLine: Room
+  operations: Record<number, RoomOperation>
+
   onPlay: (id: number) => void
   onStop: (id: number) => void
   onPause: (id: number) => void
+  playSyncLine: () => void
+  stopSyncLine: () => void
   onVolumeChange: (id: number, vol: number) => void
+
+  onAddRoom: (data: {
+    name: string
+    file: string
+    volume: number
+  }) => void
+
+  onUpdateRoom: (
+    id: number,
+    patch: {
+      name: string
+      file: string
+      volume: number
+    },
+  ) => void
+
+  onDeleteRoom: (id: number) => void
+  onDuplicateRoom: (id: number) => void
 }
 
 export default function Rooms({
   rooms,
   syncLine,
+  operations,
   onPlay,
   onStop,
   onPause,
+  playSyncLine,
+  stopSyncLine,
   onVolumeChange,
+  onAddRoom,
+  onUpdateRoom,
+  onDeleteRoom,
+  onDuplicateRoom,
 }: Props) {
   const [query, setQuery] = useState("")
   const [filter, setFilter] = useState<RoomFilter>("all")
   const [viewGrid, setViewGrid] = useState(true)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editingRoom, setEditingRoom] = useState<Room | null>(null)
 
   const counts: Record<RoomFilter, number> = {
     all: rooms.length,
@@ -54,6 +87,36 @@ export default function Rooms({
     return matchFilter && matchQuery
   })
 
+  const openCreateDialog = () => {
+    setEditingRoom(null)
+    setDialogOpen(true)
+  }
+
+  const openEditDialog = (room: Room) => {
+    setEditingRoom(room)
+    setDialogOpen(true)
+  }
+
+  const handleSave = (data: {
+    name: string
+    file: string
+    volume: number
+  }) => {
+    if (editingRoom) {
+      onUpdateRoom(editingRoom.id, data)
+    } else {
+      onAddRoom(data)
+    }
+  }
+
+  const handleDelete = () => {
+    if (!editingRoom) return
+
+    onDeleteRoom(editingRoom.id)
+    setEditingRoom(null)
+    setDialogOpen(false)
+  }
+
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <Header
@@ -67,6 +130,7 @@ export default function Rooms({
           viewGrid={viewGrid}
           onQueryChange={setQuery}
           onViewChange={setViewGrid}
+          onAddRoom={openCreateDialog}
         />
 
         <RoomFilters
@@ -81,16 +145,21 @@ export default function Rooms({
               <RoomCard
                 key={room.id}
                 room={room}
+                operation={operations[room.id]}
                 onPlay={onPlay}
                 onStop={onStop}
                 onPause={onPause}
                 onVolumeChange={onVolumeChange}
+                onEdit={() => openEditDialog(room)}
+                onDuplicate={() => onDuplicateRoom(room.id)}
+                onDelete={() => onDeleteRoom(room.id)}
               />
             ))}
           </div>
         ) : (
           <RoomTable
             rooms={filtered}
+            operations={operations}
             onPlay={onPlay}
             onStop={onStop}
             onPause={onPause}
@@ -99,10 +168,19 @@ export default function Rooms({
 
         <SyncLineCard
           room={syncLine}
-          onPlay={onPlay}
-          onStop={onStop}
+          operation={operations[syncLine.id]}
+          onPlay={playSyncLine}
+          onStop={stopSyncLine}
         />
       </main>
+
+      <RoomDialog
+        open={dialogOpen}
+        room={editingRoom}
+        onOpenChange={setDialogOpen}
+        onSave={handleSave}
+        onDelete={editingRoom ? handleDelete : undefined}
+      />
     </div>
   )
 }

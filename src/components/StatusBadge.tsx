@@ -9,10 +9,22 @@ const CONFIG: Record<
     label: string
   }
 > = {
+  idle: {
+    variant: "secondary",
+    dotClass: "bg-muted-foreground",
+    label: "Готово",
+  },
+
   playing: {
     variant: "success",
     dotClass: "bg-emerald-500",
     label: "Играет",
+  },
+
+  paused: {
+    variant: "warning",
+    dotClass: "bg-amber-500",
+    label: "Пауза",
   },
 
   stopped: {
@@ -34,19 +46,17 @@ const CONFIG: Record<
   },
 }
 
-export default function StatusBadge({
-  status,
-}: {
+interface Props {
   status: RoomStatus
-}) {
+}
+
+export default function StatusBadge({ status }: Props) {
   const config = CONFIG[status]
 
   return (
-    <Badge
-      variant={config.variant}
-      className="gap-1.5"
-    >
+    <Badge variant={config.variant} className="gap-1.5">
       <span
+        aria-hidden="true"
         className={`size-1.5 rounded-full ${config.dotClass}`}
       />
 

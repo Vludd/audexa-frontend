@@ -27,13 +27,19 @@ export default function App() {
 
   const {
     rooms,
+    operations,
     syncLine,
     playRoom,
     stopRoom,
     pauseRoom,
+    playSyncLine,
+    stopSyncLine,
     setRoomVolume,
     stopAllRooms,
     updateRoom,
+    addRoom,
+    deleteRoom,
+    duplicateRoom,
   } = useRooms()
 
   const { scenarios, playScenario, stopScenario } = useScenarios({
@@ -62,11 +68,18 @@ export default function App() {
           {page === "rooms" && (
             <Rooms
               rooms={rooms}
+              operations={operations}
               syncLine={syncLine}
               onPlay={playRoom}
               onStop={stopRoom}
               onPause={pauseRoom}
+              playSyncLine={playSyncLine}
+              stopSyncLine={stopSyncLine}
               onVolumeChange={setRoomVolume}
+              onAddRoom={addRoom}
+              onUpdateRoom={(id, data) => updateRoom(id, data)}
+              onDeleteRoom={deleteRoom}
+              onDuplicateRoom={duplicateRoom}
             />
           )}
 

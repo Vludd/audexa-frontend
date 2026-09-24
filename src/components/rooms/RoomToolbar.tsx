@@ -1,6 +1,7 @@
 import {
   LayoutGrid,
   List,
+  Plus,
   Search,
 } from "lucide-react"
 
@@ -12,6 +13,7 @@ interface Props {
   viewGrid: boolean
   onQueryChange: (value: string) => void
   onViewChange: (grid: boolean) => void
+  onAddRoom: () => void
 }
 
 export default function RoomToolbar({
@@ -19,9 +21,10 @@ export default function RoomToolbar({
   viewGrid,
   onQueryChange,
   onViewChange,
+  onAddRoom,
 }: Props) {
   return (
-    <div className="mb-3 flex items-center gap-2.5">
+    <div className="mb-4 flex items-center gap-3">
       <div className="relative w-full max-w-[280px]">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 
@@ -29,11 +32,16 @@ export default function RoomToolbar({
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
           placeholder="Поиск комнаты..."
-          className="h-8 pl-9"
+          className="pl-9"
         />
       </div>
 
       <div className="flex-1" />
+
+      <Button type="button" onClick={onAddRoom}>
+        <Plus className="size-4" />
+        Добавить комнату
+      </Button>
 
       <div className="flex items-center gap-1 rounded-lg border bg-card p-1">
         <Button

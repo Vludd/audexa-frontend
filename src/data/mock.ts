@@ -3,10 +3,7 @@ import type { Room, Scenario, ScheduleItem, AudioFile, LogEntry, SystemStatus } 
 const ROOM_NAMES = [
   'Зал истории', 'Археология', 'Батырлар', 'Природа', 'Этнография',
   'Традиции', 'Культура', 'Великий Шёлковый путь', 'Озёра Бурабая', 'Флора и фауна',
-  'Современность', 'Выдающиеся личности', 'Искусство', 'Ремёсла', 'Духовное наследие',
-  'Архитектура', 'Животный мир', 'Степные просторы', 'Геология', 'Туризм',
-  'Наука', 'Образование', 'Медицина', 'Спорт', 'Экология',
-  'Промышленность', 'Сельское хозяйство', 'Международные связи', 'Будущее', 'Интерактивный зал',
+  'Современность', 'Выдающиеся личности',
 ];
 
 const FILES = [
@@ -18,20 +15,24 @@ const FILES = [
   'industry.wav', 'agriculture.wav', 'international.wav', 'future.wav', 'interactive.wav',
 ];
 
-const STATUSES: Room['status'][] = ['playing', 'stopped', 'stopped', 'stopped', 'playing', 'stopped', 'stopped', 'stopped', 'stopped', 'stopped'];
+export const mockRooms: Room[] = Array.from({ length: ROOM_NAMES.length }, (_, i) => {
+  const status = i === 0 || i === 2 || i === 4 ? 'playing' : i === 11 ? 'error' : i === 1 ? 'paused' : 'stopped';
+  const duration = Math.floor(Math.random() * 300) + 1; // случайная длительность 1..300 секунд (до 5 минут)
+  const position = Math.floor(Math.random() * Math.min(duration, 300));
 
-export const mockRooms: Room[] = Array.from({ length: 30 }, (_, i) => ({
-  id: i + 1,
-  name: ROOM_NAMES[i],
-  status: i === 0 || i === 2 || i === 4 ? 'playing' : i === 11 ? 'error' : 'stopped',
-  file: FILES[i],
-  volume: i === 0 ? 70 : i === 2 ? 80 : i === 4 ? 65 : 100,
-  position: i === 0 ? 84 : i === 2 ? 120 : i === 4 ? 40 : 0,
-  duration: 330,
-}));
+  return {
+    id: i + 1,
+    name: ROOM_NAMES[i],
+    status,
+    file: FILES[i],
+    volume: i === 0 ? 70 : i === 2 ? 80 : i === 4 ? 65 : 100,
+    position,
+    duration,
+  };
+});
 
 export const syncLine: Room = {
-  id: 31,
+  id: ROOM_NAMES.length + 1,
   name: 'Синхронный перевод',
   status: 'stopped',
   file: 'sync_translation.wav',
