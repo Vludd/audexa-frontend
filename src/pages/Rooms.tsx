@@ -3,8 +3,12 @@ import { useState } from "react"
 import type { Room } from "@/types"
 import type { RoomOperation } from "@/hooks/useRooms"
 
+import { toast } from "@/lib/toast"
+
 import Header from "@/components/Header"
-import RoomDialog from "@/components/rooms/RoomDialog"
+import RoomDialog, {
+  type RoomFormData,
+} from "@/components/rooms/RoomDialog"
 import RoomCard from "@/components/rooms/RoomCard"
 import RoomFilters, {
   type RoomFilter,
@@ -12,6 +16,10 @@ import RoomFilters, {
 import RoomTable from "@/components/rooms/RoomTable"
 import RoomToolbar from "@/components/rooms/RoomToolbar"
 import SyncLineCard from "@/components/rooms/SyncLineCard"
+
+import ConfirmDialog from "@/components/ui/confirm-dialog"
+
+import { useConfirm } from "@/hooks/useConfirm"
 
 interface Props {
   rooms: Room[]
@@ -21,8 +29,10 @@ interface Props {
   onPlay: (id: number) => void
   onStop: (id: number) => void
   onPause: (id: number) => void
+
   playSyncLine: () => void
   stopSyncLine: () => void
+
   onVolumeChange: (id: number, vol: number) => void
 
   onAddRoom: (data: {
@@ -48,40 +58,68 @@ export default function Rooms({
   rooms,
   syncLine,
   operations,
+
   onPlay,
   onStop,
   onPause,
+
   playSyncLine,
   stopSyncLine,
+
   onVolumeChange,
+
   onAddRoom,
   onUpdateRoom,
   onDeleteRoom,
   onDuplicateRoom,
 }: Props) {
   const [query, setQuery] = useState("")
-  const [filter, setFilter] = useState<RoomFilter>("all")
+  const [filter, setFilter] =
+    useState<RoomFilter>("all")
+
   const [viewGrid, setViewGrid] = useState(true)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [editingRoom, setEditingRoom] = useState<Room | null>(null)
+
+  const [dialogOpen, setDialogOpen] =
+    useState(false)
+
+  const [editingRoom, setEditingRoom] =
+    useState<Room | null>(null)
+
+  const confirmation = useConfirm()
 
   const counts: Record<RoomFilter, number> = {
     all: rooms.length,
-    playing: rooms.filter((room) => room.status === "playing").length,
-    waiting: rooms.filter((room) => room.status === "waiting").length,
-    stopped: rooms.filter((room) => room.status === "stopped").length,
-    error: rooms.filter((room) => room.status === "error").length,
+
+    playing: rooms.filter(
+      (room) => room.status === "playing",
+    ).length,
+
+    waiting: rooms.filter(
+      (room) => room.status === "waiting",
+    ).length,
+
+    stopped: rooms.filter(
+      (room) => room.status === "stopped",
+    ).length,
+
+    error: rooms.filter(
+      (room) => room.status === "error",
+    ).length,
   }
 
   const filtered = rooms.filter((room) => {
     const matchFilter =
-      filter === "all" || room.status === filter
+      filter === "all" ||
+      room.status === filter
 
-    const normalizedQuery = query.toLowerCase()
+    const normalizedQuery =
+      query.toLowerCase()
 
     const matchQuery =
       !query ||
-      room.name.toLowerCase().includes(normalizedQuery) ||
+      room.name
+        .toLowerCase()
+        .includes(normalizedQuery) ||
       String(room.id).includes(query)
 
     return matchFilter && matchQuery
@@ -97,24 +135,64 @@ export default function Rooms({
     setDialogOpen(true)
   }
 
-  const handleSave = (data: {
-    name: string
-    file: string
-    volume: number
-  }) => {
-    if (editingRoom) {
-      onUpdateRoom(editingRoom.id, data)
-    } else {
-      onAddRoom(data)
+  const handleDialogChange = (
+    open: boolean,
+  ) => {
+    setDialogOpen(open)
+
+    if (!open) {
+      setEditingRoom(null)
     }
   }
 
-  const handleDelete = () => {
-    if (!editingRoom) return
+  const handleSave = (
+    data: RoomFormData,
+  ) => {
+    if (editingRoom) {
+      onUpdateRoom(
+        editingRoom.id,
+        data,
+      )
 
-    onDeleteRoom(editingRoom.id)
-    setEditingRoom(null)
+      toast.success("Комната сохранена", {
+        description: `Изменения комнаты «${editingRoom.name}» сохранены.`,
+      })
+    } else {
+      onAddRoom(data)
+
+      toast.success("Комната создана", {
+        description: `Комната «${data.name}» добавлена.`,
+      })
+    }
+
     setDialogOpen(false)
+    setEditingRoom(null)
+  }
+
+  const handleDelete = (room: Room) => {
+    confirmation.confirm({
+      title: "Удалить комнату?",
+      description: `Комната «${room.name}» будет удалена. Это действие нельзя отменить.`,
+      confirmLabel: "Удалить",
+      cancelLabel: "Отмена",
+      variant: "destructive",
+
+      onConfirm: async () => {
+        onDeleteRoom(room.id)
+
+        toast.success("Комната удалена", {
+          description: `Комната «${room.name}» успешно удалена.`,
+        })
+      },
+    })
+  }
+
+  const handleDuplicate = (room: Room) => {
+    onDuplicateRoom(room.id)
+
+    toast.success("Комната дублирована", {
+      description: `Создана копия комнаты «${room.name}».`,
+    })
   }
 
   return (
@@ -150,9 +228,15 @@ export default function Rooms({
                 onStop={onStop}
                 onPause={onPause}
                 onVolumeChange={onVolumeChange}
-                onEdit={() => openEditDialog(room)}
-                onDuplicate={() => onDuplicateRoom(room.id)}
-                onDelete={() => onDeleteRoom(room.id)}
+                onEdit={() =>
+                  openEditDialog(room)
+                }
+                onDuplicate={() =>
+                  handleDuplicate(room)
+                }
+                onDelete={() =>
+                  handleDelete(room)
+                }
               />
             ))}
           </div>
@@ -163,12 +247,18 @@ export default function Rooms({
             onPlay={onPlay}
             onStop={onStop}
             onPause={onPause}
+            onEdit={openEditDialog}
+            onDuplicate={handleDuplicate}
+            onDelete={handleDelete}
+            onVolumeChange={onVolumeChange}
           />
         )}
 
         <SyncLineCard
           room={syncLine}
-          operation={operations[syncLine.id]}
+          operation={
+            operations[syncLine.id]
+          }
           onPlay={playSyncLine}
           onStop={stopSyncLine}
         />
@@ -177,9 +267,36 @@ export default function Rooms({
       <RoomDialog
         open={dialogOpen}
         room={editingRoom}
-        onOpenChange={setDialogOpen}
+        onOpenChange={handleDialogChange}
         onSave={handleSave}
-        onDelete={editingRoom ? handleDelete : undefined}
+      />
+
+      <ConfirmDialog
+        open={confirmation.open}
+        onOpenChange={(open) => {
+          if (!open) {
+            confirmation.close()
+          }
+        }}
+        title={
+          confirmation.options?.title ?? ""
+        }
+        description={
+          confirmation.options?.description
+        }
+        confirmLabel={
+          confirmation.options?.confirmLabel
+        }
+        cancelLabel={
+          confirmation.options?.cancelLabel
+        }
+        variant={
+          confirmation.options?.variant
+        }
+        loading={confirmation.loading}
+        onConfirm={
+          confirmation.handleConfirm
+        }
       />
     </div>
   )

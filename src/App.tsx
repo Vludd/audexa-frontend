@@ -13,6 +13,7 @@ import { useSchedule } from "./hooks/useSchedule"
 
 import Sidebar from "./components/Sidebar"
 import StatusBar from "./components/StatusBar"
+import Toaster from "./components/ui/Toaster"
 
 import Dashboard from "./pages/Dashboard"
 import Rooms from "./pages/Rooms"
@@ -109,6 +110,7 @@ export default function App() {
       </div>
 
       <StatusBar status={mockSystemStatus} />
+      <Toaster />
     </div>
   )
 }

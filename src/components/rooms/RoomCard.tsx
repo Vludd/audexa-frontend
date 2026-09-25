@@ -19,6 +19,7 @@ import type { RoomOperation } from "@/hooks/useRooms"
 
 import StatusBadge from "@/components/StatusBadge"
 import { cn } from "cn"
+import { Slider } from "../ui/slider"
 
 interface Props {
   room: Room
@@ -211,7 +212,7 @@ export default function RoomCard({
           </div>
 
           <div
-            className="h-1.5 overflow-hidden rounded-full bg-muted"
+            className="h-1.5 overflow-hidden rounded-full bg-muted-foreground/25"
             role="progressbar"
             aria-label={`Прогресс воспроизведения комнаты ${room.id}`}
             aria-valuemin={0}
@@ -226,6 +227,32 @@ export default function RoomCard({
         </div>
 
         <div className="mb-2.5 flex items-center gap-2">
+          <Slider
+            trackClassName="bg-muted-foreground/25"
+            value={[room.volume]}
+            min={0}
+            max={100}
+            step={1}
+            disabled={isPending}
+            onValueChange={(value) => {
+              const volume = Array.isArray(value)
+                ? value[0]
+                : value
+
+              if (typeof volume === "number") {
+                onVolumeChange(room.id, volume)
+              }
+            }}
+            aria-label={`Громкость комнаты ${room.name}`}
+            className="w-24"
+          />
+
+          <span className="min-w-9 text-right text-xs font-medium tabular-nums">
+            {room.volume}%
+          </span>
+        </div>
+
+        {/* <div className="mb-2.5 flex items-center gap-2">
           <input
             type="range"
             min={0}
@@ -242,7 +269,7 @@ export default function RoomCard({
           <span className="min-w-8 text-right text-xs font-medium">
             {room.volume}%
           </span>
-        </div>
+        </div> */}
 
         <div className="flex gap-1.5">
           {operation === "starting" ? (

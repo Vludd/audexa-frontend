@@ -44,11 +44,11 @@ export default function SyncLineCard({
       isPending && "opacity-90",
     )}>
       <CardContent className="flex items-center gap-3 p-3.5">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+        {/* <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
           <span className="text-base font-bold text-primary">
             {room.id}
           </span>
-        </div>
+        </div> */}
 
         <div className="min-w-0 flex-1">
           <div className="text-sm font-bold">

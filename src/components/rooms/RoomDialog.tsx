@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Plus, Save, Trash2 } from "lucide-react"
+import { Plus, Save } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,14 +11,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+
 import type { Room } from "@/types"
+
+export interface RoomFormData {
+  name: string
+  file: string
+  volume: number
+}
 
 interface Props {
   open: boolean
   room?: Room | null
+
   onOpenChange: (open: boolean) => void
-  onSave: (data: { name: string; file: string; volume: number }) => void
-  onDelete?: () => void
+  onSave: (data: RoomFormData) => void
 }
 
 export default function RoomDialog({
@@ -26,7 +33,6 @@ export default function RoomDialog({
   room,
   onOpenChange,
   onSave,
-  onDelete,
 }: Props) {
   const isEditing = Boolean(room)
 
@@ -34,112 +40,179 @@ export default function RoomDialog({
   const [file, setFile] = useState("")
   const [volume, setVolume] = useState("100")
 
+  const [nameError, setNameError] = useState("")
+
   useEffect(() => {
-    if (!open) return
+    if (!open) {
+      return
+    }
 
     setName(room?.name ?? "")
     setFile(room?.file ?? "")
     setVolume(String(room?.volume ?? 100))
+    setNameError("")
   }, [open, room])
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault()
 
     const normalizedName = name.trim()
-    if (!normalizedName) return
 
-    const normalizedVolume = Math.min(
-      100,
-      Math.max(0, Number(volume) || 0),
-    )
+    if (!normalizedName) {
+      setNameError("Введите название комнаты")
+      return
+    }
+
+    setNameError("")
+
+    const parsedVolume = Number(volume)
+
+    const normalizedVolume = Number.isFinite(parsedVolume)
+      ? Math.min(100, Math.max(0, parsedVolume))
+      : 100
 
     onSave({
       name: normalizedName,
       file: file.trim(),
       volume: normalizedVolume,
     })
+  }
 
-    onOpenChange(false)
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      setNameError("")
+    }
+
+    onOpenChange(nextOpen)
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={handleOpenChange}
+    >
       <DialogContent className="sm:max-w-md">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>
-              {isEditing ? "Редактирование комнаты" : "Новая комната"}
+              {isEditing
+                ? "Редактирование комнаты"
+                : "Новая комната"}
             </DialogTitle>
+
             <DialogDescription>
               {isEditing
-                ? `Изменение параметров комнаты ${String(room?.id).padStart(2, "0")}.`
+                ? `Изменение параметров комнаты ${String(
+                    room?.id,
+                  ).padStart(2, "0")}.`
                 : "Добавьте новую аудиолинию комнаты."}
             </DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            <label className="grid gap-1.5">
-              <span className="text-sm font-medium">Название</span>
+            <div className="grid gap-1.5">
+              <label
+                htmlFor="room-name"
+                className="text-sm font-medium"
+              >
+                Название
+              </label>
+
               <Input
+                id="room-name"
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(event) => {
+                  setName(event.target.value)
+
+                  if (nameError) {
+                    setNameError("")
+                  }
+                }}
                 placeholder="Например, Большой зал"
                 autoFocus
+                aria-invalid={Boolean(nameError)}
               />
-            </label>
 
-            <label className="grid gap-1.5">
-              <span className="text-sm font-medium">Аудиофайл</span>
+              {nameError && (
+                <p className="text-xs text-destructive">
+                  {nameError}
+                </p>
+              )}
+            </div>
+
+            <div className="grid gap-1.5">
+              <label
+                htmlFor="room-file"
+                className="text-sm font-medium"
+              >
+                Аудиофайл
+              </label>
+
               <Input
+                id="room-file"
                 value={file}
-                onChange={(event) => setFile(event.target.value)}
+                onChange={(event) =>
+                  setFile(event.target.value)
+                }
                 placeholder="audio/room-01.wav"
               />
-            </label>
 
-            <label className="grid gap-1.5" hidden>
-              <span className="text-sm font-medium">Громкость</span>
-              <Input
-                type="number"
-                min={0}
-                max={100}
-                value={volume}
-                onChange={(event) => setVolume(event.target.value)}
-              />
-            </label>
+              <p className="text-xs text-muted-foreground">
+                Позже это поле будет заменено селектором
+                Audio Library.
+              </p>
+            </div>
+
+            <div className="grid gap-1.5">
+              <label
+                htmlFor="room-volume"
+                className="text-sm font-medium"
+              >
+                Громкость
+              </label>
+
+              <div className="flex items-center gap-3">
+                <Input
+                  id="room-volume"
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={volume}
+                  onChange={(event) =>
+                    setVolume(event.target.value)
+                  }
+                  className="w-24"
+                />
+
+                <span className="text-sm text-muted-foreground">
+                  %
+                </span>
+              </div>
+            </div>
           </div>
 
-          <DialogFooter className="sm:justify-between">
-            {isEditing && onDelete ? (
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={onDelete}
-              >
-                <Trash2 className="size-4" />
-                Удалить
-              </Button>
-            ) : (
-              <div />
-            )}
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleOpenChange(false)}
+            >
+              Отмена
+            </Button>
 
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                Отмена
-              </Button>
-              <Button type="submit">
-                {isEditing ? (
-                  <Save className="size-4" />
-                ) : (
-                  <Plus className="size-4" />
-                )}
-                {isEditing ? "Сохранить" : "Добавить"}
-              </Button>
-            </div>
+            <Button type="submit">
+              {isEditing ? (
+                <Save className="size-4" />
+              ) : (
+                <Plus className="size-4" />
+              )}
+
+              {isEditing
+                ? "Сохранить"
+                : "Добавить"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
