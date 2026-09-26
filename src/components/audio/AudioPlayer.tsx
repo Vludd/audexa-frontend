@@ -121,7 +121,7 @@ export default function AudioPlayer({
           </div>
 
           <Slider
-            trackClassName="bg-muted-foreground/25"
+            trackClassName="!h-2 bg-muted-foreground/25"
             value={[Math.min(currentTime, actualDuration)]}
             max={actualDuration || 1}
             step={0.1}
