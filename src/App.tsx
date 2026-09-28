@@ -61,6 +61,9 @@ export default function App() {
               rooms={rooms}
               schedule={schedule}
               system={mockSystemStatus}
+              logs={mockLogs}
+              onPauseRoom={pauseRoom}
+              onStopRoom={stopRoom}
               onStopAll={stopAllRooms}
               onNavigate={(p) => setPage(p as Page)}
             />
