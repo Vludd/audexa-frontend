@@ -1,29 +1,33 @@
-import {
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react"
+import { AlertTriangle, ExternalLink, Square, XCircle } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import type { LogEntry } from "@/types"
+import { Badge } from "@/components/ui/badge"
+import type { LogEntry, Room } from "@/types"
 
 interface DashboardIssuesProps {
   logs: LogEntry[]
+  rooms: Room[]
   onNavigate: (page: string) => void
+  onStopAll: () => void
 }
 
 export default function DashboardIssues({
   logs,
+  rooms,
   onNavigate,
+  onStopAll,
 }: DashboardIssuesProps) {
-  const issues = [...logs]
+  const issues = logs
     .filter(
       (log) =>
-        log.level === "ERROR" || log.level === "WARNING",
+        log.level === "ERROR" ||
+        log.level === "WARNING",
     )
-    .sort((a, b) => b.id - a.id)
-    .slice(0, 5)
+    .slice(0, 3)
+
+  const hasActivePlayback = rooms.some(
+    (room) => room.status === "playing",
+  )
 
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -34,66 +38,115 @@ export default function DashboardIssues({
 
         <Button
           variant="link"
-          className="h-auto p-0 text-xs"
+          className="h-auto gap-1 p-0 text-xs"
           onClick={() => onNavigate("logs")}
         >
-          Открыть журнал →
+          Открыть журнал
+          <ExternalLink className="size-3" />
         </Button>
       </div>
 
-      <div className="p-3.5">
+      <div>
         {issues.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <CheckCircle2 className="mb-2 size-7 text-muted-foreground/50" />
+          <div className="flex items-center gap-2 px-4 py-4 text-sm text-muted-foreground">
+            <span className="flex size-6 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+              ✓
+            </span>
 
-            <div className="text-sm text-muted-foreground">
-              Проблем не обнаружено
-            </div>
+            Проблем не обнаружено
           </div>
         ) : (
-          <div className="flex flex-col">
-            {issues.map((log, index) => {
-              const isError = log.level === "ERROR"
+          <div>
+            {issues.map((issue, index) => {
+              const isError = issue.level === "ERROR"
 
               return (
-                <div key={log.id}>
-                  <button
-                    type="button"
-                    onClick={() => onNavigate("logs")}
-                    className="flex min-w-0 w-full items-center gap-3 rounded-md px-2 py-2.5 text-left transition-colors hover:bg-muted/60"
+                <div
+                  key={issue.id}
+                  className={[
+                    "flex items-center gap-3 px-4 py-3",
+                    index < issues.length - 1
+                      ? "border-b"
+                      : "",
+                  ].join(" ")}
+                >
+                  <div
+                    className={[
+                      "flex size-7 shrink-0 items-center justify-center rounded-full",
+                      isError
+                        ? "bg-red-50 text-red-600"
+                        : "bg-amber-50 text-amber-600",
+                    ].join(" ")}
                   >
                     {isError ? (
-                      <XCircle className="size-4 shrink-0 text-destructive" />
+                      <XCircle className="size-4" />
                     ) : (
-                      <AlertTriangle className="size-4 shrink-0 text-amber-500" />
+                      <AlertTriangle className="size-4" />
                     )}
+                  </div>
 
-                    <span className="w-16 shrink-0 text-xs tabular-nums text-muted-foreground">
-                      {log.time}
-                    </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex min-w-0 items-center gap-2">
+                      <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                        {issue.time}
+                      </span>
 
-                    <span className="min-w-0 flex-1 truncate text-sm">
-                      {log.message}
-                    </span>
+                      <span className="truncate text-sm">
+                        {issue.message}
+                      </span>
+                    </div>
+                  </div>
 
-                    <Badge
-                      variant={
-                        isError ? "destructive" : "secondary"
-                      }
-                      className="hidden shrink-0 sm:inline-flex"
-                    >
-                      {log.level}
-                    </Badge>
-                  </button>
-
-                  {index < issues.length - 1 && (
-                    <div className="h-px bg-border" />
-                  )}
+                  <Badge
+                    variant={
+                      isError
+                        ? "destructive"
+                        : "warning"
+                    }
+                    className="shrink-0"
+                  >
+                    {isError ? "ERROR" : "WARNING"}
+                  </Badge>
                 </div>
               )
             })}
           </div>
         )}
+      </div>
+
+      <div className="flex items-center justify-between gap-4 border-t bg-destructive/[0.03] px-4 py-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+            <Square
+              className="size-3.5"
+              fill="currentColor"
+            />
+          </div>
+
+          <div className="min-w-0">
+            <div className="text-sm font-semibold">
+              Экстренная остановка
+            </div>
+
+            <div className="truncate text-xs text-muted-foreground">
+              Остановить воспроизведение во всех активных комнатах
+            </div>
+          </div>
+        </div>
+
+        <Button
+          variant="destructive"
+          size="sm"
+          disabled={!hasActivePlayback}
+          onClick={onStopAll}
+          className="shrink-0"
+        >
+          <Square
+            className="size-3.5"
+            fill="currentColor"
+          />
+          Остановить всё
+        </Button>
       </div>
     </div>
   )

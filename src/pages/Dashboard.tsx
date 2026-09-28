@@ -47,10 +47,8 @@ export default function Dashboard({
               logs={logs}
             />
 
-            {/* Main content */}
-            <div className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
-              {/* Left column */}
-              <div className="flex min-w-0 flex-col gap-4">
+            <div className="grid min-w-0 grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1fr)_288px]">
+              <div className="flex min-w-0 flex-col gap-3">
                 <DashboardPlayback
                   rooms={rooms}
                   onNavigate={onNavigate}
@@ -64,8 +62,7 @@ export default function Dashboard({
                 />
               </div>
 
-              {/* Right column */}
-              <div className="flex min-w-0 flex-col gap-4">
+              <div className="flex min-w-0 flex-col gap-3 self-start">
                 <DashboardSchedule
                   schedule={schedule}
                   onNavigate={onNavigate}
@@ -83,11 +80,8 @@ export default function Dashboard({
 
             <DashboardIssues
               logs={logs}
-              onNavigate={onNavigate}
-            />
-
-            <DashboardEmergencyStop
               rooms={rooms}
+              onNavigate={onNavigate}
               onStopAll={onStopAll}
             />
           </div>

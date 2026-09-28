@@ -17,7 +17,10 @@ function fmt(seconds: number) {
   const minutes = Math.floor(safeSeconds / 60)
   const sec = safeSeconds % 60
 
-  return `${String(minutes).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
+  return `${String(minutes).padStart(2, "0")}:${String(sec).padStart(
+    2,
+    "0",
+  )}`
 }
 
 export default function DashboardPlayback({
@@ -26,7 +29,9 @@ export default function DashboardPlayback({
   onPauseRoom,
   onStopRoom,
 }: DashboardPlaybackProps) {
-  const currentRoom = rooms.find((room) => room.status === "playing")
+  const currentRoom = rooms.find(
+    (room) => room.status === "playing",
+  )
 
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -38,20 +43,23 @@ export default function DashboardPlayback({
 
       <div className="p-3.5">
         {currentRoom ? (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <div className="flex min-w-0 items-start justify-between gap-4">
               <div className="min-w-0">
-                <div className="mb-1 text-base font-bold">
+                <div className="text-base font-bold leading-tight">
                   {String(currentRoom.id).padStart(2, "0")} —{" "}
                   {currentRoom.name}
                 </div>
 
-                <div className="truncate text-sm text-muted-foreground">
+                <div className="mt-1 truncate text-sm text-muted-foreground">
                   {currentRoom.file}
                 </div>
               </div>
 
-              <Badge variant="success" className="shrink-0">
+              <Badge
+                variant="success"
+                className="shrink-0"
+              >
                 PLAYING
               </Badge>
             </div>
@@ -60,10 +68,13 @@ export default function DashboardPlayback({
               <Progress
                 value={
                   currentRoom.duration > 0
-                    ? (currentRoom.position / currentRoom.duration) * 100
+                    ? Math.min(
+                        100,
+                        (currentRoom.position / currentRoom.duration) * 100,
+                      )
                     : 0
                 }
-                className="h-2"
+                className="h-2 flex-1"
               />
 
               <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
@@ -72,10 +83,12 @@ export default function DashboardPlayback({
               </span>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <Button
                 size="sm"
-                onClick={() => onPauseRoom(currentRoom.id)}
+                onClick={() =>
+                  onPauseRoom(currentRoom.id)
+                }
               >
                 <Pause className="size-3.5" />
                 Пауза
@@ -84,7 +97,9 @@ export default function DashboardPlayback({
               <Button
                 size="sm"
                 variant="secondary"
-                onClick={() => onStopRoom(currentRoom.id)}
+                onClick={() =>
+                  onStopRoom(currentRoom.id)
+                }
               >
                 <Square className="size-3.5" />
                 Стоп
@@ -101,7 +116,7 @@ export default function DashboardPlayback({
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-8 text-center">
+          <div className="flex flex-col items-center justify-center py-6 text-center">
             <PlayCircle className="mb-2 size-7 text-muted-foreground/50" />
 
             <div className="text-sm text-muted-foreground">

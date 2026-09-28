@@ -47,7 +47,7 @@ export default function DashboardHealth({
       <HealthCard
         icon={Radio}
         label="Аудиовыходы"
-        value={`${system.outputs} / ${system.outputs}`}
+        value={system.outputs}
         description="доступны"
       />
 

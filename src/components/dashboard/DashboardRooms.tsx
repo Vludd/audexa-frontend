@@ -135,7 +135,7 @@ export default function DashboardRooms({
                   <button
                     type="button"
                     onClick={() => onNavigate("rooms")}
-                    className="flex w-full min-w-0 items-center gap-3 rounded-md px-2 py-2.5 text-left transition-colors hover:bg-muted/60"
+                    className="flex w-full min-w-0 items-center gap-3 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted/60"
                   >
                     <span className="w-7 shrink-0 text-sm font-bold tabular-nums">
                       {String(room.id).padStart(2, "0")}
