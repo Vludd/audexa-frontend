@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
@@ -17,13 +17,16 @@ export default function LoggingSettings() {
         <CardTitle className="text-sm">
           Журналирование
         </CardTitle>
+        <CardDescription className="text-xs">
+          Настройка уровня логирования и параметров журнала (В РАЗРАБОТКЕ)
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label>Уровень логирования</Label>
 
-          <Select defaultValue="INFO">
+          <Select defaultValue="INFO" disabled>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
@@ -40,7 +43,7 @@ export default function LoggingSettings() {
         <div className="space-y-2">
           <Label>Путь к журналу</Label>
 
-          <Input defaultValue={"C:\\Burabay\\logs\\"} />
+          <Input defaultValue={"%APPDATA%\\Audexa\\logs\\"} disabled/>
         </div>
 
         <div className="flex items-center justify-between">
@@ -48,7 +51,7 @@ export default function LoggingSettings() {
             Ротация файлов (ежедневно)
           </Label>
 
-          <Switch defaultChecked />
+          <Switch defaultChecked disabled/>
         </div>
 
         <div className="flex items-center justify-between">
@@ -56,7 +59,7 @@ export default function LoggingSettings() {
             Сохранять журнал 30 дней
           </Label>
 
-          <Switch defaultChecked />
+          <Switch defaultChecked disabled/>
         </div>
       </CardContent>
     </Card>

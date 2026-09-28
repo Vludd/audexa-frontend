@@ -11,11 +11,11 @@ export default function SettingsActions({
 }: Props) {
   return (
     <div className="flex gap-2">
-      <Button variant="success" onClick={onSave}>
+      <Button variant="success" onClick={onSave} disabled>
         Сохранить настройки
       </Button>
 
-      <Button variant="outline" onClick={onReset}>
+      <Button variant="outline" onClick={onReset} disabled>
         Сбросить по умолчанию
       </Button>
     </div>

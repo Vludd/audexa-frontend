@@ -1,7 +1,7 @@
 import { RefreshCw } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -10,18 +10,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { bufferSizes, sampleRates } from "@/data/audio"
+import { useState } from "react"
 
 export default function AudioDeviceSettings() {
+  const [sampleRate, setSampleRate] = useState(sampleRates[1])
+  const [bufferSize, setBufferSize] = useState(bufferSizes[0])
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-sm">
-          Аудиоустройство (ASIO)
+          Аудиоустройство
         </CardTitle>
+        <CardDescription className="text-xs">
+          Настройка аудиоустройства и его параметров (В РАЗРАБОТКЕ)
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <div className="flex items-end gap-2">
+        <div className="flex gap-2">
           <div className="flex-1 space-y-2">
             <Label>Устройство</Label>
 
@@ -38,24 +46,28 @@ export default function AudioDeviceSettings() {
             </Select>
           </div>
 
-          <Button variant="outline" size="sm">
-            <RefreshCw className="size-3.5" />
-            Обновить
-          </Button>
+          <div className="pt-6">
+            <Button variant="outline" size="sm">
+              <RefreshCw className="size-3.5" />
+              Обновить
+            </Button>
+          </div>
         </div>
 
         <div className="space-y-2">
-          <Label>Частота дискретизации</Label>
+          <Label>Частота дискретизации (Hz)</Label>
 
-          <Select defaultValue="48000">
+          <Select defaultValue={sampleRate.toString()} disabled>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem value="48000">48000 Hz</SelectItem>
-              <SelectItem value="44100">44100 Hz</SelectItem>
-              <SelectItem value="96000">96000 Hz</SelectItem>
+              {sampleRates.map((rate) => (
+                <SelectItem key={rate} value={rate.toString()}>
+                  {rate} Hz
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -63,20 +75,22 @@ export default function AudioDeviceSettings() {
         <div className="space-y-2">
           <Label>Размер буфера</Label>
 
-          <Select defaultValue="256">
+          <Select defaultValue={bufferSize.toString()} disabled>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem value="256">256 samples</SelectItem>
-              <SelectItem value="512">512 samples</SelectItem>
-              <SelectItem value="1024">1024 samples</SelectItem>
+              {bufferSizes.map((size) => (
+                <SelectItem key={size} value={size.toString()}>
+                  {size}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
-        <div className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm dark:border-emerald-900 dark:bg-emerald-950/40">
+        <div hidden className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm dark:border-emerald-900 dark:bg-emerald-950/40">
           <span className="font-semibold text-emerald-600 dark:text-emerald-400">
             ● ONLINE
           </span>

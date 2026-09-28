@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 
@@ -16,6 +16,9 @@ export default function StartupSettings() {
         <CardTitle className="text-sm">
           Автозапуск и восстановление
         </CardTitle>
+        <CardDescription className="text-xs">
+          Настройка автозапуска и восстановления приложения (В РАЗРАБОТКЕ)
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
@@ -28,7 +31,7 @@ export default function StartupSettings() {
               {label}
             </Label>
 
-            <Switch defaultChecked />
+            <Switch defaultChecked disabled/>
           </div>
         ))}
       </CardContent>

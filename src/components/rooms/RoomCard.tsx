@@ -54,6 +54,7 @@ export default function RoomCard({
 }: Props) {
   const isPlaying = room.status === "playing"
   const isPending = Boolean(operation)
+  const hideMediaControls = true
 
   const progress =
   room.duration > 0
@@ -160,6 +161,7 @@ export default function RoomCard({
                     )
                   }
                   label={isPlaying ? "Пауза" : "Запуск"}
+                  hidden={hideMediaControls}
                   onClick={() => {
                     closeMenu()
 
@@ -174,6 +176,7 @@ export default function RoomCard({
                 <MenuItem
                   icon={<Square className="size-3.5" />}
                   label="Остановить"
+                  hidden={hideMediaControls}
                   onClick={() => {
                     closeMenu()
                     onStop(room.id)
@@ -181,7 +184,7 @@ export default function RoomCard({
                   disabled={isPending || room.status !== "playing" && room.status !== "paused"}
                 />
 
-                <div className="my-1 border-t" />
+                <div className="my-1 border-t" hidden={hideMediaControls}/>
 
                 <MenuItem
                   icon={<Trash2 className="size-3.5" />}
@@ -277,6 +280,7 @@ export default function RoomCard({
               icon={<Loader2 className="size-3 animate-spin" />}
               label="Запуск..."
               variant="success"
+              hidden={hideMediaControls}
               disabled
             />
           ) : operation === "pausing" ? (
@@ -284,6 +288,7 @@ export default function RoomCard({
               icon={<Loader2 className="size-3 animate-spin" />}
               label="Пауза..."
               variant="primary"
+              hidden={hideMediaControls}
               disabled
             />
           ) : operation === "stopping" ? (
@@ -291,6 +296,7 @@ export default function RoomCard({
               icon={<Loader2 className="size-3 animate-spin" />}
               label="Остановка..."
               variant="secondary"
+              hidden={hideMediaControls}
               disabled
             />
           ) : isPlaying ? (
@@ -298,6 +304,7 @@ export default function RoomCard({
               icon={<Pause className="size-3" />}
               label="Пауза"
               variant="primary"
+              hidden={hideMediaControls}
               onClick={() => onPause(room.id)}
             />
           ) : (
@@ -305,6 +312,7 @@ export default function RoomCard({
               icon={<Play className="size-3" />}
               label="Запуск"
               variant="success"
+              hidden={hideMediaControls}
               onClick={() => onPlay(room.id)}
             />
           )}
@@ -315,6 +323,7 @@ export default function RoomCard({
             variant="secondary"
             onClick={() => onStop(room.id)}
             disabled={isPending || room.status !== "playing" && room.status !== "paused"}
+            hidden={hideMediaControls}
           />
 
           <Button
@@ -341,12 +350,14 @@ function MenuItem({
   onClick,
   destructive = false,
   disabled = false,
+  hidden = false,
 }: {
   icon: ReactNode
   label: string
   onClick: () => void
   destructive?: boolean
   disabled?: boolean
+  hidden?: boolean
 }) {
   return (
     <button
@@ -361,6 +372,7 @@ function MenuItem({
       )}
       onClick={onClick}
       disabled={disabled}
+      hidden={hidden}
     >
       {icon}
       {label}
@@ -374,12 +386,14 @@ function ActionButton({
   variant,
   onClick,
   disabled = false,
+  hidden = false,
 }: {
   icon: ReactNode
   label: string
   variant: "primary" | "success" | "secondary"
   onClick?: () => void
   disabled?: boolean
+  hidden?: boolean
 }) {
   return (
     <Button
@@ -395,6 +409,7 @@ function ActionButton({
       onClick={onClick}
       disabled={disabled}
       className="flex-1 gap-1.5"
+      hidden={hidden}
     >
       {icon}
       {label}

@@ -15,9 +15,12 @@ export default function Settings() {
       />
 
       <div className="min-h-0 flex-1 overflow-auto p-4">
-        <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
-          <AudioDeviceSettings />
+        <div className="grid grid-cols-1 gap-3">
           <LineMappingSettings />
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 xl:grid-cols-2 mt-3">
+          <AudioDeviceSettings />
 
           <StartupSettings />
           <LoggingSettings />
