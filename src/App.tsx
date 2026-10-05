@@ -43,7 +43,20 @@ export default function App() {
     duplicateRoom,
   } = useRooms()
 
-  const { scenarios, playScenario, stopScenario } = useScenarios({
+  const {
+    scenarios,
+    playScenario,
+    stopScenario,
+    createScenario,
+    updateScenario,
+    deleteScenario,
+    duplicateScenario,
+    addStep,
+    updateStep,
+    removeStep,
+    moveStep,
+    validateScenario,
+  } = useScenarios({
     updateRoom,
     stopAllRooms,
   })
@@ -97,8 +110,19 @@ export default function App() {
           {page === "scenarios" && (
             <Scenarios
               scenarios={scenarios}
+              rooms={rooms}
+              audioFiles={mockAudioFiles}
               onPlay={playScenario}
               onStop={stopScenario}
+              onCreate={createScenario}
+              onUpdate={updateScenario}
+              onDelete={deleteScenario}
+              onDuplicate={duplicateScenario}
+              onAddStep={addStep}
+              onUpdateStep={updateStep}
+              onRemoveStep={removeStep}
+              onMoveStep={moveStep}
+              onValidate={validateScenario}
             />
           )}
 
