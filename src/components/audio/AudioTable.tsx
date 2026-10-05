@@ -18,17 +18,17 @@ import AudioFileActions from "./AudioFileActions"
 
 interface Props {
   files: AudioFile[]
-  selected: number | null
-  selectedIds: number[]
-  currentFileId: number | null
+  selected: string | null
+  selectedIds: string[]
+  currentFileId: string | null
   isPlaying: boolean
 
-  onSelect: (id: number) => void
-  onToggleSelection: (id: number) => void
+  onSelect: (id: string) => void
+  onToggleSelection: (id: string) => void
   onToggleSelectAll: () => void
-  onTogglePlay: (id: number) => void
-  onRename: (id: number) => void
-  onDelete: (id: number) => void
+  onTogglePlay: (id: string) => void
+  onRename: (id: string) => void
+  onDelete: (id: string) => void
 }
 
 function fmtDur(seconds: number) {

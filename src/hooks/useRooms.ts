@@ -1,13 +1,19 @@
 import { useCallback, useState } from "react"
 
 import { mockRooms, syncLine as defaultSyncLine } from "@/data/mock"
-import type { Room } from "@/types"
+import type { Room, RoomOperation } from "@/types"
 
-export type RoomOperation = "starting" | "stopping" | "pausing"
+function createEntityId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID()
+  }
+
+  return `room-${Date.now()}-${Math.random().toString(16).slice(2)}`
+}
 
 export interface RoomInput {
   name: string
-  file: string
+  audioFileId: string | null
   volume: number
 }
 
@@ -22,7 +28,7 @@ export function useRooms() {
    * part of the room's persistent/domain state.
    */
   const [operations, setOperations] = useState<
-    Record<number, RoomOperation>
+    Record<string, RoomOperation>
   >({})
 
   const updateSyncLine = useCallback((patch: Partial<Room>) => {
@@ -33,7 +39,7 @@ export function useRooms() {
   }, [])
 
   const updateRoom = useCallback(
-    (id: number, patch: Partial<Room>) => {
+    (id: string, patch: Partial<Room>) => {
       setRooms((currentRooms) =>
         currentRooms.map((room) =>
           room.id === id
@@ -47,7 +53,7 @@ export function useRooms() {
 
   const runOperation = useCallback(
     async (
-      id: number,
+      id: string,
       operation: RoomOperation,
       action: () => void,
     ) => {
@@ -76,35 +82,29 @@ export function useRooms() {
   )
 
   const addRoom = useCallback((input: RoomInput) => {
-    setRooms((currentRooms) => {
-      const nextId =
-        currentRooms.length > 0
-          ? Math.max(
-              ...currentRooms.map((room) => room.id),
-            ) + 1
-          : 1
+    const newRoom: Room = {
+      id: createEntityId(),
+      name: input.name,
+      status: "stopped",
+      audioFileId: input.audioFileId,
+      volume: input.volume,
+      position: 0,
+      duration: 0,
+    }
 
-      const newRoom: Room = {
-        id: nextId,
-        name: input.name,
-        status: "stopped",
-        file: input.file,
-        volume: input.volume,
-        position: 0,
-        duration: 0,
-      }
-
-      return [...currentRooms, newRoom]
-    })
+    setRooms((currentRooms) => [
+      ...currentRooms,
+      newRoom,
+    ])
   }, [])
 
-  const deleteRoom = useCallback((id: number) => {
+  const deleteRoom = useCallback((id: string) => {
     setRooms((currentRooms) =>
       currentRooms.filter((room) => room.id !== id),
     )
   }, [])
 
-  const duplicateRoom = useCallback((id: number) => {
+  const duplicateRoom = useCallback((id: string) => {
     setRooms((currentRooms) => {
       const source = currentRooms.find(
         (room) => room.id === id,
@@ -112,28 +112,23 @@ export function useRooms() {
 
       if (!source) return currentRooms
 
-      const nextId =
-        currentRooms.length > 0
-          ? Math.max(
-              ...currentRooms.map((room) => room.id),
-            ) + 1
-          : 1
+      const duplicatedRoom: Room = {
+        ...source,
+        id: createEntityId(),
+        name: `${source.name} — копия`,
+        status: "stopped",
+        position: 0,
+      }
 
       return [
         ...currentRooms,
-        {
-          ...source,
-          id: nextId,
-          name: `${source.name} — копия`,
-          status: "stopped",
-          position: 0,
-        },
+        duplicatedRoom,
       ]
     })
   }, [])
 
   const playRoom = useCallback(
-    (id: number) =>
+    (id: string) =>
       runOperation(id, "starting", () => {
         updateRoom(id, {
           status: "playing",
@@ -143,7 +138,7 @@ export function useRooms() {
   )
 
   const stopRoom = useCallback(
-    (id: number) =>
+    (id: string) =>
       runOperation(id, "stopping", () => {
         updateRoom(id, {
           status: "stopped",
@@ -154,7 +149,7 @@ export function useRooms() {
   )
 
   const pauseRoom = useCallback(
-    (id: number) =>
+    (id: string) =>
       runOperation(id, "pausing", () => {
         updateRoom(id, {
           status: "paused",
@@ -185,7 +180,7 @@ export function useRooms() {
   )
 
   const setRoomVolume = useCallback(
-    (id: number, volume: number) => {
+    (id: string, volume: number) => {
       updateRoom(id, { volume })
     },
     [updateRoom],

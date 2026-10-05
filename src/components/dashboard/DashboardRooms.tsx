@@ -1,5 +1,4 @@
 import {
-  AlertTriangle,
   Pause,
   Play,
   PlayCircle,
@@ -75,17 +74,22 @@ export default function DashboardRooms({
   rooms,
   onNavigate,
 }: DashboardRoomsProps) {
-  const activeRooms = rooms
+  const displayRooms = rooms.map((room, index) => ({
+    room,
+    displayNumber: index + 1,
+  }))
+
+  const activeRooms = displayRooms
     .filter(
-      (room) =>
+      ({ room }) =>
         room.status === "playing" ||
         room.status === "paused" ||
         room.status === "error",
     )
     .sort(
       (a, b) =>
-        getStatusPriority(a.status) -
-        getStatusPriority(b.status),
+        getStatusPriority(a.room.status) -
+        getStatusPriority(b.room.status),
     )
 
   const visibleRooms = activeRooms.slice(0, MAX_VISIBLE_ROOMS)
@@ -126,7 +130,7 @@ export default function DashboardRooms({
           </div>
         ) : (
           <div className="flex flex-col">
-            {visibleRooms.map((room, index) => {
+            {visibleRooms.map(({ room, displayNumber }, index) => {
               const status = getRoomStatus(room)
               const StatusIcon = status.icon
 
@@ -138,7 +142,7 @@ export default function DashboardRooms({
                     className="flex w-full min-w-0 items-center gap-3 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted/60"
                   >
                     <span className="w-7 shrink-0 text-sm font-bold tabular-nums">
-                      {String(room.id).padStart(2, "0")}
+                      {String(displayNumber).padStart(2, "0")}
                     </span>
 
                     <div className="min-w-0 flex-1">
@@ -147,7 +151,7 @@ export default function DashboardRooms({
                       </div>
 
                       <div className="truncate text-xs text-muted-foreground">
-                        {room.file}
+                        {room.audioFileId ?? "Файл не назначен"}
                       </div>
                     </div>
 

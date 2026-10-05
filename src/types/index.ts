@@ -1,3 +1,5 @@
+export type EntityId = string
+
 export type RoomStatus =
   | "idle"
   | "playing"
@@ -12,25 +14,24 @@ export type RoomOperation =
   | "pausing"
 
 export interface Room {
-  id: number
-  name: string
-  status: RoomStatus
-  operation?: RoomOperation
-  file: string
-  volume: number
-  position: number // seconds
-  duration: number // seconds
-  isSyncTranslation?: boolean
+  id: EntityId;
+  name: string;
+  status: RoomStatus;
+  operation?: RoomOperation;
+  audioFileId: EntityId | null;
+  volume: number;
+  position: number; // seconds
+  duration: number; // seconds
 }
 
 export interface ScenarioStep {
-  id: number
-  roomId: number
-  roomName: string
-  file: string
-  volume: number
-  delay: number // seconds
-  duration: number // seconds
+  id: number;
+  roomId: EntityId;
+  roomName: string;
+  file: string;
+  volume: number;
+  delay: number; // seconds
+  duration: number; // seconds
 }
 
 export type ScenarioStatus = "active" | "inactive"
@@ -66,13 +67,13 @@ export interface ScheduleItem {
 }
 
 export interface AudioFile {
-  id: number
-  name: string
-  filename: string
-  format: string
-  sampleRate: number
-  duration: number // seconds
-  size: number // bytes
+  id: EntityId;
+  name: string;
+  filename: string;
+  format: string;
+  sampleRate: number;
+  duration: number; // seconds
+  size: number; // bytes
 }
 
 export interface LogEntry {

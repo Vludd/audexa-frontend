@@ -4,7 +4,7 @@ import { mockScenarios } from "@/data/mock"
 import type { Room, Scenario } from "@/types"
 
 interface RoomActions {
-  updateRoom: (id: number, patch: Partial<Room>) => void
+  updateRoom: (id: string, patch: Partial<Room>) => void
   stopAllRooms: (options?: {
     resetPosition?: boolean
     includeSyncLine?: boolean
@@ -26,7 +26,7 @@ export function useScenarios({
       scenario.steps.forEach((step) => {
         updateRoom(step.roomId, {
           status: "playing",
-          file: step.file,
+          audioFileId: step.file,
           volume: step.volume,
         })
       })

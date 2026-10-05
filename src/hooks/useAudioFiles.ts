@@ -39,11 +39,11 @@ export function useAudioFiles({
 
   const [query, setQuery] = useState("")
 
-  const [selectedId, setSelectedId] = useState<number | null>(
+  const [selectedId, setSelectedId] = useState<string | null>(
     null,
   )
 
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
 
   /*
    * ------------------------------------------------------------
@@ -62,7 +62,7 @@ export function useAudioFiles({
    */
 
   const [currentFileId, setCurrentFileId] = useState<
-    number | null
+    string | null
   >(null)
 
   const [isPlaying, setIsPlaying] = useState(false)
@@ -81,7 +81,7 @@ export function useAudioFiles({
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
-  const objectUrlsRef = useRef<Map<number, string>>(
+  const objectUrlsRef = useRef<Map<string, string>>(
     new Map(),
   )
 
@@ -174,7 +174,7 @@ export function useAudioFiles({
    */
 
   const play = useCallback(
-    async (fileId: number) => {
+    async (fileId: string) => {
       const file = files.find((item) => item.id === fileId)
 
       if (!file) {
@@ -245,7 +245,7 @@ export function useAudioFiles({
   }, [])
 
   const togglePlay = useCallback(
-    async (fileId: number) => {
+    async (fileId: string) => {
       if (currentFileId === fileId && isPlaying) {
         pause()
         return
@@ -311,7 +311,7 @@ export function useAudioFiles({
    * ------------------------------------------------------------
    */
 
-  const selectFile = useCallback((id: number) => {
+  const selectFile = useCallback((id: string) => {
     setSelectedId(id)
   }, [])
 
@@ -321,7 +321,7 @@ export function useAudioFiles({
    * ------------------------------------------------------------
    */
 
-  const toggleSelection = useCallback((id: number) => {
+  const toggleSelection = useCallback((id: string) => {
     setSelectedIds((current) =>
       current.includes(id)
         ? current.filter(
@@ -398,9 +398,7 @@ export function useAudioFiles({
             const metadata =
               await readAudioMetadata(sourceFile)
 
-            const id =
-              Date.now() +
-              Math.floor(Math.random() * 100000)
+            const id = crypto.randomUUID()
 
             const objectUrl =
               URL.createObjectURL(sourceFile)
@@ -458,7 +456,7 @@ export function useAudioFiles({
    */
 
   const renameFile = useCallback(
-    (id: number, name: string) => {
+    (id: string, name: string) => {
       const normalizedName = name.trim()
 
       if (!normalizedName) {
@@ -486,7 +484,7 @@ export function useAudioFiles({
    */
 
   const deleteFile = useCallback(
-    (id: number) => {
+    (id: string) => {
       if (currentFileId === id) {
         stop()
 
@@ -638,14 +636,16 @@ export function useAudioFiles({
    */
 
   useEffect(() => {
+    const objectRef = objectUrlsRef.current;
+
     return () => {
       audioRef.current?.pause()
 
-      objectUrlsRef.current.forEach((url) => {
+      objectRef.forEach((url) => {
         URL.revokeObjectURL(url)
       })
 
-      objectUrlsRef.current.clear()
+      objectRef.clear()
     }
   }, [])
 

@@ -39,7 +39,7 @@ export default function AudioFiles({
     event.target.value = ""
   }
 
-  const handleRename = (id: number) => {
+  const handleRename = (id: string) => {
     const file = audio.files.find(
       (item) => item.id === id,
     )
@@ -58,7 +58,7 @@ export default function AudioFiles({
     }
   }
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     const file = audio.files.find(
       (item) => item.id === id,
     )

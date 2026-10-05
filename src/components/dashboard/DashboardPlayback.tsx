@@ -8,8 +8,8 @@ import type { Room } from "@/types"
 interface DashboardPlaybackProps {
   rooms: Room[]
   onNavigate: (page: string) => void
-  onPauseRoom: (roomId: number) => void
-  onStopRoom: (roomId: number) => void
+  onPauseRoom: (roomId: string) => void
+  onStopRoom: (roomId: string) => void
 }
 
 function fmt(seconds: number) {
@@ -29,9 +29,16 @@ export default function DashboardPlayback({
   onPauseRoom,
   onStopRoom,
 }: DashboardPlaybackProps) {
-  const currentRoom = rooms.find(
-    (room) => room.status === "playing",
-  )
+  const currentRoomEntry = rooms
+  .map((room, index) => ({
+    room,
+    displayNumber: index + 1,
+  }))
+  .find(({ room }) => room.status === "playing")
+
+  const currentRoom = currentRoomEntry?.room
+  const currentRoomDisplayNumber =
+    currentRoomEntry?.displayNumber
 
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -47,12 +54,12 @@ export default function DashboardPlayback({
             <div className="flex min-w-0 items-start justify-between gap-4">
               <div className="min-w-0">
                 <div className="text-base font-bold leading-tight">
-                  {String(currentRoom.id).padStart(2, "0")} —{" "}
+                  {String(currentRoomDisplayNumber).padStart(2, "0")} —{" "}
                   {currentRoom.name}
                 </div>
 
                 <div className="mt-1 truncate text-sm text-muted-foreground">
-                  {currentRoom.file}
+                  {currentRoom.audioFileId ?? "Файл не назначен"}
                 </div>
               </div>
 

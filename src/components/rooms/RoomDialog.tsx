@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Plus, Save } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -16,7 +16,7 @@ import type { Room } from "@/types"
 
 export interface RoomFormData {
   name: string
-  file: string
+  audioFileId: string | null
   volume: number
 }
 
@@ -37,21 +37,25 @@ export default function RoomDialog({
   const isEditing = Boolean(room)
 
   const [name, setName] = useState("")
-  const [file, setFile] = useState("")
+  const [audioFileId, setAudioFileId] = useState("")
   const [volume, setVolume] = useState("100")
 
   const [nameError, setNameError] = useState("")
 
-  useEffect(() => {
-    if (!open) {
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      setNameError("")
+      onOpenChange(false)
       return
     }
 
     setName(room?.name ?? "")
-    setFile(room?.file ?? "")
+    setAudioFileId(room?.audioFileId ?? "")
     setVolume(String(room?.volume ?? 100))
     setNameError("")
-  }, [open, room])
+
+    onOpenChange(true)
+  }
 
   const handleSubmit = (
     event: React.FormEvent<HTMLFormElement>,
@@ -75,17 +79,9 @@ export default function RoomDialog({
 
     onSave({
       name: normalizedName,
-      file: file.trim(),
+      audioFileId: audioFileId.trim() || null,
       volume: normalizedVolume,
     })
-  }
-
-  const handleOpenChange = (nextOpen: boolean) => {
-    if (!nextOpen) {
-      setNameError("")
-    }
-
-    onOpenChange(nextOpen)
   }
 
   return (
@@ -144,24 +140,24 @@ export default function RoomDialog({
 
             <div className="grid gap-1.5">
               <label
-                htmlFor="room-file"
+                htmlFor="room-audio-file"
                 className="text-sm font-medium"
               >
                 Аудиофайл
               </label>
 
               <Input
-                id="room-file"
-                value={file}
+                id="room-audio-file"
+                value={audioFileId}
                 onChange={(event) =>
-                  setFile(event.target.value)
+                  setAudioFileId(event.target.value)
                 }
-                placeholder="audio/room-01.wav"
+                placeholder="audio-01"
               />
 
               <p className="text-xs text-muted-foreground">
-                Позже это поле будет заменено селектором
-                Audio Library.
+                Временно вводится ID аудиофайла. Позже здесь
+                будет селектор Audio Library.
               </p>
             </div>
 

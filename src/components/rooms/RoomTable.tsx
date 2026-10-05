@@ -5,7 +5,6 @@ import {
   Loader2,
   Pause,
   Play,
-  SkipForward,
   Square,
   Trash2,
 } from "lucide-react"
@@ -28,26 +27,30 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import type { Room } from "@/types"
-import type { RoomOperation } from "@/hooks/useRooms"
+import type { Room, RoomOperation } from "@/types"
 
 import StatusBadge from "@/components/StatusBadge"
 import { Slider } from "../ui/slider"
 import { formatTime, getProgress } from "@/lib/audio"
 
-interface Props {
-  rooms: Room[]
-  operations?: Record<number, RoomOperation>
+type RoomListItem = {
+  room: Room
+  displayNumber: number
+}
 
-  onPlay: (id: number) => void
-  onStop: (id: number) => void
-  onPause: (id: number) => void
+interface Props {
+  rooms: RoomListItem[]
+  operations: Record<string, RoomOperation>
+
+  onPlay: (id: string) => void
+  onStop: (id: string) => void
+  onPause: (id: string) => void
 
   onEdit: (room: Room) => void
   onDuplicate: (room: Room) => void
   onDelete: (room: Room) => void
 
-  onVolumeChange: (id: number, volume: number) => void
+  onVolumeChange: (id: string, vol: number) => void
 }
 
 export default function RoomTable({
@@ -61,6 +64,7 @@ export default function RoomTable({
   onDelete,
   onVolumeChange
 }: Props) {
+
   return (
     <Card className="overflow-hidden">
       <Table>
@@ -77,14 +81,14 @@ export default function RoomTable({
         </TableHeader>
 
         <TableBody>
-          {rooms.map((room) => {
+          {rooms.map(({ room, displayNumber }) => {
             const operation = operations?.[room.id]
             const isPending = Boolean(operation)
 
             return (
               <TableRow key={room.id}>
-                <TableCell className="font-bold min-w-[32px] text-center">
-                  {String(room.id).padStart(2, "0")}
+                <TableCell className="text-sm min-w-[32px] text-center tabular-nums">
+                  {String(displayNumber).padStart(2, "0")}
                 </TableCell>
 
                 <TableCell className="font-medium">
@@ -122,11 +126,8 @@ export default function RoomTable({
                 </TableCell>
 
                 <TableCell className="max-w-[280px]">
-                  <span
-                    className="block truncate text-xs text-muted-foreground"
-                    title={room.file}
-                  >
-                    {room.file}
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {room.audioFileId ?? "Файл не назначен"}
                   </span>
                 </TableCell>
 

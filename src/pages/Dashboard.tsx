@@ -8,7 +8,6 @@ import DashboardSchedule from "@/components/dashboard/DashboardSchedule"
 import DashboardQuickActions from "@/components/dashboard/DashboardQuickActions"
 import DashboardAudioSystem from "@/components/dashboard/DashboardAudioSystem"
 import DashboardIssues from "@/components/dashboard/DashboardIssues"
-import DashboardEmergencyStop from "@/components/dashboard/DashboardEmergencyStop"
 
 interface Props {
   rooms: Room[]
@@ -16,8 +15,8 @@ interface Props {
   system: SystemStatus
   logs: LogEntry[]
   onStopAll: () => void
-  onPauseRoom: (roomId: number) => void
-  onStopRoom: (roomId: number) => void
+  onPauseRoom: (roomId: string) => void
+  onStopRoom: (roomId: string) => void
   onNavigate: (page: string) => void
 }
 

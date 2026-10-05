@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import type { Room } from "@/types"
-import type { RoomOperation } from "@/hooks/useRooms"
+import type { RoomOperation } from "@/types"
 
 import { toast } from "@/lib/toast"
 
@@ -24,34 +24,34 @@ import { useConfirm } from "@/hooks/useConfirm"
 interface Props {
   rooms: Room[]
   syncLine: Room
-  operations: Record<number, RoomOperation>
+  operations: Record<string, RoomOperation>
 
-  onPlay: (id: number) => void
-  onStop: (id: number) => void
-  onPause: (id: number) => void
+  onPlay: (id: string) => void
+  onStop: (id: string) => void
+  onPause: (id: string) => void
 
   playSyncLine: () => void
   stopSyncLine: () => void
 
-  onVolumeChange: (id: number, vol: number) => void
+  onVolumeChange: (id: string, vol: number) => void
 
   onAddRoom: (data: {
     name: string
-    file: string
+    audioFileId: string | null
     volume: number
   }) => void
 
   onUpdateRoom: (
-    id: number,
+    id: string,
     patch: {
       name: string
-      file: string
+      audioFileId: string | null
       volume: number
     },
   ) => void
 
-  onDeleteRoom: (id: number) => void
-  onDuplicateRoom: (id: number) => void
+  onDeleteRoom: (id: string) => void
+  onDuplicateRoom: (id: string) => void
 }
 
 export default function Rooms({
@@ -107,7 +107,12 @@ export default function Rooms({
     ).length,
   }
 
-  const filtered = rooms.filter((room) => {
+  const displayRooms = rooms.map((room, index) => ({
+    room,
+    displayNumber: index + 1,
+  }))
+
+  const filtered = displayRooms.filter(({ room }) => {
     const matchFilter =
       filter === "all" ||
       room.status === filter
@@ -119,8 +124,7 @@ export default function Rooms({
       !query ||
       room.name
         .toLowerCase()
-        .includes(normalizedQuery) ||
-      String(room.id).includes(query)
+        .includes(normalizedQuery)
 
     return matchFilter && matchQuery
   })
@@ -219,10 +223,11 @@ export default function Rooms({
 
         {viewGrid ? (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-3">
-            {filtered.map((room) => (
+            {filtered.map(({ room, displayNumber }) => (
               <RoomCard
                 key={room.id}
                 room={room}
+                displayNumber={displayNumber}
                 operation={operations[room.id]}
                 onPlay={onPlay}
                 onStop={onStop}

@@ -14,8 +14,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
-import type { Room } from "@/types"
-import type { RoomOperation } from "@/hooks/useRooms"
+import type { Room, RoomOperation } from "@/types"
 
 import StatusBadge from "@/components/StatusBadge"
 import { cn } from "cn"
@@ -23,12 +22,13 @@ import { Slider } from "../ui/slider"
 
 interface Props {
   room: Room
+  displayNumber: number
   operation?: RoomOperation
 
-  onPlay: (id: number) => void
-  onStop: (id: number) => void
-  onPause: (id: number) => void
-  onVolumeChange: (id: number, volume: number) => void
+  onPlay: (id: string) => void
+  onStop: (id: string) => void
+  onPause: (id: string) => void
+  onVolumeChange: (id: string, volume: number) => void
   onEdit: () => void
   onDuplicate: () => void
   onDelete: () => void
@@ -42,6 +42,7 @@ const OPERATION_LABELS: Record<RoomOperation, string> = {
 
 export default function RoomCard({
   room,
+  displayNumber,
   operation,
 
   onPlay,
@@ -54,7 +55,7 @@ export default function RoomCard({
 }: Props) {
   const isPlaying = room.status === "playing"
   const isPending = Boolean(operation)
-  const hideMediaControls = true
+  const hideMediaControls = false
 
   const progress =
   room.duration > 0
@@ -97,7 +98,7 @@ export default function RoomCard({
         <div className="mb-2.5 flex items-start justify-between">
           <div className="min-w-0">
             <div className="text-2xl font-bold leading-none">
-              {String(room.id).padStart(2, "0")}
+              {String(displayNumber).padStart(2, "0")}
             </div>
 
             <div className="mt-1 truncate text-sm font-semibold">
@@ -200,11 +201,8 @@ export default function RoomCard({
           </div>
         </div>
 
-        <div
-          className="mb-2.5 truncate text-[11px] text-muted-foreground"
-          title={room.file}
-        >
-          {room.file}
+        <div className="mb-2.5 truncate text-[11px] text-muted-foreground">
+          {room.audioFileId ?? "Файл не назначен"}
         </div>
 
         <div className="mb-3">
