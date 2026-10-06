@@ -12,11 +12,15 @@ import type { ScheduleItem } from "@/types"
 
 interface Props {
   schedule: ScheduleItem[]
+  selectedId: number | null
+  onSelect: (id: number) => void
   onToggle: (id: number) => void
 }
 
 export default function ScheduleTable({
   schedule,
+  selectedId,
+  onSelect,
   onToggle,
 }: Props) {
   return (
@@ -27,6 +31,7 @@ export default function ScheduleTable({
             <TableHead className="w-16">
               Вкл.
             </TableHead>
+
             <TableHead>Время</TableHead>
             <TableHead>Сценарий</TableHead>
             <TableHead>Дни</TableHead>
@@ -37,63 +42,97 @@ export default function ScheduleTable({
         </TableHeader>
 
         <TableBody>
-          {schedule.map((item) => {
-            const active = item.status === "active"
+          {schedule.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={7}
+                className="h-32 text-center text-muted-foreground"
+              >
+                Расписаний пока нет
+              </TableCell>
+            </TableRow>
+          ) : (
+            schedule.map((item) => {
+              const active =
+                item.status === "active"
 
-            return (
-              <TableRow key={item.id}>
-                <TableCell>
-                  <Switch
-                    checked={item.enabled}
-                    onCheckedChange={() => onToggle(item.id)}
-                    aria-label={`Включить расписание ${item.id}`}
-                  />
-                </TableCell>
+              const selected =
+                item.id === selectedId
 
-                <TableCell className="text-base font-bold">
-                  {item.time}
-                </TableCell>
-
-                <TableCell className="font-medium">
-                  {item.scenarioName}
-                </TableCell>
-
-                <TableCell className="text-sm">
-                  {item.days.length === 7
-                    ? "Пн – Вс"
-                    : item.days.join(", ")}
-                </TableCell>
-
-                <TableCell className="text-sm">
-                  {item.repeat === "daily"
-                    ? "Ежедневно"
-                    : item.repeat === "weekly"
-                      ? "Еженедельно"
-                      : "Однократно"}
-                </TableCell>
-
-                <TableCell className="text-xs text-muted-foreground">
-                  {item.nextRun}
-                </TableCell>
-
-                <TableCell>
-                  <span
-                    className={
-                      active
-                        ? "inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700"
-                        : "inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground"
+              return (
+                <TableRow
+                  key={item.id}
+                  data-state={
+                    selected
+                      ? "selected"
+                      : undefined
+                  }
+                  className="cursor-pointer"
+                  onClick={() =>
+                    onSelect(item.id)
+                  }
+                >
+                  <TableCell
+                    onClick={(event) =>
+                      event.stopPropagation()
                     }
                   >
-                    <span className="text-[9px]">
-                      {active ? "●" : "○"}
-                    </span>
+                    <Switch
+                      checked={item.enabled}
+                      onCheckedChange={() =>
+                        onToggle(item.id)
+                      }
+                      aria-label={`Включить расписание ${item.id}`}
+                    />
+                  </TableCell>
 
-                    {active ? "Активно" : "Отключено"}
-                  </span>
-                </TableCell>
-              </TableRow>
-            )
-          })}
+                  <TableCell className="text-base font-bold">
+                    {item.time}
+                  </TableCell>
+
+                  <TableCell className="font-medium">
+                    {item.scenarioName}
+                  </TableCell>
+
+                  <TableCell className="text-sm">
+                    {item.days.length === 7
+                      ? "Пн – Вс"
+                      : item.days.join(", ")}
+                  </TableCell>
+
+                  <TableCell className="text-sm">
+                    {item.repeat === "daily"
+                      ? "Ежедневно"
+                      : item.repeat === "weekly"
+                        ? "Еженедельно"
+                        : "Однократно"}
+                  </TableCell>
+
+                  <TableCell className="text-xs text-muted-foreground">
+                    {item.nextRun}
+                  </TableCell>
+
+                  <TableCell>
+                    <span
+                      className={
+                        active
+                          ? "inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700"
+                          : "inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground"
+                      }
+                    >
+                      <span className="text-[9px]">
+                        {active ? "●" : "○"}
+                      </span>
+
+                      {active
+                        ? "Активно"
+                        : "Отключено"}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              )
+            })
+          )}
         </TableBody>
       </Table>
     </div>

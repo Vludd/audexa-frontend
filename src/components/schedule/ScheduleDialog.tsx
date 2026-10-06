@@ -19,19 +19,18 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 
-interface FormState {
-  time: string
-  scenario: string
-  days: string[]
-  repeat: string
-  active: boolean
-}
+import type {
+  Scenario,
+  ScheduleFormData,
+} from "@/types"
 
 interface Props {
   open: boolean
-  form: FormState
+  editing: boolean
+  form: ScheduleFormData
+  scenarios: Scenario[]
   onOpenChange: (open: boolean) => void
-  onChange: (form: FormState) => void
+  onChange: (form: ScheduleFormData) => void
   onSave: () => void
 }
 
@@ -45,17 +44,11 @@ const DAYS = [
   "Вс",
 ]
 
-const SCENARIOS = [
-  "Экскурсия №1",
-  "Исторический блок",
-  "Природа Бурабая",
-  "Детская программа",
-  "Вечерний режим",
-]
-
 export default function ScheduleDialog({
   open,
+  editing,
   form,
+  scenarios,
   onOpenChange,
   onChange,
   onSave,
@@ -64,10 +57,17 @@ export default function ScheduleDialog({
     onChange({
       ...form,
       days: form.days.includes(day)
-        ? form.days.filter((item) => item !== day)
+        ? form.days.filter(
+            (item) => item !== day,
+          )
         : [...form.days, day],
     })
   }
+
+  const canSave =
+    Boolean(form.time) &&
+    form.scenarioId > 0 &&
+    form.days.length > 0
 
   return (
     <Dialog
@@ -78,7 +78,10 @@ export default function ScheduleDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Calendar className="size-5 text-primary" />
-            Добавить расписание
+
+            {editing
+              ? "Редактировать расписание"
+              : "Добавить расписание"}
           </DialogTitle>
         </DialogHeader>
 
@@ -98,25 +101,29 @@ export default function ScheduleDialog({
 
           <FormRow label="Сценарий">
             <Select
-              value={form.scenario}
+              value={
+                form.scenarioId
+                  ? String(form.scenarioId)
+                  : undefined
+              }
               onValueChange={(value) =>
                 onChange({
                   ...form,
-                  scenario: value ? value : "Экскурсия №1",
+                  scenarioId: Number(value),
                 })
               }
             >
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Выберите сценарий" />
               </SelectTrigger>
 
               <SelectContent>
-                {SCENARIOS.map((scenario) => (
+                {scenarios.map((scenario) => (
                   <SelectItem
-                    key={scenario}
-                    value={scenario}
+                    key={scenario.id}
+                    value={String(scenario.id)}
                   >
-                    {scenario}
+                    {scenario.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -126,7 +133,8 @@ export default function ScheduleDialog({
           <FormRow label="Дни недели">
             <div className="flex flex-wrap gap-2">
               {DAYS.map((day) => {
-                const active = form.days.includes(day)
+                const active =
+                  form.days.includes(day)
 
                 return (
                   <Button
@@ -138,7 +146,9 @@ export default function ScheduleDialog({
                         ? "default"
                         : "outline"
                     }
-                    onClick={() => toggleDay(day)}
+                    onClick={() =>
+                      toggleDay(day)
+                    }
                     className="min-w-10"
                   >
                     {day}
@@ -146,6 +156,12 @@ export default function ScheduleDialog({
                 )
               })}
             </div>
+
+            {form.days.length === 0 && (
+              <p className="text-xs text-destructive">
+                Выберите хотя бы один день.
+              </p>
+            )}
           </FormRow>
 
           <FormRow label="Повтор">
@@ -154,7 +170,8 @@ export default function ScheduleDialog({
               onValueChange={(value) =>
                 onChange({
                   ...form,
-                  repeat: value ? value : "Однократно",
+                  repeat:
+                    value as ScheduleFormData["repeat"],
                 })
               }
             >
@@ -163,13 +180,15 @@ export default function ScheduleDialog({
               </SelectTrigger>
 
               <SelectContent>
-                <SelectItem value="Ежедневно">
+                <SelectItem value="daily">
                   Ежедневно
                 </SelectItem>
-                <SelectItem value="Еженедельно">
+
+                <SelectItem value="weekly">
                   Еженедельно
                 </SelectItem>
-                <SelectItem value="Однократно">
+
+                <SelectItem value="once">
                   Однократно
                 </SelectItem>
               </SelectContent>
@@ -181,17 +200,18 @@ export default function ScheduleDialog({
               <div className="text-sm font-medium">
                 Активно
               </div>
+
               <div className="text-xs text-muted-foreground">
                 Запускать расписание автоматически
               </div>
             </div>
 
             <Switch
-              checked={form.active}
-              onCheckedChange={(active) =>
+              checked={form.enabled}
+              onCheckedChange={(enabled) =>
                 onChange({
                   ...form,
-                  active,
+                  enabled,
                 })
               }
             />
@@ -202,16 +222,21 @@ export default function ScheduleDialog({
           <Button
             type="button"
             variant="outline"
-            onClick={() => onOpenChange(false)}
+            onClick={() =>
+              onOpenChange(false)
+            }
           >
             Отмена
           </Button>
 
           <Button
             type="button"
+            disabled={!canSave}
             onClick={onSave}
           >
-            Сохранить
+            {editing
+              ? "Сохранить изменения"
+              : "Создать расписание"}
           </Button>
         </DialogFooter>
       </DialogContent>

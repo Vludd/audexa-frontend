@@ -10,12 +10,20 @@ import { Button } from "@/components/ui/button"
 
 interface Props {
   selectedDate: string
+  hasSelection: boolean
   onAdd: () => void
+  onEdit: () => void
+  onDelete: () => void
+  onDuplicate: () => void
 }
 
 export default function ScheduleToolbar({
   selectedDate,
+  hasSelection,
   onAdd,
+  onEdit,
+  onDelete,
+  onDuplicate,
 }: Props) {
   return (
     <div className="flex items-center gap-2 border-b bg-card px-4 py-2">
@@ -32,6 +40,8 @@ export default function ScheduleToolbar({
         type="button"
         size="sm"
         variant="outline"
+        disabled={!hasSelection}
+        onClick={onEdit}
       >
         <Edit2 className="size-3.5" />
         Редактировать
@@ -41,7 +51,9 @@ export default function ScheduleToolbar({
         type="button"
         size="sm"
         variant="outline"
+        disabled={!hasSelection}
         className="text-destructive hover:text-destructive"
+        onClick={onDelete}
       >
         <Trash2 className="size-3.5" />
         Удалить
@@ -51,6 +63,8 @@ export default function ScheduleToolbar({
         type="button"
         size="sm"
         variant="outline"
+        disabled={!hasSelection}
+        onClick={onDuplicate}
       >
         <Copy className="size-3.5" />
         Дублировать

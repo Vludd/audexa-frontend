@@ -48,7 +48,14 @@ export default function App() {
     stopAllRooms,
   })
 
-  const { schedule, toggleSchedule } = useSchedule()
+  const {
+    schedule,
+    addSchedule,
+    updateSchedule,
+    deleteSchedule,
+    duplicateSchedule,
+    toggleSchedule,
+  } = useSchedule()
 
   return (
     <div className="flex h-screen min-h-[700px] min-w-[1200px] flex-col overflow-hidden bg-background">
@@ -98,6 +105,11 @@ export default function App() {
           {page === "schedule" && (
             <Schedule
               schedule={schedule}
+              scenarios={scenarios}
+              onAdd={addSchedule}
+              onUpdate={updateSchedule}
+              onDelete={deleteSchedule}
+              onDuplicate={duplicateSchedule}
               onToggle={toggleSchedule}
             />
           )}

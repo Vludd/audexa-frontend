@@ -1,4 +1,8 @@
-import { Clock, Play, Square } from "lucide-react"
+import {
+  Clock,
+  Play,
+  Square,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -29,36 +33,50 @@ export default function UpcomingEvents({
         </Button>
       </div>
 
-      <div className="space-y-3">
-        {items.map((item, index) => (
-          <div
-            key={item.id}
-            className="flex gap-3"
-          >
-            <div className="flex flex-col items-center pt-1">
-              <span className="size-2.5 shrink-0 rounded-full bg-primary" />
-
-              {index < items.length - 1 && (
-                <span className="mt-1 w-px flex-1 bg-border" />
-              )}
-            </div>
-
-            <div className="min-w-0 pb-1">
-              <div className="text-sm font-bold">
-                {item.time}
-              </div>
-
-              <div className="truncate text-xs font-medium">
-                {item.scenarioName}
-              </div>
-
-              <div className="mt-0.5 text-[11px] text-muted-foreground">
-                Сегодня
-              </div>
-            </div>
+      {items.length === 0 ? (
+        <div className="rounded-lg border border-dashed p-4 text-center">
+          <div className="text-sm font-medium">
+            Нет активных событий
           </div>
-        ))}
-      </div>
+
+          <div className="mt-1 text-xs text-muted-foreground">
+            Добавьте расписание или включите
+            существующее.
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {items.map((item, index) => (
+            <div
+              key={item.id}
+              className="flex gap-3"
+            >
+              <div className="flex flex-col items-center pt-1">
+                <span className="size-2.5 shrink-0 rounded-full bg-primary" />
+
+                {index <
+                  items.length - 1 && (
+                  <span className="mt-1 w-px flex-1 bg-border" />
+                )}
+              </div>
+
+              <div className="min-w-0 pb-1">
+                <div className="text-sm font-bold">
+                  {item.time}
+                </div>
+
+                <div className="truncate text-xs font-medium">
+                  {item.scenarioName}
+                </div>
+
+                <div className="mt-0.5 text-[11px] text-muted-foreground">
+                  {item.nextRun}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <Separator className="my-4" />
 

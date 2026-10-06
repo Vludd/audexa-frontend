@@ -66,6 +66,15 @@ export interface ScheduleItem {
   status: ScheduleStatus
 }
 
+export interface ScheduleFormData {
+  time: string
+  scenarioId: number
+  scenarioName: string
+  days: string[]
+  repeat: ScheduleRepeat
+  enabled: boolean
+}
+
 export interface AudioFile {
   id: EntityId;
   name: string;
