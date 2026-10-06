@@ -1,8 +1,82 @@
 # Audexa
 
-**Audio automation & control platform**
+**Audio automation and control platform**
 
 Audexa is a platform for managing audio playback, scenarios, schedules and audio zones in interactive installations, exhibitions, museums, visitor centers and other public spaces.
+
+## Screenshots
+
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/8a917637-6464-4e51-bf5f-94958a666c0e"
+    alt="Audexa Dashboard"
+    width="100%"
+  />
+</p>
+
+<table>
+<tr>
+<td width="50%">
+  <img
+    src="https://github.com/user-attachments/assets/dbc5634c-a7d7-4323-a0c5-49499ec4b301"
+    alt="Rooms"
+    width="100%"
+  />
+</td>
+<td width="50%">
+  <img
+    src="https://github.com/user-attachments/assets/87d1ce4d-efdd-462b-b52a-18368566cb82"
+    alt="Scenarios"
+    width="100%"
+  />
+</td>
+</tr>
+
+</table>
+
+<details>
+<summary>More screenshots</summary>
+
+<br>
+
+<table>
+
+<tr>
+<td width="50%">
+  <img
+    src="https://github.com/user-attachments/assets/e227bafd-f639-473d-91ad-fb56ed769cde"
+    alt="Scheduler"
+    width="100%"
+  />
+</td>
+<td width="50%">
+  <img
+    src="https://github.com/user-attachments/assets/a08a9be1-74f4-44f6-8b61-40fd347a25a8"
+    alt="Audio Files"
+    width="100%"
+  />
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+  <img
+    src="https://github.com/user-attachments/assets/cc6c9c9b-1224-4dd5-84c9-63fcd5e68e05"
+    alt="Settings"
+    width="100%"
+  />
+</td>
+<td width="50%">
+  <img
+    src="https://github.com/user-attachments/assets/30608a77-73a4-4eb8-880a-66975b32148a"
+    alt="Logs"
+    width="100%"
+  />
+</td>
+</tr>
+</table>
+
+</details>
 
 ## Features
 
