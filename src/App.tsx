@@ -22,6 +22,7 @@ import Schedule from "./pages/Schedule"
 import AudioFiles from "./pages/AudioFiles"
 import Settings from "./pages/Settings"
 import Logs from "./pages/Logs"
+import { useLogs } from "./hooks/useLogs"
 
 export default function App() {
   const [page, setPage] = useState<Page>("dashboard")
@@ -69,6 +70,10 @@ export default function App() {
     duplicateSchedule,
     toggleSchedule,
   } = useSchedule()
+
+  const {
+    logs,
+  } = useLogs()
 
   return (
     <div className="flex h-screen min-h-[700px] min-w-[1200px] flex-col overflow-hidden bg-background">
@@ -144,7 +149,7 @@ export default function App() {
 
           {page === "settings" && <Settings />}
 
-          {page === "logs" && <Logs logs={mockLogs} />}
+          {page === "logs" && <Logs logs={logs} />}
         </main>
       </div>
 

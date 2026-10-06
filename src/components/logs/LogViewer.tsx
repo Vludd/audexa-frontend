@@ -8,12 +8,14 @@ const LEVEL_CLASS: Record<string, string> = {
   INFO: "bg-blue-500/10 text-blue-400",
   WARNING: "bg-amber-500/10 text-amber-400",
   ERROR: "bg-red-500/10 text-red-400",
+  DEBUG: "bg-gray-500/10 text-gray-400",
 }
 
 const MESSAGE_CLASS: Record<string, string> = {
   INFO: "text-slate-300",
   WARNING: "text-amber-400",
   ERROR: "text-red-400",
+  DEBUG: "text-gray-400",
 }
 
 export default function LogViewer({ logs }: Props) {

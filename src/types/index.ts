@@ -85,10 +85,12 @@ export interface AudioFile {
   size: number; // bytes
 }
 
+export type LogLevel = "INFO" | "WARNING" | "ERROR" | "DEBUG"
+
 export interface LogEntry {
   id: number
   time: string
-  level: "INFO" | "WARNING" | "ERROR"
+  level: LogLevel
   message: string
 }
 

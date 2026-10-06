@@ -3,7 +3,7 @@ import { Download, RefreshCw, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { LogEntry } from "@/types"
 
-export type LogFilter = "all" | "INFO" | "WARNING" | "ERROR"
+export type LogFilter = "all" | "INFO" | "WARNING" | "ERROR" | "DEBUG"
 
 interface Props {
   filter: LogFilter
@@ -22,6 +22,7 @@ const FILTERS: {
   { value: "INFO", label: "Информация" },
   { value: "WARNING", label: "Предупреждения" },
   { value: "ERROR", label: "Ошибки" },
+  { value: "DEBUG", label: "Отладка" },
 ]
 
 const ACTIVE_CLASS: Record<LogFilter, string> = {
@@ -29,6 +30,7 @@ const ACTIVE_CLASS: Record<LogFilter, string> = {
   INFO: "bg-blue-600 text-white hover:bg-blue-700",
   WARNING: "bg-amber-500 text-white hover:bg-amber-600",
   ERROR: "bg-red-600 text-white hover:bg-red-700",
+  DEBUG: "bg-gray-600 text-white hover:bg-gray-700",
 }
 
 export default function LogsToolbar({
