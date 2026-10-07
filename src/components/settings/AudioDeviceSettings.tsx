@@ -1,7 +1,13 @@
 import { RefreshCw } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -11,11 +17,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { bufferSizes, sampleRates } from "@/data/audio"
-import { useState } from "react"
 
 export default function AudioDeviceSettings() {
-  const [sampleRate, setSampleRate] = useState(sampleRates[1])
-  const [bufferSize, setBufferSize] = useState(bufferSizes[0])
+  const sampleRate = sampleRates[1]
+  const bufferSize = bufferSizes[0]
 
   return (
     <Card>
@@ -23,8 +28,10 @@ export default function AudioDeviceSettings() {
         <CardTitle className="text-sm">
           Аудиоустройство
         </CardTitle>
+
         <CardDescription className="text-xs">
-          Настройка аудиоустройства и его параметров (В РАЗРАБОТКЕ)
+          Настройка аудиоустройства и его параметров
+          (В РАЗРАБОТКЕ)
         </CardDescription>
       </CardHeader>
 
@@ -57,14 +64,20 @@ export default function AudioDeviceSettings() {
         <div className="space-y-2">
           <Label>Частота дискретизации (Hz)</Label>
 
-          <Select defaultValue={sampleRate.toString()} disabled>
+          <Select
+            defaultValue={sampleRate.toString()}
+            disabled
+          >
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
 
             <SelectContent>
               {sampleRates.map((rate) => (
-                <SelectItem key={rate} value={rate.toString()}>
+                <SelectItem
+                  key={rate}
+                  value={rate.toString()}
+                >
                   {rate} Hz
                 </SelectItem>
               ))}
@@ -75,14 +88,20 @@ export default function AudioDeviceSettings() {
         <div className="space-y-2">
           <Label>Размер буфера</Label>
 
-          <Select defaultValue={bufferSize.toString()} disabled>
+          <Select
+            defaultValue={bufferSize.toString()}
+            disabled
+          >
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
 
             <SelectContent>
               {bufferSizes.map((size) => (
-                <SelectItem key={size} value={size.toString()}>
+                <SelectItem
+                  key={size}
+                  value={size.toString()}
+                >
                   {size}
                 </SelectItem>
               ))}
@@ -90,7 +109,10 @@ export default function AudioDeviceSettings() {
           </Select>
         </div>
 
-        <div hidden className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm dark:border-emerald-900 dark:bg-emerald-950/40">
+        <div
+          hidden
+          className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm dark:border-emerald-900 dark:bg-emerald-950/40"
+        >
           <span className="font-semibold text-emerald-600 dark:text-emerald-400">
             ● ONLINE
           </span>

@@ -21,3 +21,9 @@ logs/
 /.opencode-skills/
 
 !src/components/logs
+
+# Ignore compressed files, which are often large and not useful to track in version control.
+*.zip
+*.rar
+*.tar.gz
+*.7z

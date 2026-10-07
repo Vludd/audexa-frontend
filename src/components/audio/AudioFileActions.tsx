@@ -12,12 +12,12 @@ export default function AudioFileActions({
   onDelete,
 }: Props) {
   return (
-    <div className="flex items-center justify-end gap-1">
+    <div className="flex items-center justify-end gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
       <Button
         variant="ghost"
         size="icon-xs"
         title="Переименовать"
-        className="text-primary hover:text-primary"
+        className="text-muted-foreground hover:text-foreground"
         onClick={(event) => {
           event.stopPropagation()
           onRename?.()
@@ -30,7 +30,7 @@ export default function AudioFileActions({
         variant="ghost"
         size="icon-xs"
         title="Удалить"
-        className="text-destructive hover:text-destructive"
+        className="text-muted-foreground hover:text-destructive"
         onClick={(event) => {
           event.stopPropagation()
           onDelete?.()

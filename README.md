@@ -89,31 +89,76 @@ Audexa is a platform for managing audio playback, scenarios, schedules and audio
 
 </details>
 
-## Features
+## Current status
 
-* 🎵 Audio library and playback management
-* 🎬 Scenario-based audio playback
-* ⏱️ Scheduling and automation
-* 🔊 Multi-zone audio control
-* 🎛️ Audio channel management
-* 📊 System status and monitoring
-* 📝 Event and playback logs
-* ⚙️ Centralized configuration
+The frontend is under active development. The **Audio Files** page is connected to the [Audexa backend](https://github.com/Vludd/audexa-backend) for listing, uploading, streaming, renaming, and deleting audio files. Other application areas are UI prototypes and are not yet backed by the API.
 
-## Architecture
+The backend currently provides a local REST API for audio file management. Room management, scenarios, schedules, playback engine controls, and other system features are planned in the backend and are not yet integrated with this frontend.
 
-Audexa is designed as a client-server application:
+## Tech stack
 
-* **Web UI** — operator interface
-* **API** — business logic and system management
-* **Audio Engine** — audio playback and device control
-* **Database** — scenarios, schedules, configuration and logs
+* React, TypeScript, and Vite
+* TanStack Query for API-backed audio library state
+* ASP.NET Core Web API and SQLite in the [backend repository](https://github.com/Vludd/audexa-backend)
 
-## Status
+## Getting started
 
-🚧 **Early development**
+### Frontend
 
-The project is currently being developed as a reusable platform and is not tied to any specific organization or installation.
+Requirements: Node.js and pnpm.
+
+```sh
+pnpm install
+pnpm dev
+```
+
+Vite prints the local development URL when the server starts.
+
+### Backend
+
+The frontend expects the backend at `http://localhost:5081` by default. In a separate terminal, follow the setup instructions in the [backend README](https://github.com/Vludd/audexa-backend#readme); the short version is:
+
+```sh
+git clone https://github.com/Vludd/audexa-backend.git
+cd audexa-backend
+dotnet restore
+dotnet ef database update
+dotnet run
+```
+
+The backend README documents database migration setup and requirements. Its Swagger UI is available at `http://localhost:5081/swagger` while the backend is running in Development.
+
+To use a different API address, create a `.env.local` file in the frontend project root:
+
+```dotenv
+VITE_API_URL=http://localhost:5081
+```
+
+Restart the Vite server after changing environment variables. The backend must allow requests from the frontend's development origin through its CORS configuration.
+
+## Audio Files API integration
+
+The frontend calls these backend endpoints:
+
+| Operation | Endpoint |
+| --- | --- |
+| List audio files | `GET /api/audio` |
+| Upload a file | `POST /api/audio/upload` (`multipart/form-data`, field `file`) |
+| Stream playback | `GET /api/audio/{id}/stream` |
+| Rename a file | `PUT /api/audio/{id}` |
+| Delete a file | `DELETE /api/audio/{id}` |
+
+Uploads are limited in the UI to MP3 and WAV files. The backend README documents a 500 MB upload limit. Audio is stored by the backend on the local machine; metadata is kept in SQLite. Playback streams from the backend and supports seeking through HTTP Range Requests.
+
+## Available scripts
+
+```sh
+pnpm dev       # Start the Vite development server
+pnpm build     # Create a production build
+pnpm preview   # Preview the production build locally
+pnpm lint      # Run ESLint
+pnpm format    # Format files with oxfmt
+```
 
 ## License
 

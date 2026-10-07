@@ -6,36 +6,69 @@ import {
   useState,
 } from "react"
 
-import type { AudioFile } from "@/types"
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 
-const SUPPORTED_FORMATS = [
-  "wav",
-  "mp3",
-  "flac",
-  "ogg",
-  "aac",
-  "m4a",
-]
+import type { AudioFile } from "@/types"
+import { audioApi } from "@/api/audio"
+import { toast } from "@/lib/toast"
+
+const AUDIO_FILES_QUERY_KEY = ["audio-files"] as const
 
 interface UseAudioFilesOptions {
-  initialFiles: AudioFile[]
+  initialFiles?: AudioFile[]
 }
 
-interface AudioMetadata {
-  duration: number
-  sampleRate: number
+const SUPPORTED_AUDIO_EXTENSIONS = [
+  ".mp3",
+  ".wav",
+]
+
+type PlaybackState =
+  | "idle"
+  | "starting"
+  | "playing"
+  | "paused"
+  | "stopped"
+  | "error"
+
+function isSupportedAudioFile(file: File) {
+  const name = file.name.toLowerCase()
+
+  return SUPPORTED_AUDIO_EXTENSIONS.some((extension) =>
+    name.endsWith(extension),
+  )
 }
 
 export function useAudioFiles({
-  initialFiles,
+  initialFiles = [],
 }: UseAudioFilesOptions) {
+  const queryClient = useQueryClient()
+
   /*
    * ------------------------------------------------------------
-   * Library state
+   * Library / server state
    * ------------------------------------------------------------
    */
 
-  const [files, setFiles] = useState<AudioFile[]>(initialFiles)
+  const {
+    data: files = initialFiles,
+    isLoading,
+    error: queryError,
+    refetch,
+  } = useQuery({
+    queryKey: AUDIO_FILES_QUERY_KEY,
+    queryFn: audioApi.getAll,
+  })
+
+  /*
+   * ------------------------------------------------------------
+   * UI state
+   * ------------------------------------------------------------
+   */
 
   const [query, setQuery] = useState("")
 
@@ -47,12 +80,12 @@ export function useAudioFiles({
 
   /*
    * ------------------------------------------------------------
-   * Import / Drag & Drop
+   * Drag & Drop
    * ------------------------------------------------------------
    */
 
   const [isDragging, setIsDragging] = useState(false)
-  const [isImporting, setIsImporting] = useState(false)
+
   const dragCounterRef = useRef(0)
 
   /*
@@ -66,6 +99,16 @@ export function useAudioFiles({
   >(null)
 
   const [isPlaying, setIsPlaying] = useState(false)
+  
+  const [playbackState, setPlaybackState] =
+  useState<PlaybackState>("idle")
+
+  const playbackStateRef = useRef<PlaybackState>("idle")
+
+  const [playbackError, setPlaybackError] =
+    useState<string | null>(null)
+
+  const playRequestRef = useRef(0)
 
   const [currentTime, setCurrentTime] = useState(0)
 
@@ -80,10 +123,6 @@ export function useAudioFiles({
    */
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
-
-  const objectUrlsRef = useRef<Map<string, string>>(
-    new Map(),
-  )
 
   /*
    * ------------------------------------------------------------
@@ -117,6 +156,14 @@ export function useAudioFiles({
     )
   }, [files, query])
 
+  const setPlayback = useCallback(
+    (state: PlaybackState) => {
+      playbackStateRef.current = state
+      setPlaybackState(state)
+    },
+    [],
+  )
+
   /*
    * ------------------------------------------------------------
    * Audio element initialization
@@ -145,27 +192,53 @@ export function useAudioFiles({
       )
     }
 
-    audio.onplay = () => {
+    audio.onplaying = () => {
       setIsPlaying(true)
+      setPlayback("playing")
+      setPlaybackError(null)
     }
 
     audio.onpause = () => {
       setIsPlaying(false)
+
+      if (playbackStateRef.current === "starting") {
+        return
+      }
+
+      if (audio.currentTime === 0) {
+        setPlayback("stopped")
+      } else {
+        setPlayback("paused")
+      }
     }
 
     audio.onended = () => {
       setIsPlaying(false)
       setCurrentTime(0)
+      setPlayback("stopped")
     }
 
     audio.onerror = () => {
       setIsPlaying(false)
+
+      const mediaError = audio.error
+
+      console.error(
+        "Audio playback error:",
+        mediaError,
+      )
+
+      setPlayback("error")
+      setPlaybackError(
+        mediaError?.message ||
+          "Не удалось воспроизвести аудиофайл",
+      )
     }
 
     audioRef.current = audio
 
     return audio
-  }, [volume])
+  }, [setPlayback, volume])
 
   /*
    * ------------------------------------------------------------
@@ -175,28 +248,25 @@ export function useAudioFiles({
 
   const play = useCallback(
     async (fileId: string) => {
-      const file = files.find((item) => item.id === fileId)
+      const file = files.find(
+        (item) => item.id === fileId,
+      )
 
       if (!file) {
         return
       }
 
-      const source = objectUrlsRef.current.get(fileId)
-
-      if (!source) {
-        console.warn(
-          `Audio source is not available for "${file.filename}".`,
-        )
-
-        return
-      }
+      const requestId = ++playRequestRef.current
 
       const audio = ensureAudioElement()
+
+      setPlaybackError(null)
+      setPlaybackState("starting")
 
       if (currentFileId !== fileId) {
         audio.pause()
 
-        audio.src = source
+        audio.src = audioApi.getStreamUrl(fileId)
         audio.currentTime = 0
 
         setCurrentFileId(fileId)
@@ -207,8 +277,33 @@ export function useAudioFiles({
       try {
         await audio.play()
       } catch (error) {
-        console.error("Failed to play audio:", error)
+        if (
+          requestId !== playRequestRef.current
+        ) {
+          return
+        }
+
+        if (
+          error instanceof DOMException &&
+          error.name === "AbortError"
+        ) {
+          return
+        }
+
+        if (!audio.paused) {
+          return
+        }
+
+        console.error(
+          "Failed to start audio playback:",
+          error,
+        )
+
         setIsPlaying(false)
+        setPlaybackState("error")
+        setPlaybackError(
+          "Не удалось воспроизвести аудиофайл",
+        )
       }
     },
     [
@@ -227,7 +322,14 @@ export function useAudioFiles({
   }, [currentFileId, play])
 
   const pause = useCallback(() => {
-    audioRef.current?.pause()
+    const audio = audioRef.current
+
+    if (!audio) {
+      return
+    }
+
+    audio.pause()
+    setPlaybackState("paused")
   }, [])
 
   const stop = useCallback(() => {
@@ -237,23 +339,35 @@ export function useAudioFiles({
       return
     }
 
+    playRequestRef.current += 1
+
     audio.pause()
     audio.currentTime = 0
 
     setCurrentTime(0)
     setIsPlaying(false)
+    setPlaybackState("stopped")
+    setPlaybackError(null)
   }, [])
 
   const togglePlay = useCallback(
     async (fileId: string) => {
-      if (currentFileId === fileId && isPlaying) {
+      if (
+        currentFileId === fileId &&
+        isPlaying
+      ) {
         pause()
         return
       }
 
       await play(fileId)
     },
-    [currentFileId, isPlaying, pause, play],
+    [
+      currentFileId,
+      isPlaying,
+      pause,
+      play,
+    ],
   )
 
   const seek = useCallback(
@@ -364,9 +478,33 @@ export function useAudioFiles({
 
   /*
    * ------------------------------------------------------------
-   * Import
+   * Import / Upload
    * ------------------------------------------------------------
    */
+
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) =>
+      audioApi.upload(file),
+
+    onSuccess: (file) => {
+      void queryClient.invalidateQueries({
+        queryKey: AUDIO_FILES_QUERY_KEY,
+      })
+
+      toast.success("Аудиофайл добавлен", {
+        description: file.name,
+      })
+    },
+
+    onError: (error, file) => {
+      toast.error("Не удалось добавить аудиофайл", {
+        description:
+          error instanceof Error
+            ? error.message
+            : file.name,
+      })
+    },
+  })
 
   const addFiles = useCallback(
     async (incomingFiles: File[]) => {
@@ -374,203 +512,242 @@ export function useAudioFiles({
         return
       }
 
-      setIsImporting(true)
+      for (const file of incomingFiles) {
+        if (!isSupportedAudioFile(file)) {
+          toast.error("Формат не поддерживается", {
+            description:
+              `${file.name}. Используйте MP3 или WAV.`,
+          })
 
-      try {
-        const importedFiles: AudioFile[] = []
-
-        for (const sourceFile of incomingFiles) {
-          const extension =
-            sourceFile.name
-              .split(".")
-              .pop()
-              ?.toLowerCase() ?? ""
-
-          if (!SUPPORTED_FORMATS.includes(extension)) {
-            console.warn(
-              `Unsupported audio format: ${sourceFile.name}`,
-            )
-
-            continue
-          }
-
-          try {
-            const metadata =
-              await readAudioMetadata(sourceFile)
-
-            const id = crypto.randomUUID()
-
-            const objectUrl =
-              URL.createObjectURL(sourceFile)
-
-            objectUrlsRef.current.set(
-              id,
-              objectUrl,
-            )
-
-            importedFiles.push({
-              id,
-
-              name: sourceFile.name.replace(
-                /\.[^/.]+$/,
-                "",
-              ),
-
-              filename: sourceFile.name,
-
-              format: extension.toUpperCase(),
-
-              sampleRate: metadata.sampleRate,
-
-              duration: Math.round(
-                metadata.duration,
-              ),
-
-              size: sourceFile.size,
-            })
-          } catch (error) {
-            console.error(
-              `Failed to process "${sourceFile.name}"`,
-              error,
-            )
-          }
+          continue
         }
 
-        if (importedFiles.length > 0) {
-          setFiles((current) => [
-            ...current,
-            ...importedFiles,
-          ])
+        try {
+          await uploadMutation.mutateAsync(file)
+        } catch {
+          // Error is already handled by mutation onError.
         }
-      } finally {
-        setIsImporting(false)
       }
     },
-    [],
+    [uploadMutation],
   )
 
   /*
    * ------------------------------------------------------------
-   * Rename
+   * Rename mutation
    * ------------------------------------------------------------
    */
 
+  const renameMutation = useMutation({
+    mutationFn: ({
+      id,
+      name,
+    }: {
+      id: string
+      name: string
+    }) =>
+      audioApi.update(id, {
+        name,
+      }),
+
+    onSuccess: (file) => {
+      void queryClient.invalidateQueries({
+        queryKey: AUDIO_FILES_QUERY_KEY,
+      })
+
+      toast.success("Аудиофайл переименован", {
+        description: file.name,
+      })
+    },
+
+    onError: (error) => {
+      toast.error("Не удалось переименовать аудиофайл", {
+        description:
+          error instanceof Error
+            ? error.message
+            : undefined,
+      })
+    },
+  })
+
   const renameFile = useCallback(
-    (id: string, name: string) => {
+    async (id: string, name: string) => {
       const normalizedName = name.trim()
 
       if (!normalizedName) {
-        return
+        toast.warning("Название не может быть пустым")
+        return false
       }
 
-      setFiles((current) =>
-        current.map((file) =>
-          file.id === id
-            ? {
-                ...file,
-                name: normalizedName,
-              }
-            : file,
-        ),
-      )
+      try {
+        await renameMutation.mutateAsync({
+          id,
+          name: normalizedName,
+        })
+
+        return true
+      } catch {
+        return false
+      }
     },
-    [],
+    [renameMutation],
   )
 
   /*
    * ------------------------------------------------------------
-   * Delete
+   * Delete mutation
    * ------------------------------------------------------------
    */
 
-  const deleteFile = useCallback(
-    (id: string) => {
-      if (currentFileId === id) {
-        stop()
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) =>
+      audioApi.delete(id),
 
-        if (audioRef.current) {
-          audioRef.current.removeAttribute("src")
-          audioRef.current.load()
-        }
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: AUDIO_FILES_QUERY_KEY,
+      })
+    },
 
-        setCurrentFileId(null)
-        setDuration(0)
-        setCurrentTime(0)
-      }
+    onError: (error) => {
+      toast.error("Не удалось удалить аудиофайл", {
+        description:
+          error instanceof Error
+            ? error.message
+            : undefined,
+      })
+    },
+  })
 
-      const objectUrl =
-        objectUrlsRef.current.get(id)
+  /*
+   * ------------------------------------------------------------
+   * Delete selected mutation
+   * ------------------------------------------------------------
+   */
 
-      if (objectUrl) {
-        URL.revokeObjectURL(objectUrl)
-        objectUrlsRef.current.delete(id)
-      }
-
-      setFiles((current) =>
-        current.filter((file) => file.id !== id),
-      )
-
-      setSelectedId((current) =>
-        current === id ? null : current,
-      )
-
-      setSelectedIds((current) =>
-        current.filter(
-          (selectedId) => selectedId !== id,
-        ),
+  const deleteSelectedMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      await Promise.all(
+        ids.map((id) => audioApi.delete(id)),
       )
     },
-    [currentFileId, stop],
+
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: AUDIO_FILES_QUERY_KEY,
+      })
+    },
+
+    onError: (error) => {
+      toast.error("Не удалось удалить выбранные файлы", {
+        description:
+          error instanceof Error
+            ? error.message
+            : undefined,
+      })
+    },
+  })
+
+  const deleteFile = useCallback(
+    async (id: string) => {
+      const file = files.find(
+        (item) => item.id === id,
+      )
+
+      try {
+        await deleteMutation.mutateAsync(id)
+
+        if (currentFileId === id) {
+          stop()
+
+          if (audioRef.current) {
+            audioRef.current.removeAttribute("src")
+            audioRef.current.load()
+          }
+
+          setCurrentFileId(null)
+          setDuration(0)
+          setCurrentTime(0)
+        }
+
+        setSelectedId((current) =>
+          current === id ? null : current,
+        )
+
+        setSelectedIds((current) =>
+          current.filter(
+            (selectedId) => selectedId !== id,
+          ),
+        )
+
+        toast.success("Аудиофайл удалён", {
+          description: file?.name,
+        })
+
+        return true
+      } catch {
+        return false
+      }
+    },
+    [currentFileId, deleteMutation, files, stop],
   )
 
-  const deleteSelectedFiles = useCallback(() => {
-    if (!selectedIds.length) {
-      return
-    }
-
-    const idsToDelete = new Set(selectedIds)
-
-    if (
-      currentFileId !== null &&
-      idsToDelete.has(currentFileId)
-    ) {
-      stop()
-
-      if (audioRef.current) {
-        audioRef.current.removeAttribute("src")
-        audioRef.current.load()
+  const deleteSelectedFiles = useCallback(
+    async () => {
+      if (!selectedIds.length) {
+        return false
       }
 
-      setCurrentFileId(null)
-      setCurrentTime(0)
-      setDuration(0)
-    }
+      const idsToDelete = [...selectedIds]
+      const idsSet = new Set(idsToDelete)
 
-    selectedIds.forEach((id) => {
-      const objectUrl =
-        objectUrlsRef.current.get(id)
+      try {
+        await deleteSelectedMutation.mutateAsync(
+          idsToDelete,
+        )
 
-      if (objectUrl) {
-        URL.revokeObjectURL(objectUrl)
-        objectUrlsRef.current.delete(id)
+        if (
+          currentFileId !== null &&
+          idsSet.has(currentFileId)
+        ) {
+          stop()
+
+          if (audioRef.current) {
+            audioRef.current.removeAttribute("src")
+            audioRef.current.load()
+          }
+
+          setCurrentFileId(null)
+          setCurrentTime(0)
+          setDuration(0)
+        }
+
+        setSelectedId((current) =>
+          current !== null &&
+          idsSet.has(current)
+            ? null
+            : current,
+        )
+
+        setSelectedIds([])
+
+        toast.success("Аудиофайлы удалены", {
+          description:
+            `Удалено файлов: ${idsToDelete.length}`,
+        })
+
+        return true
+      } catch {
+        return false
       }
-    })
-
-    setFiles((current) =>
-      current.filter(
-        (file) => !idsToDelete.has(file.id),
-      ),
-    )
-
-    setSelectedId((current) =>
-      current !== null &&
-      idsToDelete.has(current)
-        ? null
-        : current,
-    )
-
-    setSelectedIds([])
-  }, [currentFileId, selectedIds, stop])
+    },
+    [
+      currentFileId,
+      deleteSelectedMutation,
+      selectedIds,
+      stop,
+    ],
+  )
 
   /*
    * ------------------------------------------------------------
@@ -636,18 +813,31 @@ export function useAudioFiles({
    */
 
   useEffect(() => {
-    const objectRef = objectUrlsRef.current;
-
     return () => {
-      audioRef.current?.pause()
+      const audio = audioRef.current
 
-      objectRef.forEach((url) => {
-        URL.revokeObjectURL(url)
-      })
+      if (!audio) {
+        return
+      }
 
-      objectRef.clear()
+      audio.pause()
+      audio.removeAttribute("src")
+      audio.load()
     }
   }, [])
+
+  /*
+   * ------------------------------------------------------------
+   * Error state
+   * ------------------------------------------------------------
+   */
+
+  const error =
+    queryError instanceof Error
+      ? queryError.message
+      : queryError
+        ? "Не удалось загрузить аудиофайлы"
+        : null
 
   /*
    * ------------------------------------------------------------
@@ -656,11 +846,16 @@ export function useAudioFiles({
    */
 
   return {
-    /*
-     * Library
-     */
     files,
     filteredFiles,
+
+    isLoading,
+
+    error,
+
+    reload: () => {
+      void refetch()
+    },
 
     query,
     setQuery,
@@ -669,28 +864,22 @@ export function useAudioFiles({
     selectedFile,
     selectFile,
 
-    /*
-     * Multi selection
-     */
     selectedIds,
     toggleSelection,
     toggleSelectAll,
     clearSelection,
 
-    /*
-     * Import
-     */
     isDragging,
-    isImporting,
     addFiles,
 
-    /*
-     * Player
-     */
     currentFileId,
     currentFile,
 
     isPlaying,
+    isPlayPending: playbackState === "starting",
+    playbackState,
+    playbackError,
+
     currentTime,
     duration,
     volume,
@@ -704,47 +893,19 @@ export function useAudioFiles({
     skip,
     setVolume,
 
-    /*
-     * CRUD
-     */
     renameFile,
     deleteFile,
     deleteSelectedFiles,
 
-    /*
-     * Drag & Drop
-     */
+    isUploading: uploadMutation.isPending,
+    isRenaming: renameMutation.isPending,
+    isDeleting:
+      deleteMutation.isPending ||
+      deleteSelectedMutation.isPending,
+
     handleDragEnter,
     handleDragOver,
     handleDragLeave,
     handleDrop,
-  }
-}
-
-/*
- * ============================================================
- * Audio metadata
- * ============================================================
- */
-
-async function readAudioMetadata(
-  file: File,
-): Promise<AudioMetadata> {
-  const arrayBuffer = await file.arrayBuffer()
-
-  const audioContext = new AudioContext()
-
-  try {
-    const audioBuffer =
-      await audioContext.decodeAudioData(
-        arrayBuffer,
-      )
-
-    return {
-      duration: audioBuffer.duration,
-      sampleRate: audioBuffer.sampleRate,
-    }
-  } finally {
-    await audioContext.close()
   }
 }

@@ -1,43 +1,54 @@
-import { useRef } from "react"
-import { Upload } from "lucide-react"
+import { useState } from "react"
 
-import type { AudioFile } from "@/types"
+import {
+  CheckCircle2,
+  Loader2,
+  Plus,
+  RotateCcw,
+  Upload,
+  X,
+} from "lucide-react"
 
 import Header from "@/components/Header"
 import AudioToolbar from "@/components/audio/AudioToolbar"
 import AudioTable from "@/components/audio/AudioTable"
 import AudioPlayer from "@/components/audio/AudioPlayer"
 
+import ConfirmDialog from "@/components/ui/confirm-dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+
+import { useConfirm } from "@/hooks/useConfirm"
 import { useAudioFiles } from "@/hooks/useAudioFiles"
+import { useFilePicker } from "@/hooks/useFilePicker"
 
-interface Props {
-  files: AudioFile[]
-}
+export default function AudioFiles() {
+  const audio = useAudioFiles({})
 
-export default function AudioFiles({
-  files: initialFiles,
-}: Props) {
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const audio = useAudioFiles({
-    initialFiles,
+  const filePicker = useFilePicker({
+    accept: [".mp3", ".wav"],
+    multiple: true,
+    onPick: (files) => void audio.addFiles(files),
   })
+  const confirm = useConfirm()
 
-  const handleImportClick = () => {
-    fileInputRef.current?.click()
-  }
+  const [renameFileId, setRenameFileId] = useState<
+    string | null
+  >(null)
 
-  const handleFileChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const selectedFiles = Array.from(
-      event.target.files ?? [],
-    )
+  const [renameName, setRenameName] = useState("")
 
-    audio.addFiles(selectedFiles)
-
-    event.target.value = ""
-  }
+  const renameFile = audio.files.find(
+    (file) => file.id === renameFileId,
+  )
 
   const handleRename = (id: string) => {
     const file = audio.files.find(
@@ -48,13 +59,23 @@ export default function AudioFiles({
       return
     }
 
-    const name = window.prompt(
-      "Новое название файла",
-      file.name,
+    setRenameFileId(id)
+    setRenameName(file.name)
+  }
+
+  const handleRenameSubmit = async () => {
+    if (!renameFileId) {
+      return
+    }
+
+    const success = await audio.renameFile(
+      renameFileId,
+      renameName,
     )
 
-    if (name !== null) {
-      audio.renameFile(id, name)
+    if (success) {
+      setRenameFileId(null)
+      setRenameName("")
     }
   }
 
@@ -67,56 +88,59 @@ export default function AudioFiles({
       return
     }
 
-    const confirmed = window.confirm(
-      `Удалить «${file.name}»?`,
-    )
+    confirm.confirm({
+      title: "Удалить аудиофайл?",
+      description:
+        `«${file.name}» будет удалён из библиотеки. ` +
+        "Это действие нельзя отменить.",
+      confirmLabel: "Удалить",
+      cancelLabel: "Отмена",
+      variant: "destructive",
+      onConfirm: async () => {
+        await audio.deleteFile(id)
+      },
+    })
+  }
 
-    if (!confirmed) {
+  const handleDeleteSelected = () => {
+    const count = audio.selectedIds.length
+
+    if (!count) {
       return
     }
 
-    audio.deleteFile(id)
+    confirm.confirm({
+      title: "Удалить выбранные файлы?",
+      description:
+        `Будет удалено файлов: ${count}. ` +
+        "Это действие нельзя отменить.",
+      confirmLabel: "Удалить",
+      cancelLabel: "Отмена",
+      variant: "destructive",
+      onConfirm: async () => {
+        await audio.deleteSelectedFiles()
+      },
+    })
   }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      {/* Header */}
       <Header
         title="Аудиофайлы"
         subtitle="Управление звуковыми файлами системы"
       />
 
-      {/* Toolbar */}
       <AudioToolbar
         query={audio.query}
         onQueryChange={audio.setQuery}
-        onAdd={handleImportClick}
+        onAdd={() => void filePicker.open()}
+        isAddPending={filePicker.isOpening}
         selectedCount={audio.selectedIds.length}
-        onDeleteSelected={() => {
-          const count = audio.selectedIds.length
-
-          const confirmed = window.confirm(
-            `Удалить выбранные файлы (${count})?`,
-          )
-
-          if (!confirmed) {
-            return
-          }
-
-          audio.deleteSelectedFiles()
-        }}
+        onDeleteSelected={handleDeleteSelected}
       />
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        multiple
-        accept="audio/*"
-        className="hidden"
-        onChange={handleFileChange}
-      />
+      <input {...filePicker.inputProps} />
 
-      {/* Scrollable list area */}
       <div
         className="relative min-h-0 flex-1 overflow-auto p-4"
         onDragEnter={audio.handleDragEnter}
@@ -125,41 +149,142 @@ export default function AudioFiles({
         onDrop={audio.handleDrop}
       >
         {audio.isDragging && (
-          <div className="absolute inset-4 z-10 flex items-center justify-center rounded-lg border-2 border-dashed border-primary bg-background/95 backdrop-blur-sm">
-            <div className="flex flex-col items-center gap-2 text-primary">
-              <Upload className="size-6" />
+          <div className="absolute inset-4 z-20 flex items-center justify-center rounded-lg border-2 border-dashed border-primary bg-background/95 backdrop-blur-sm">
+            <div className="flex flex-col items-center gap-2 text-center">
+              <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Upload className="size-5" />
+              </div>
 
               <span className="font-medium">
                 Отпустите файлы для импорта
               </span>
 
               <span className="text-sm text-muted-foreground">
-                WAV, MP3, FLAC, OGG, AAC, M4A
+                Поддерживаются MP3 и WAV
               </span>
             </div>
           </div>
         )}
 
-        <AudioTable
-          files={audio.filteredFiles}
-          selected={audio.selectedId}
-          selectedIds={audio.selectedIds}
-          currentFileId={audio.currentFileId}
-          isPlaying={audio.isPlaying}
-          onSelect={audio.selectFile}
-          onToggleSelection={audio.toggleSelection}
-          onToggleSelectAll={audio.toggleSelectAll}
-          onTogglePlay={audio.togglePlay}
-          onRename={handleRename}
-          onDelete={handleDelete}
-        />
+        {audio.isUploading && (
+          <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border bg-card px-3 py-2 text-xs shadow-sm">
+            <Loader2 className="size-3.5 animate-spin text-primary" />
+            Загрузка аудиофайла...
+          </div>
+        )}
+
+        {audio.isLoading ? (
+          <div className="overflow-hidden rounded-lg border bg-card">
+            <div className="divide-y">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex h-14 items-center gap-4 px-4"
+                >
+                  <div className="size-4 animate-pulse rounded bg-muted" />
+                  <div className="size-7 animate-pulse rounded-full bg-muted" />
+                  <div className="h-4 w-52 animate-pulse rounded bg-muted" />
+                  <div className="h-3 w-64 animate-pulse rounded bg-muted" />
+                  <div className="h-5 w-10 animate-pulse rounded bg-muted" />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : audio.error ? (
+          <div className="flex min-h-64 flex-col items-center justify-center rounded-lg border bg-card text-center">
+            <div className="flex size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+              <X className="size-5" />
+            </div>
+
+            <div className="mt-3 text-sm font-medium">
+              Не удалось загрузить аудиофайлы
+            </div>
+
+            <div className="mt-1 max-w-md text-xs text-muted-foreground">
+              {audio.error}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-4"
+              onClick={audio.reload}
+            >
+              <RotateCcw className="size-4" />
+              Повторить
+            </Button>
+          </div>
+        ) : audio.filteredFiles.length === 0 ? (
+          <div className="flex min-h-64 flex-col items-center justify-center rounded-lg border bg-card text-center">
+            {audio.query ? (
+              <>
+                <div className="text-sm font-medium">
+                  Ничего не найдено
+                </div>
+
+                <div className="mt-1 text-xs text-muted-foreground">
+                  Попробуйте изменить поисковый запрос.
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-2xl text-primary">
+                  ♪
+                </div>
+
+                <div className="mt-3 text-sm font-medium">
+                  Аудиофайлов пока нет
+                </div>
+
+                <div className="mt-1 max-w-md text-xs text-muted-foreground">
+                  Добавьте MP3 или WAV, чтобы использовать
+                  их в комнатах и сценариях.
+                </div>
+
+                <Button
+                  size="sm"
+                  className="mt-4"
+                  onClick={() => void filePicker.open()}
+                  disabled={filePicker.isOpening}
+                  aria-busy={filePicker.isOpening}
+                >
+                  {filePicker.isOpening ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Plus className="size-4" />
+                  )}
+
+                  {filePicker.isOpening
+                    ? "Открытие..."
+                    : "Добавить файл"}
+                </Button>
+              </>
+            )}
+          </div>
+        ) : (
+          <AudioTable
+            files={audio.filteredFiles}
+            selected={audio.selectedId}
+            selectedIds={audio.selectedIds}
+            currentFileId={audio.currentFileId}
+            isPlaying={audio.isPlaying}
+            isPlayPending={audio.isPlayPending}
+            onSelect={audio.selectFile}
+            onToggleSelection={audio.toggleSelection}
+            onToggleSelectAll={audio.toggleSelectAll}
+            onTogglePlay={audio.togglePlay}
+            onRename={handleRename}
+            onDelete={handleDelete}
+          />
+        )}
       </div>
 
-      {/* Fixed bottom player */}
-      <div className="shrink-0 border-t bg-background">
+      <div className="shrink-0 bg-background">
         <AudioPlayer
           file={audio.currentFile}
           isPlaying={audio.isPlaying}
+          isPlayPending={audio.isPlayPending}
+          playbackError={audio.playbackError}
           currentTime={audio.currentTime}
           duration={audio.duration}
           volume={audio.volume}
@@ -171,6 +296,104 @@ export default function AudioFiles({
           onSkip={audio.skip}
         />
       </div>
+
+      <ConfirmDialog
+        open={confirm.open}
+        onOpenChange={(open) => {
+          if (!open) {
+            confirm.close()
+          }
+        }}
+        title={confirm.options?.title ?? ""}
+        description={confirm.options?.description}
+        confirmLabel={confirm.options?.confirmLabel}
+        cancelLabel={confirm.options?.cancelLabel}
+        variant={confirm.options?.variant}
+        loading={confirm.loading}
+        onConfirm={confirm.handleConfirm}
+      />
+
+      <Dialog
+        open={renameFileId !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setRenameFileId(null)
+            setRenameName("")
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Переименовать аудиофайл
+            </DialogTitle>
+
+            <DialogDescription>
+              Измените отображаемое название файла.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2">
+            <label
+              htmlFor="audio-file-name"
+              className="text-sm font-medium"
+            >
+              Название
+            </label>
+
+            <Input
+              id="audio-file-name"
+              value={renameName}
+              onChange={(event) =>
+                setRenameName(event.target.value)
+              }
+              placeholder="Название аудиофайла"
+              autoFocus
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault()
+                  void handleRenameSubmit()
+                }
+              }}
+            />
+
+            {renameFile && (
+              <div className="text-xs text-muted-foreground">
+                Файл: {renameFile.filename}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setRenameFileId(null)
+                setRenameName("")
+              }}
+              disabled={audio.isRenaming}
+            >
+              Отмена
+            </Button>
+
+            <Button
+              onClick={() => void handleRenameSubmit()}
+              disabled={
+                audio.isRenaming ||
+                !renameName.trim()
+              }
+            >
+              {audio.isRenaming ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="size-4" />
+              )}
+
+              Сохранить
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -76,13 +76,15 @@ export interface ScheduleFormData {
 }
 
 export interface AudioFile {
-  id: EntityId;
-  name: string;
-  filename: string;
-  format: string;
-  sampleRate: number;
-  duration: number; // seconds
-  size: number; // bytes
+  id: EntityId
+  name: string
+  filename: string
+  format: string
+  sampleRate: number
+  channels: number
+  duration: number // seconds
+  size: number // bytes
+  createdAt: string
 }
 
 export type LogLevel = "INFO" | "WARNING" | "ERROR" | "DEBUG"

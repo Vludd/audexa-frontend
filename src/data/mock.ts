@@ -459,6 +459,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 84,
     size: 8064000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-02",
@@ -468,6 +470,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 70,
     size: 6720000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-03",
@@ -477,6 +481,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 100,
     size: 9600000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-04",
@@ -486,6 +492,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 110,
     size: 10560000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-05",
@@ -495,6 +503,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 150,
     size: 14400000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-06",
@@ -504,6 +514,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 95,
     size: 9120000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-07",
@@ -513,6 +525,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 105,
     size: 10080000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-08",
@@ -522,6 +536,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 120,
     size: 11520000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-09",
@@ -531,6 +547,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 135,
     size: 12960000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-10",
@@ -540,6 +558,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 125,
     size: 12000000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-11",
@@ -549,6 +569,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 88,
     size: 8448000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-12",
@@ -558,6 +580,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 90,
     size: 8640000,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
   {
     id: "audio-13",
@@ -567,6 +591,8 @@ export const mockAudioFiles: AudioFile[] = [
     sampleRate: 48000,
     duration: 0,
     size: 0,
+    channels: 2,
+    createdAt: "2024-01-01T10:00:00Z",
   },
 ];
 

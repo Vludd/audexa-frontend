@@ -1,4 +1,5 @@
 import {
+  Loader2,
   Plus,
   Search,
   Trash2,
@@ -11,6 +12,7 @@ interface Props {
   query: string
   onQueryChange: (value: string) => void
   onAdd: () => void
+  isAddPending?: boolean
 
   selectedCount: number
   onDeleteSelected: () => void
@@ -20,32 +22,50 @@ export default function AudioToolbar({
   query,
   onQueryChange,
   onAdd,
+  isAddPending = false,
   selectedCount,
   onDeleteSelected,
 }: Props) {
   return (
-    <div className="flex items-center gap-2 border-b bg-card px-4 py-2">
-      <Button onClick={onAdd}>
-        <Plus className="size-4" />
-        Добавить файл
+    <div className="flex min-h-11 items-center gap-2 border-b bg-card px-4 py-2">
+      <Button
+        size="sm"
+        onClick={onAdd}
+        disabled={isAddPending}
+        aria-busy={isAddPending}
+      >
+        {isAddPending ? (
+          <Loader2 className="size-4 animate-spin" />
+        ) : (
+          <Plus className="size-4" />
+        )}
+
+        {isAddPending ? "Открытие..." : "Добавить файл"}
       </Button>
 
       {selectedCount > 0 && (
-        <Button
-          variant="destructive"
-          onClick={onDeleteSelected}
-        >
-          <Trash2 className="size-4" />
-          Удалить выбранные
-          <span className="ml-1 rounded bg-white/15 px-1.5 py-0.5 text-xs">
-            {selectedCount}
-          </span>
-        </Button>
+        <>
+          <div className="h-5 w-px bg-border" />
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-destructive"
+            onClick={onDeleteSelected}
+          >
+            <Trash2 className="size-4" />
+            Удалить выбранные
+
+            <span className="rounded bg-muted px-1.5 py-0.5 text-[11px] font-medium">
+              {selectedCount}
+            </span>
+          </Button>
+        </>
       )}
 
       <div className="flex-1" />
 
-      <div className="relative w-56">
+      <div className="relative w-64">
         <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
 
         <Input
@@ -54,7 +74,7 @@ export default function AudioToolbar({
             onQueryChange(event.target.value)
           }
           placeholder="Поиск файлов..."
-          className="pl-8"
+          className="h-8 pl-8 text-xs"
         />
       </div>
     </div>

@@ -144,7 +144,7 @@ export default function App() {
           )}
 
           {page === "audiofiles" && (
-            <AudioFiles files={mockAudioFiles} />
+            <AudioFiles />
           )}
 
           {page === "settings" && <Settings />}

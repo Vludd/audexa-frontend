@@ -1,4 +1,4 @@
-import { Pause, Play } from "lucide-react"
+import { Loader2, Pause, Play } from "lucide-react"
 
 import type { AudioFile } from "@/types"
 
@@ -22,6 +22,7 @@ interface Props {
   selectedIds: string[]
   currentFileId: string | null
   isPlaying: boolean
+  isPlayPending: boolean
 
   onSelect: (id: string) => void
   onToggleSelection: (id: string) => void
@@ -32,14 +33,20 @@ interface Props {
 }
 
 function fmtDur(seconds: number) {
+  if (!Number.isFinite(seconds) || seconds < 0) {
+    return "—"
+  }
+
   const minutes = Math.floor(seconds / 60)
-  const sec = seconds % 60
+  const sec = Math.floor(seconds % 60)
 
   return `${String(minutes).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
 }
 
 function fmtSize(bytes: number) {
-  if (!bytes) return "—"
+  if (!bytes) {
+    return "—"
+  }
 
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`
 }
@@ -50,6 +57,7 @@ export default function AudioTable({
   selectedIds,
   currentFileId,
   isPlaying,
+  isPlayPending,
   onSelect,
   onToggleSelection,
   onToggleSelectAll,
@@ -70,9 +78,9 @@ export default function AudioTable({
 
   return (
     <div className="overflow-hidden rounded-lg border bg-card">
-      {files.length > 0 ? (<Table>
+      <Table>
         <TableHeader>
-          <TableRow className="bg-muted/50 hover:bg-muted/50">
+          <TableRow className="bg-muted/40 hover:bg-muted/40">
             <TableHead className="w-10 px-3">
               <Checkbox
                 checked={allSelected}
@@ -82,15 +90,22 @@ export default function AudioTable({
               />
             </TableHead>
 
-            <TableHead className="w-12" />
+            <TableHead className="w-11" />
 
-            <TableHead>Название</TableHead>
-            <TableHead>Файл</TableHead>
+            <TableHead className="min-w-56">
+              Название
+            </TableHead>
+
+            <TableHead className="min-w-64">
+              Файл
+            </TableHead>
+
             <TableHead>Формат</TableHead>
             <TableHead>Частота</TableHead>
             <TableHead>Длительность</TableHead>
             <TableHead>Размер</TableHead>
-            <TableHead className="w-24" />
+
+            <TableHead className="w-20" />
           </TableRow>
         </TableHeader>
 
@@ -110,14 +125,20 @@ export default function AudioTable({
                     ? "selected"
                     : undefined
                 }
-                className="cursor-pointer"
+                className={[
+                  "group cursor-pointer transition-colors",
+                  isCurrent &&
+                    "bg-primary/[0.045] hover:bg-primary/[0.07]",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
                 onClick={() => onSelect(file.id)}
               >
                 <TableCell
                   className="w-10 px-3"
-                  onClick={(event) => {
+                  onClick={(event) =>
                     event.stopPropagation()
-                  }}
+                  }
                 >
                   <Checkbox
                     checked={isChecked}
@@ -128,54 +149,96 @@ export default function AudioTable({
                   />
                 </TableCell>
 
-                <TableCell className="pr-0">
+                <TableCell
+                  className="pr-0"
+                  onClick={(event) =>
+                    event.stopPropagation()
+                  }
+                >
                   <Button
-                    variant="ghost"
+                    variant={
+                      isCurrent
+                        ? "secondary"
+                        : "ghost"
+                    }
                     size="icon-sm"
-                    className="size-7 rounded-full"
+                    className={[
+                      "size-7 rounded-full",
+                      isCurrent &&
+                        "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
                     title={
                       isCurrent && isPlaying
                         ? "Пауза"
                         : "Воспроизвести"
                     }
-                    onClick={(event) => {
-                      event.stopPropagation()
+                    disabled={
+                      isCurrent && isPlayPending
+                    }
+                    onClick={() =>
                       onTogglePlay(file.id)
-                    }}
+                    }
                   >
-                    {isCurrent && isPlaying ? (
+                    {isCurrent && isPlayPending ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : isCurrent && isPlaying ? (
                       <Pause className="size-3.5" />
                     ) : (
-                      <Play className="size-3.5" />
+                      <Play className="size-3.5 translate-x-px" />
                     )}
                   </Button>
                 </TableCell>
 
-                <TableCell className="font-medium">
-                  {file.name}
+                <TableCell className="max-w-80">
+                  <div
+                    className={[
+                      "truncate font-medium",
+                      isCurrent && "text-primary",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    title={file.name}
+                  >
+                    {file.name}
+                  </div>
+
+                  {isCurrent && (
+                    <div className="mt-0.5 text-[11px] font-medium text-primary">
+                      {isPlaying
+                        ? "Сейчас воспроизводится"
+                        : isPlayPending
+                          ? "Запуск..."
+                          : "Выбрано"}
+                    </div>
+                  )}
                 </TableCell>
 
-                <TableCell className="font-mono text-xs text-muted-foreground">
-                  {file.filename}
+                <TableCell className="max-w-80">
+                  <div
+                    className="truncate font-mono text-xs text-muted-foreground"
+                    title={file.filename}
+                  >
+                    {file.filename}
+                  </div>
                 </TableCell>
 
                 <TableCell>
-                  <span className="rounded bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                  <span className="inline-flex rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
                     {file.format}
                   </span>
                 </TableCell>
 
-                <TableCell>
+                <TableCell className="text-sm text-muted-foreground">
                   {file.sampleRate / 1000} kHz
                 </TableCell>
 
-                <TableCell>
-                  {file.duration
-                    ? fmtDur(file.duration)
-                    : "—"}
+                <TableCell className="font-mono text-xs">
+                  {fmtDur(file.duration)}
                 </TableCell>
 
-                <TableCell className="text-muted-foreground">
+                <TableCell className="text-sm text-muted-foreground">
                   {fmtSize(file.size)}
                 </TableCell>
 
@@ -193,12 +256,7 @@ export default function AudioTable({
             )
           })}
         </TableBody>
-      </Table>)
-      : (
-        <div className="flex min-h-16 items-center justify-center text-sm text-muted-foreground">
-          Нет доступных аудиофайлов
-        </div>
-      )}
+      </Table>
     </div>
   )
 }
