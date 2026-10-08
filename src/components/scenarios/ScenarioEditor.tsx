@@ -100,7 +100,7 @@ export default function ScenarioEditor({
   }
 
   return (
-    <section className="min-w-0 flex-1 overflow-auto p-4">
+    <section className="min-w-0 flex-none overflow-auto p-4 xl:flex-1">
       <div className="mb-4 flex items-start gap-4">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">

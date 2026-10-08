@@ -32,7 +32,7 @@ export default function ScenarioToolbar({
   onDelete,
 }: Props) {
   return (
-    <div className="flex items-center gap-2 border-b bg-card px-4 py-2">
+    <div className="flex shrink-0 flex-wrap items-center gap-2 border-b bg-card px-4 py-2">
       <Button
         type="button"
         size="sm"
@@ -76,7 +76,7 @@ export default function ScenarioToolbar({
         {t("scenarios.toolbar.delete")}
       </Button>
 
-      <div className="flex-1" />
+      <div className="ml-auto flex-1" />
 
       <div className="relative w-[240px]">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />

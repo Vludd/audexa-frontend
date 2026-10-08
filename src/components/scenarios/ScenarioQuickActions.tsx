@@ -57,7 +57,7 @@ export default function ScenarioQuickActions({
   }
 
   return (
-    <aside className="w-[210px] shrink-0 border-l bg-card p-3.5">
+    <aside className="w-full shrink-0 border-t bg-card p-3.5 xl:w-[210px] xl:border-l xl:border-t-0">
       <div className="mb-3 text-sm font-semibold">
         {t("scenarios.quickActions.title")}
       </div>

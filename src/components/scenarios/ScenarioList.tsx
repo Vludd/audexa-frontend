@@ -28,7 +28,7 @@ export default function ScenarioList({
   onSelect,
 }: Props) {
   return (
-    <aside className="w-[240px] shrink-0 overflow-auto border-r bg-card">
+    <aside className="max-h-36 w-full shrink-0 overflow-auto border-b bg-card xl:max-h-none xl:w-[240px] xl:border-b-0 xl:border-r">
       <div className="border-b px-3.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
         {t("scenarios.list.title")}
       </div>

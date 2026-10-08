@@ -150,7 +150,7 @@ export default function Scenarios({
         onDelete={handleDelete}
       />
 
-      <div className="flex min-h-0 flex-1 overflow-hidden">
+      <div className="flex min-h-0 flex-1 flex-col overflow-auto xl:flex-row xl:overflow-hidden">
         <ScenarioList
           scenarios={filtered}
           selected={selected}

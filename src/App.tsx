@@ -75,7 +75,7 @@ export default function App() {
   const { logs, clearLogs } = useLogs()
 
   return (
-    <div className="flex h-screen min-h-[700px] min-w-[1200px] flex-col overflow-hidden bg-background">
+    <div className="flex h-screen min-w-0 flex-col overflow-hidden bg-background">
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <Sidebar current={page} onChange={setPage} />
 

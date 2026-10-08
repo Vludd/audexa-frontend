@@ -85,9 +85,9 @@ export default function LogsToolbar({
   }
 
   return (
-    <div className="border-b bg-card px-4 py-2">
+    <div className="shrink-0 border-b bg-card px-4 py-2">
       {/* General filters and actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-[220px] flex-1 xl:max-w-[360px]">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
 
@@ -117,7 +117,7 @@ export default function LogsToolbar({
           })}
         </div>
 
-        <div className="flex-1" />
+        <div className="ml-auto flex-1" />
 
         <Button variant="outline" size="sm" onClick={onRefresh}>
           <RefreshCw className="size-3.5" />
