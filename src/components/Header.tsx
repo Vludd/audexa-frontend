@@ -4,6 +4,7 @@ import { CheckCircle, XCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { formatDate, formatTime, t } from "@/i18n"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
+import ThemeSwitcher from "@/components/ThemeSwitcher"
 
 interface Props {
   title: string
@@ -55,6 +56,7 @@ export default function Header({ title, subtitle, systemOk = true }: Props) {
           </div>
         </Badge>
 
+        <ThemeSwitcher />
         <LanguageSwitcher compact />
       </div>
     </header>

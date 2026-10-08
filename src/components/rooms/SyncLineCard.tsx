@@ -37,10 +37,14 @@ export default function SyncLineCard({
     <Card 
       className={cn(
       "mt-4 border transition-all",
-      isPlaying && "border-emerald-500/60 bg-emerald-50/40",
-      room.status === "paused" && "border-amber-500/60 bg-amber-50/40",
-      room.status === "error" && "border-destructive/50 bg-destructive/10",
-      room.status === "waiting" && "border-amber-400/60 bg-amber-50/30",
+      isPlaying &&
+        "border-emerald-500/60 bg-emerald-50/40 dark:border-emerald-500/50 dark:bg-emerald-950/35",
+      room.status === "paused" &&
+        "border-amber-500/60 bg-amber-50/40 dark:border-amber-500/50 dark:bg-amber-950/35",
+      room.status === "error" &&
+        "border-destructive/50 bg-destructive/10 dark:border-destructive/50 dark:bg-destructive/15",
+      room.status === "waiting" &&
+        "border-amber-400/60 bg-amber-50/30 dark:border-amber-500/40 dark:bg-amber-950/25",
       isPending && "opacity-90",
     )}>
       <CardContent className="flex items-center gap-3 p-3.5">

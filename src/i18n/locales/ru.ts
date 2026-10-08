@@ -4,6 +4,15 @@ export const ru = {
     title: "Язык интерфейса",
     description: "Выберите язык приложения",
   },
+  theme: {
+    title: "Тема интерфейса",
+    description: "Выберите светлую, тёмную или системную тему приложения",
+    light: "Светлая",
+    dark: "Тёмная",
+    system: "Системная",
+    switchToDark: "Тёмная",
+    switchToLight: "Светлая",
+  },
   common: {
     cancel: "Отмена",
     save: "Сохранить",

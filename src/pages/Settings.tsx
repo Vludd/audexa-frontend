@@ -6,6 +6,7 @@ import LineMappingSettings from "@/components/settings/LineMappingSettings"
 import StartupSettings from "@/components/settings/StartupSettings"
 import LoggingSettings from "@/components/settings/LoggingSettings"
 import SettingsActions from "@/components/settings/SettingsActions"
+import ThemeSettings from "@/components/settings/ThemeSettings"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 
 function SettingsSection({
@@ -50,9 +51,11 @@ export default function Settings() {
             title={t("settings.sections.general.title")}
             description={t("settings.sections.general.description")}
           >
-            <div className="max-w-xl">
+            <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
               <LanguageSwitcher />
+              <ThemeSettings />
             </div>
+
           </SettingsSection>
 
           <SettingsSection

@@ -11,6 +11,16 @@ export const en: Widen<typeof ru> = {
     description: "Choose the application language",
   },
 
+  theme: {
+    title: "Interface theme",
+    description: "Choose a light, dark, or system theme for the application",
+    light: "Light",
+    dark: "Dark",
+    system: "System",
+    switchToDark: "Dark",
+    switchToLight: "Light",
+  },
+
   common: {
     cancel: "Cancel",
 
