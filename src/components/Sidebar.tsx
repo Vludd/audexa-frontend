@@ -23,6 +23,9 @@ const NAV: { page: Page; labelKey: TranslationKey; Icon: typeof Home }[] = [
   { page: "scenarios", labelKey: "nav.scenarios", Icon: List },
   { page: "schedule", labelKey: "nav.schedule", Icon: Calendar },
   { page: "audiofiles", labelKey: "nav.audioFiles", Icon: Music },
+]
+
+const UTILITY_NAV: { page: Page; labelKey: TranslationKey; Icon: typeof Home }[] = [
   { page: "settings", labelKey: "nav.settings", Icon: Settings },
   { page: "logs", labelKey: "nav.logs", Icon: ScrollText },
 ]
@@ -51,8 +54,9 @@ export default function Sidebar({ current, onChange }: Props) {
         </p>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-0.5 p-2">
-        {NAV.map(({ page, labelKey, Icon }) => {
+      <nav className="flex min-h-0 flex-1 flex-col p-2">
+        <div className="flex flex-col gap-0.5">
+          {NAV.map(({ page, labelKey, Icon }) => {
           const active = current === page
           return (
             <button
@@ -71,7 +75,33 @@ export default function Sidebar({ current, onChange }: Props) {
               <span>{t(labelKey)}</span>
             </button>
           )
-        })}
+          })}
+        </div>
+
+        <div className="mt-auto border-t pt-2">
+          <div className="flex flex-col gap-0.5">
+            {UTILITY_NAV.map(({ page, labelKey, Icon }) => {
+              const active = current === page
+              return (
+                <button
+                  key={page}
+                  type="button"
+                  onClick={() => onChange(page)}
+                  className={cn(
+                    "flex h-8 w-full items-center gap-2 rounded-md px-2.5 text-left text-[13px] transition-colors",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    active
+                      ? "bg-primary font-semibold text-primary-foreground shadow-sm"
+                      : "text-foreground hover:bg-muted hover:text-foreground",
+                  )}
+                >
+                  <Icon className="size-4 shrink-0" />
+                  <span>{t(labelKey)}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
       </nav>
     </aside>
   )
