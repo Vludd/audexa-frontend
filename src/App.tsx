@@ -12,7 +12,6 @@ import { useScenarios } from "./hooks/useScenarios"
 import { useSchedule } from "./hooks/useSchedule"
 
 import Sidebar from "./components/Sidebar"
-import StatusBar from "./components/StatusBar"
 import Toaster from "./components/ui/Toaster"
 
 import Dashboard from "./pages/Dashboard"
@@ -152,7 +151,7 @@ export default function App() {
         </main>
       </div>
 
-      <StatusBar status={mockSystemStatus} />
+      {/* <StatusBar status={mockSystemStatus} /> */}
       <Toaster />
     </div>
   )
