@@ -3,7 +3,6 @@ import type { Page } from "./types"
 
 import {
   mockAudioFiles,
-  mockLogs,
   mockSystemStatus,
 } from "./data/mock"
 
@@ -71,9 +70,7 @@ export default function App() {
     toggleSchedule,
   } = useSchedule()
 
-  const {
-    logs,
-  } = useLogs()
+  const { logs, clearLogs } = useLogs()
 
   return (
     <div className="flex h-screen min-h-[700px] min-w-[1200px] flex-col overflow-hidden bg-background">
@@ -86,7 +83,7 @@ export default function App() {
               rooms={rooms}
               schedule={schedule}
               system={mockSystemStatus}
-              logs={mockLogs}
+              logs={logs}
               onPauseRoom={pauseRoom}
               onStopRoom={stopRoom}
               onStopAll={stopAllRooms}
@@ -149,7 +146,7 @@ export default function App() {
 
           {page === "settings" && <Settings />}
 
-          {page === "logs" && <Logs logs={logs} />}
+          {page === "logs" && <Logs logs={logs} onClear={clearLogs} />}
         </main>
       </div>
 

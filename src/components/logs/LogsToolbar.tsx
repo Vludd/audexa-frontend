@@ -1,28 +1,30 @@
-import { Download, RefreshCw, Trash2 } from "lucide-react"
+import { Download, RefreshCw, Search, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import type { LogEntry } from "@/types"
+import { exportLogs } from "@/lib/logger"
 
-export type LogFilter = "all" | "INFO" | "WARNING" | "ERROR" | "DEBUG"
+export type LogFilter = "all" | "INFO" | "WARNING" | "ERROR"
 
 interface Props {
   filter: LogFilter
   logs: LogEntry[]
+  query: string
+  includeDebug: boolean
+  onQueryChange: (query: string) => void
   onFilterChange: (filter: LogFilter) => void
+  onIncludeDebugChange: (include: boolean) => void
   onRefresh?: () => void
   onExport?: () => void
   onClear?: () => void
 }
 
-const FILTERS: {
-  value: LogFilter
-  label: string
-}[] = [
+const FILTERS: { value: LogFilter; label: string }[] = [
   { value: "all", label: "Все" },
   { value: "INFO", label: "Информация" },
   { value: "WARNING", label: "Предупреждения" },
   { value: "ERROR", label: "Ошибки" },
-  { value: "DEBUG", label: "Отладка" },
 ]
 
 const ACTIVE_CLASS: Record<LogFilter, string> = {
@@ -30,63 +32,132 @@ const ACTIVE_CLASS: Record<LogFilter, string> = {
   INFO: "bg-blue-600 text-white hover:bg-blue-700",
   WARNING: "bg-amber-500 text-white hover:bg-amber-600",
   ERROR: "bg-red-600 text-white hover:bg-red-700",
-  DEBUG: "bg-gray-600 text-white hover:bg-gray-700",
+}
+
+function download(content: string, filename: string, type: string) {
+  const blob = new Blob([content], { type })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement("a")
+
+  anchor.href = url
+  anchor.download = filename
+  anchor.click()
+
+  URL.revokeObjectURL(url)
 }
 
 export default function LogsToolbar({
   filter,
   logs,
+  query,
+  includeDebug,
+  onQueryChange,
   onFilterChange,
+  onIncludeDebugChange,
   onRefresh,
   onExport,
   onClear,
 }: Props) {
-  const count = (level: LogFilter) =>
-    level === "all"
-      ? logs.length
-      : logs.filter((log) => log.level === level).length
+  const count = (level: LogFilter) => {
+    if (level === "all") {
+      return includeDebug
+        ? logs.length
+        : logs.filter((log) => log.level !== "DEBUG").length
+    }
+
+    return logs.filter((log) => log.level === level).length
+  }
+
+  const handleExport = () => {
+    if (onExport) {
+      onExport()
+      return
+    }
+
+    const stamp = new Date().toISOString().replace(/:/g, "-")
+
+    download(
+      exportLogs("json"),
+      `audexa-frontend-${stamp}.json`,
+      "application/json;charset=utf-8",
+    )
+  }
 
   return (
-    <div className="flex items-center gap-2 border-b bg-card px-4 py-2">
-      <div className="flex items-center gap-1.5">
-        {FILTERS.map((item) => {
-          const active = filter === item.value
+    <div className="border-b bg-card px-4 py-2">
+      {/* General filters and actions */}
+      <div className="flex items-center gap-2">
+        <div className="relative min-w-[220px] flex-1 xl:max-w-[360px]">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
 
-          return (
-            <Button
-              key={item.value}
-              variant={active ? "default" : "outline"}
-              size="sm"
-              className={active ? ACTIVE_CLASS[item.value] : ""}
-              onClick={() => onFilterChange(item.value)}
-            >
-              {item.label} ({count(item.value)})
-            </Button>
-          )
-        })}
+          <Input
+            value={query}
+            onChange={(event) => onQueryChange(event.target.value)}
+            placeholder="Поиск по журналу..."
+            className="h-8 pl-8 text-xs"
+          />
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          {FILTERS.map((item) => {
+            const active = filter === item.value
+
+            return (
+              <Button
+                key={item.value}
+                variant={active ? "default" : "outline"}
+                size="sm"
+                className={active ? ACTIVE_CLASS[item.value] : ""}
+                onClick={() => onFilterChange(item.value)}
+              >
+                {item.label} ({count(item.value)})
+              </Button>
+            )
+          })}
+        </div>
+
+        <div className="flex-1" />
+
+        <Button variant="outline" size="sm" onClick={onRefresh}>
+          <RefreshCw className="size-3.5" />
+          Обновить
+        </Button>
+
+        <Button variant="outline" size="sm" onClick={handleExport}>
+          <Download className="size-3.5" />
+          Экспорт
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-destructive hover:text-destructive"
+          onClick={onClear}
+        >
+          <Trash2 className="size-3.5" />
+          Очистить
+        </Button>
       </div>
 
-      <div className="flex-1" />
+      {/* Additional Filters */}
+      <div className="mt-2 flex items-center gap-4 border-t pt-2">
+        <span className="text-xs font-medium text-muted-foreground">
+          Дополнительные фильтры
+        </span>
 
-      <Button variant="outline" size="sm" onClick={onRefresh}>
-        <RefreshCw className="size-3.5" />
-        Обновить
-      </Button>
+        <label className="flex cursor-pointer items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground">
+          <input
+            type="checkbox"
+            checked={includeDebug}
+            onChange={(event) =>
+              onIncludeDebugChange(event.target.checked)
+            }
+            className="size-3.5 accent-primary"
+          />
 
-      <Button variant="outline" size="sm" onClick={onExport}>
-        <Download className="size-3.5" />
-        Экспорт
-      </Button>
-
-      <Button
-        variant="outline"
-        size="sm"
-        className="text-destructive hover:text-destructive"
-        onClick={onClear}
-      >
-        <Trash2 className="size-3.5" />
-        Очистить
-      </Button>
+          <span>Включить DEBUG</span>
+        </label>
+      </div>
     </div>
   )
 }

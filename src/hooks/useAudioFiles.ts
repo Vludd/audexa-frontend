@@ -15,6 +15,7 @@ import {
 import type { AudioFile } from "@/types"
 import { audioApi } from "@/api/audio"
 import { toast } from "@/lib/toast"
+import { logger } from "@/lib/logger"
 
 const AUDIO_FILES_QUERY_KEY = ["audio-files"] as const
 
@@ -223,9 +224,15 @@ export function useAudioFiles({
 
       const mediaError = audio.error
 
-      console.error(
-        "Audio playback error:",
-        mediaError,
+      logger.error(
+        "AUDIO",
+        "playback.failed",
+        "Не удалось воспроизвести аудиофайл",
+        {
+          fileId: currentFileId,
+          mediaErrorCode: mediaError?.code,
+          mediaErrorMessage: mediaError?.message,
+        },
       )
 
       setPlayback("error")
@@ -294,9 +301,14 @@ export function useAudioFiles({
           return
         }
 
-        console.error(
-          "Failed to start audio playback:",
-          error,
+        logger.error(
+          "AUDIO",
+          "playback.start_failed",
+          "Не удалось запустить воспроизведение аудиофайла",
+          {
+            fileId,
+            error: error instanceof Error ? error.message : String(error),
+          },
         )
 
         setIsPlaying(false)

@@ -1,3 +1,4 @@
+import { useState } from "react"
 import type { LogEntry } from "@/types"
 
 interface Props {
@@ -19,46 +20,71 @@ const MESSAGE_CLASS: Record<string, string> = {
 }
 
 export default function LogViewer({ logs }: Props) {
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+
   return (
     <div className="overflow-hidden rounded-lg border border-slate-700 bg-[#0f1b2e] font-mono">
-      <div className="grid grid-cols-[90px_80px_1fr] bg-[#1e2d42] px-4 py-2 text-[11px] font-bold tracking-wider text-[#8fa8c8]">
+      <div className="grid grid-cols-[90px_82px_72px_200px_1fr] bg-[#1e2d42] px-4 py-2 text-[11px] font-bold tracking-wider text-[#8fa8c8]">
         <span>ВРЕМЯ</span>
         <span>УРОВЕНЬ</span>
+        <span>ИСТОЧНИК</span>
+        <span>СОБЫТИЕ</span>
         <span>СООБЩЕНИЕ</span>
       </div>
 
-      {logs.map((entry, index) => (
-        <div
-          key={entry.id}
-          className={[
-            "grid grid-cols-[90px_80px_1fr] border-b border-slate-700 px-4 py-1.5 text-[13px]",
-            index % 2 === 0 ? "bg-[#0f1b2e]" : "bg-[#111e30]",
-          ].join(" ")}
-        >
-          <span className="tabular-nums text-[#5a7a9a]">
-            {entry.time}
-          </span>
+      {logs.map((entry, index) => {
+        const expanded = expandedId === entry.id
 
-          <span>
-            <span
-              className={`rounded px-1.5 py-0.5 text-[11px] font-bold ${
-                LEVEL_CLASS[entry.level] ??
-                "bg-slate-500/10 text-slate-400"
-              }`}
+        return (
+          <div key={entry.id}>
+            <button
+              type="button"
+              className={[
+                "grid w-full grid-cols-[90px_82px_72px_200px_1fr] border-b border-slate-700 px-4 py-1.5 text-left text-[12px] hover:bg-[#16243a]",
+                index % 2 === 0 ? "bg-[#0f1b2e]" : "bg-[#111e30]",
+              ].join(" ")}
+              onClick={() => setExpandedId(expanded ? null : entry.id)}
             >
-              {entry.level}
-            </span>
-          </span>
+              <span className="tabular-nums text-[#5a7a9a]">
+                {entry.time}
+              </span>
 
-          <span
-            className={
-              MESSAGE_CLASS[entry.level] ?? "text-slate-300"
-            }
-          >
-            {entry.message}
-          </span>
-        </div>
-      ))}
+              <span>
+                <span
+                  className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
+                    LEVEL_CLASS[entry.level] ??
+                    "bg-slate-500/10 text-slate-400"
+                  }`}
+                >
+                  {entry.level}
+                </span>
+              </span>
+
+              <span className="text-slate-400">
+                {entry.source}
+              </span>
+
+              <span className="truncate text-slate-400">
+                {entry.event}
+              </span>
+
+              <span
+                className={
+                  MESSAGE_CLASS[entry.level] ?? "text-slate-300"
+                }
+              >
+                {entry.message}
+              </span>
+            </button>
+
+            {expanded && entry.context && (
+              <pre className="border-b border-slate-700 bg-[#0b1524] px-4 py-3 text-[11px] leading-5 text-slate-400">
+                {JSON.stringify(entry.context, null, 2)}
+              </pre>
+            )}
+          </div>
+        )
+      })}
 
       {logs.length === 0 && (
         <div className="px-4 py-10 text-center text-[13px] text-[#5a7a9a]">
