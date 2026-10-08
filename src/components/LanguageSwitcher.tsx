@@ -6,6 +6,7 @@ import { t, useLocale, type Locale } from "@/i18n"
 const LANGUAGES: { value: Locale; label: string; short: string }[] = [
   { value: "ru", label: "Русский", short: "RU" },
   { value: "en", label: "English", short: "EN" },
+  { value: "kz", label: "Қазақша", short: "KZ" },
 ]
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default function LanguageSwitcher({ compact = false }: Props) {
+  const unavailableLanguages = ["kz"]
   const { locale, setLocale } = useLocale()
 
   if (compact) {
@@ -30,6 +32,7 @@ export default function LanguageSwitcher({ compact = false }: Props) {
               type="button"
               onClick={() => setLocale(language.value)}
               aria-pressed={active}
+              hidden={unavailableLanguages.includes(language.value)}
               className={cn(
                 "h-6 min-w-8 rounded px-1.5 text-[10px] font-semibold transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -71,6 +74,7 @@ export default function LanguageSwitcher({ compact = false }: Props) {
               key={language.value}
               type="button"
               onClick={() => setLocale(language.value)}
+              hidden={unavailableLanguages.includes(language.value)}
               className={cn(
                 "flex h-7 items-center gap-1.5 rounded px-2.5 text-xs font-medium transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
