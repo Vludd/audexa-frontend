@@ -784,6 +784,28 @@ export const en: Widen<typeof ru> = {
   },
 
   settings: {
+    sections: {
+      general: {
+        title: "General",
+        description: "Configure the application's interface.",
+      },
+      application: {
+        title: "Application",
+        description: "Configure Audexa startup behavior and event logging.",
+      },
+      audio: {
+        title: "Audio",
+        description: "Configure the primary Audexa audio device.",
+      },
+      outputMapping: {
+        title: "Output mapping",
+        description: "Map Audexa rooms to physical audio outputs.",
+      },
+      actions: {
+        title: "Settings management",
+        description: "Apply or reset the application configuration.",
+      },
+    },
     audioDevice: {
       title: "Audio device",
 

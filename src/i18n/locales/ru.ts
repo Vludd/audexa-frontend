@@ -453,6 +453,28 @@ export const ru = {
     },
   },
   settings: {
+    sections: {
+      general: {
+        title: "Общие",
+        description: "Основные параметры интерфейса приложения.",
+      },
+      application: {
+        title: "Приложение",
+        description: "Поведение Audexa при запуске и ведение журнала событий.",
+      },
+      audio: {
+        title: "Аудио",
+        description: "Настройка основного аудиоустройства Audexa.",
+      },
+      outputMapping: {
+        title: "Сопоставление выходов",
+        description: "Сопоставление комнат Audexa с физическими аудиовыходами.",
+      },
+      actions: {
+        title: "Управление настройками",
+        description: "Применение или сброс конфигурации приложения.",
+      },
+    },
     audioDevice: {
       title: "Аудиоустройство",
       description: "Настройка аудиоустройства и его параметров (В РАЗРАБОТКЕ)",
