@@ -827,15 +827,41 @@ export const en: Widen<typeof ru> = {
       title: "Logging",
 
       description:
-        "Configure the logging level and log settings (IN DEVELOPMENT)",
+        "Configure logging level and storage settings",
 
-      level: "Log level",
+      level:
+        "Log level",
 
-      path: "Log path",
+      levelDescription:
+        "Defines the minimum event level that will be written to the log.",
 
-      rotation: "Rotate files daily",
+      storage: {
+        title:
+          "Log storage",
 
-      retention: "Keep logs for 30 days",
+        localStorage:
+          "Application local storage",
+
+        localStorageDescription:
+          "Logs are currently stored in the frontend localStorage.",
+
+        file:
+          "File storage",
+
+        fileDescription:
+          "Logs are stored in the application's log directory.",
+      },
+
+      retention: {
+        title:
+          "Retention",
+
+        value:
+          "7 days · up to 2 000 entries",
+
+        description:
+          "Entries older than 7 days and entries above the configured limit are removed automatically.",
+      },
     },
 
     startup: {
