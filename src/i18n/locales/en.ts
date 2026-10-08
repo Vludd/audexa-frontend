@@ -5,6 +5,12 @@ import { ru } from "./ru"
 type Widen<T> = T extends string ? string : { [K in keyof T]: Widen<T[K]> }
 
 export const en: Widen<typeof ru> = {
+  language: {
+    label: "Interface language",
+    title: "Interface language",
+    description: "Choose the application language",
+  },
+
   common: {
     cancel: "Cancel",
 

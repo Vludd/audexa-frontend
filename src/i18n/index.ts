@@ -1,3 +1,5 @@
+import { useSyncExternalStore } from "react"
+
 import { en } from "./locales/en"
 import { kz } from "./locales/kz"
 import { ru } from "./locales/ru"
@@ -7,9 +9,56 @@ export type TranslationKey = TranslationPath<typeof ru>
 
 const dictionaries: Record<Locale, TranslationTree> = { ru, en, kz }
 
-// Russian remains the default until a language selector is added.
 export const DEFAULT_LOCALE: Locale = "ru"
-export const ACTIVE_LOCALE: Locale = DEFAULT_LOCALE
+export const SUPPORTED_UI_LOCALES: Locale[] = ["ru", "en"]
+
+const STORAGE_KEY = "audexa.locale"
+
+let currentLocale: Locale = DEFAULT_LOCALE
+const listeners = new Set<() => void>()
+
+function getStoredLocale(): Locale {
+  if (typeof window === "undefined") return DEFAULT_LOCALE
+
+  const stored = window.localStorage.getItem(STORAGE_KEY)
+  return stored === "en" || stored === "ru" ? stored : DEFAULT_LOCALE
+}
+
+if (typeof window !== "undefined") {
+  currentLocale = getStoredLocale()
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener)
+  return () => listeners.delete(listener)
+}
+
+function getSnapshot() {
+  return currentLocale
+}
+
+export function setLocale(locale: Locale) {
+  if (!SUPPORTED_UI_LOCALES.includes(locale) || locale === currentLocale) {
+    return
+  }
+
+  currentLocale = locale
+
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(STORAGE_KEY, locale)
+  }
+
+  listeners.forEach((listener) => listener())
+}
+
+export function useLocale() {
+  const locale = useSyncExternalStore(subscribe, getSnapshot, () => DEFAULT_LOCALE)
+
+  return {
+    locale,
+    setLocale,
+  }
+}
 
 function resolveKey(
   dictionary: TranslationTree,
@@ -27,7 +76,7 @@ export function t(
   key: TranslationKey,
   variables?: Record<string, string | number>,
 ): string {
-  const value = resolveKey(dictionaries[ACTIVE_LOCALE], key)
+  const value = resolveKey(dictionaries[currentLocale], key)
 
   if (!value) {
     return key
@@ -47,9 +96,9 @@ export function formatDate(
   options?: Intl.DateTimeFormatOptions,
 ): string {
   const locale =
-    ACTIVE_LOCALE === "kz"
+    currentLocale === "kz"
       ? "kk-KZ"
-      : ACTIVE_LOCALE === "en"
+      : currentLocale === "en"
         ? "en-US"
         : "ru-RU"
 
@@ -64,9 +113,9 @@ export function formatDate(
 
 export function formatTime(date: Date): string {
   const locale =
-    ACTIVE_LOCALE === "kz"
+    currentLocale === "kz"
       ? "kk-KZ"
-      : ACTIVE_LOCALE === "en"
+      : currentLocale === "en"
         ? "en-US"
         : "ru-RU"
 

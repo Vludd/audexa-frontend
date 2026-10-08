@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useLocale } from "@/i18n"
 import type { Page } from "./types"
 
 import {
@@ -24,6 +25,7 @@ import Logs from "./pages/Logs"
 import { useLogs } from "./hooks/useLogs"
 
 export default function App() {
+  useLocale()
   const [page, setPage] = useState<Page>("dashboard")
 
   const {

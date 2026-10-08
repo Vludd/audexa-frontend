@@ -1,4 +1,9 @@
 export const ru = {
+  language: {
+    label: "Язык интерфейса",
+    title: "Язык интерфейса",
+    description: "Выберите язык приложения",
+  },
   common: {
     cancel: "Отмена",
     save: "Сохранить",

@@ -6,6 +6,7 @@ import LineMappingSettings from "@/components/settings/LineMappingSettings"
 import StartupSettings from "@/components/settings/StartupSettings"
 import LoggingSettings from "@/components/settings/LoggingSettings"
 import SettingsActions from "@/components/settings/SettingsActions"
+import LanguageSwitcher from "@/components/LanguageSwitcher"
 
 export default function Settings() {
   return (
@@ -27,7 +28,8 @@ export default function Settings() {
           <LoggingSettings />
         </div>
 
-        <div className="mt-3">
+        <div className="mt-3 grid grid-cols-1 gap-3 xl:grid-cols-2">
+          <LanguageSwitcher />
           <SettingsActions />
         </div>
       </div>
