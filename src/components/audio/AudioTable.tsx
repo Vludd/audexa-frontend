@@ -49,7 +49,7 @@ function fmtSize(bytes: number) {
     return "—"
   }
 
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+  return `${(bytes / 1024 / 1024).toFixed(1)} ${t("units.megabyte")}`
 }
 
 export default function AudioTable({
@@ -234,7 +234,7 @@ export default function AudioTable({
                 </TableCell>
 
                 <TableCell className="text-sm text-muted-foreground">
-                  {file.sampleRate / 1000} kHz
+                  {file.sampleRate / 1000} {t("units.kilohertz")}
                 </TableCell>
 
                 <TableCell className="font-mono text-xs">

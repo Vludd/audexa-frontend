@@ -24,7 +24,7 @@ export default function StatusBar({ status }: Props) {
       <span>{t("statusBar.outputs")}: <strong className="text-[#d7e2ef]">{status.outputs} ({t("statusBar.available")})</strong></span>
 
       <Separator orientation="vertical" className="mx-3 h-3.5 bg-white/15" />
-      <span>{t("statusBar.frequency")}: <strong className="text-[#d7e2ef]">{status.sampleRate / 1000} kHz</strong></span>
+      <span>{t("statusBar.frequency")}: <strong className="text-[#d7e2ef]">{status.sampleRate / 1000} {t("units.kilohertz")}</strong></span>
 
       <Separator orientation="vertical" className="mx-3 h-3.5 bg-white/15" />
       <span>{t("statusBar.buffer")}: <strong className="text-[#d7e2ef]">{status.bufferSize} {t("statusBar.samples")}</strong></span>

@@ -122,11 +122,11 @@ export default function AudioPlayer({
             <span>{file.format}</span>
             <span>·</span>
             <span>
-              {file.sampleRate / 1000} kHz
+              {file.sampleRate / 1000} {t("units.kilohertz")}
             </span>
             <span>·</span>
             <span>
-              {(file.size / 1024 / 1024).toFixed(1)} MB
+              {(file.size / 1024 / 1024).toFixed(1)} {t("units.megabyte")}
             </span>
           </div>
         </div>

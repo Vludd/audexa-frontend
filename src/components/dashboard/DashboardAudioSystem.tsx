@@ -41,7 +41,7 @@ export default function DashboardAudioSystem({
 
         <InfoRow
           label={t("dashboard.audioSystem.frequency")}
-          value={`${system.sampleRate / 1000} kHz`}
+          value={`${system.sampleRate / 1000} ${t("units.kilohertz")}`}
         />
 
         <InfoRow

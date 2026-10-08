@@ -61,6 +61,11 @@ export const en: Widen<typeof ru> = {
     closeNotification: "Dismiss notification",
   },
 
+  units: {
+    kilohertz: "kHz",
+    megabyte: "MB",
+  },
+
   nav: {
     dashboard: "Dashboard",
 

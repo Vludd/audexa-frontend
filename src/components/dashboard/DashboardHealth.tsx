@@ -34,7 +34,7 @@ export default function DashboardHealth({
       <HealthCard
         icon={system.online ? CheckCircle2 : XCircle}
         label={t("dashboard.health.system")}
-        value={system.online ? "ONLINE" : "OFFLINE"}
+        value={system.online ? t("common.online") : t("common.offline")}
         status={system.online ? "success" : "error"}
       />
 
