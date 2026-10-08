@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import type { Room } from "@/types"
+import { t } from "@/i18n"
 
 interface DashboardPlaybackProps {
   rooms: Room[]
@@ -44,7 +45,7 @@ export default function DashboardPlayback({
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
       <div className="flex items-center border-b px-4 py-3">
         <h3 className="text-sm font-semibold">
-          Текущее воспроизведение
+          {t("dashboard.playback.title")}
         </h3>
       </div>
 
@@ -59,7 +60,7 @@ export default function DashboardPlayback({
                 </div>
 
                 <div className="mt-1 truncate text-sm text-muted-foreground">
-                  {currentRoom.audioFileId ?? "Файл не назначен"}
+                  {currentRoom.audioFileId ?? t("common.fileNotAssigned")}
                 </div>
               </div>
 
@@ -67,7 +68,7 @@ export default function DashboardPlayback({
                 variant="success"
                 className="shrink-0"
               >
-                PLAYING
+                {t("dashboard.playback.playing")}
               </Badge>
             </div>
 
@@ -98,7 +99,7 @@ export default function DashboardPlayback({
                 }
               >
                 <Pause className="size-3.5" />
-                Пауза
+                {t("dashboard.playback.pause")}
               </Button>
 
               <Button
@@ -109,7 +110,7 @@ export default function DashboardPlayback({
                 }
               >
                 <Square className="size-3.5" />
-                Стоп
+                {t("dashboard.playback.stop")}
               </Button>
 
               <Button
@@ -118,7 +119,7 @@ export default function DashboardPlayback({
                 className="ml-auto"
                 onClick={() => onNavigate("rooms")}
               >
-                Открыть комнату
+                {t("dashboard.playback.openRoom")}
               </Button>
             </div>
           </div>
@@ -127,7 +128,7 @@ export default function DashboardPlayback({
             <PlayCircle className="mb-2 size-7 text-muted-foreground/50" />
 
             <div className="text-sm text-muted-foreground">
-              Нет активного воспроизведения
+              {t("dashboard.playback.empty")}
             </div>
 
             <Button
@@ -135,7 +136,7 @@ export default function DashboardPlayback({
               className="mt-1 h-auto p-0 text-xs"
               onClick={() => onNavigate("rooms")}
             >
-              Открыть комнаты →
+              {t("dashboard.playback.openRooms")}
             </Button>
           </div>
         )}

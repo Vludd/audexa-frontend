@@ -15,7 +15,10 @@ export function useLogs() {
     getLogs,
   )
 
-  const addLog = useCallback(logger.info, [])
+  const addLog = useCallback(
+    (...args: Parameters<typeof logger.info>) => logger.info(...args),
+    [],
+  )
 
   const removeLog = useCallback((id: string) => {
     removeStoredLog(id)

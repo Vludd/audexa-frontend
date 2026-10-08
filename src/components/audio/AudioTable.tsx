@@ -1,6 +1,7 @@
 import { Loader2, Pause, Play } from "lucide-react"
 
 import type { AudioFile } from "@/types"
+import { t } from "@/i18n"
 
 import {
   Table,
@@ -86,24 +87,24 @@ export default function AudioTable({
                 checked={allSelected}
                 indeterminate={someSelected}
                 onCheckedChange={onToggleSelectAll}
-                aria-label="Выбрать все файлы"
+                aria-label={t("audio.table.selectAll")}
               />
             </TableHead>
 
             <TableHead className="w-11" />
 
             <TableHead className="min-w-56">
-              Название
+              {t("audio.table.name")}
             </TableHead>
 
             <TableHead className="min-w-64">
-              Файл
+              {t("audio.table.filename")}
             </TableHead>
 
-            <TableHead>Формат</TableHead>
-            <TableHead>Частота</TableHead>
-            <TableHead>Длительность</TableHead>
-            <TableHead>Размер</TableHead>
+            <TableHead>{t("audio.table.format")}</TableHead>
+            <TableHead>{t("audio.table.sampleRate")}</TableHead>
+            <TableHead>{t("audio.table.duration")}</TableHead>
+            <TableHead>{t("audio.table.size")}</TableHead>
 
             <TableHead className="w-20" />
           </TableRow>
@@ -145,7 +146,9 @@ export default function AudioTable({
                     onCheckedChange={() =>
                       onToggleSelection(file.id)
                     }
-                    aria-label={`Выбрать ${file.name}`}
+                    aria-label={t("audio.table.selectFile", {
+                      name: file.name,
+                    })}
                   />
                 </TableCell>
 
@@ -171,8 +174,8 @@ export default function AudioTable({
                       .join(" ")}
                     title={
                       isCurrent && isPlaying
-                        ? "Пауза"
-                        : "Воспроизвести"
+                        ? t("audio.table.pause")
+                        : t("audio.table.play")
                     }
                     disabled={
                       isCurrent && isPlayPending
@@ -207,10 +210,10 @@ export default function AudioTable({
                   {isCurrent && (
                     <div className="mt-0.5 text-[11px] font-medium text-primary">
                       {isPlaying
-                        ? "Сейчас воспроизводится"
+                        ? t("audio.table.playing")
                         : isPlayPending
-                          ? "Запуск..."
-                          : "Выбрано"}
+                          ? t("audio.table.starting")
+                          : t("audio.table.selected")}
                     </div>
                   )}
                 </TableCell>

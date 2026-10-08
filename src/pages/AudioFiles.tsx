@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 
 import Header from "@/components/Header"
+import { t } from "@/i18n"
 import AudioToolbar from "@/components/audio/AudioToolbar"
 import AudioTable from "@/components/audio/AudioTable"
 import AudioPlayer from "@/components/audio/AudioPlayer"
@@ -89,12 +90,12 @@ export default function AudioFiles() {
     }
 
     confirm.confirm({
-      title: "Удалить аудиофайл?",
-      description:
-        `«${file.name}» будет удалён из библиотеки. ` +
-        "Это действие нельзя отменить.",
-      confirmLabel: "Удалить",
-      cancelLabel: "Отмена",
+      title: t("audio.confirmDelete.title"),
+      description: t("audio.confirmDelete.description", {
+        name: file.name,
+      }),
+      confirmLabel: t("common.delete"),
+      cancelLabel: t("common.cancel"),
       variant: "destructive",
       onConfirm: async () => {
         await audio.deleteFile(id)
@@ -110,12 +111,12 @@ export default function AudioFiles() {
     }
 
     confirm.confirm({
-      title: "Удалить выбранные файлы?",
-      description:
-        `Будет удалено файлов: ${count}. ` +
-        "Это действие нельзя отменить.",
-      confirmLabel: "Удалить",
-      cancelLabel: "Отмена",
+      title: t("audio.confirmDelete.selectedTitle"),
+      description: t("audio.confirmDelete.selectedDescription", {
+        count,
+      }),
+      confirmLabel: t("common.delete"),
+      cancelLabel: t("common.cancel"),
       variant: "destructive",
       onConfirm: async () => {
         await audio.deleteSelectedFiles()
@@ -126,8 +127,8 @@ export default function AudioFiles() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <Header
-        title="Аудиофайлы"
-        subtitle="Управление звуковыми файлами системы"
+        title={t("pages.audioFiles.title")}
+        subtitle={t("pages.audioFiles.subtitle")}
       />
 
       <AudioToolbar
@@ -156,11 +157,11 @@ export default function AudioFiles() {
               </div>
 
               <span className="font-medium">
-                Отпустите файлы для импорта
+                {t("audio.import.drop")}
               </span>
 
               <span className="text-sm text-muted-foreground">
-                Поддерживаются MP3 и WAV
+                {t("audio.import.supported")}
               </span>
             </div>
           </div>
@@ -169,7 +170,7 @@ export default function AudioFiles() {
         {audio.isUploading && (
           <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border bg-card px-3 py-2 text-xs shadow-sm">
             <Loader2 className="size-3.5 animate-spin text-primary" />
-            Загрузка аудиофайла...
+            {t("audio.import.uploading")}
           </div>
         )}
 
@@ -197,7 +198,7 @@ export default function AudioFiles() {
             </div>
 
             <div className="mt-3 text-sm font-medium">
-              Не удалось загрузить аудиофайлы
+              {t("audio.import.loadError")}
             </div>
 
             <div className="mt-1 max-w-md text-xs text-muted-foreground">
@@ -211,7 +212,7 @@ export default function AudioFiles() {
               onClick={audio.reload}
             >
               <RotateCcw className="size-4" />
-              Повторить
+              {t("audio.import.retry")}
             </Button>
           </div>
         ) : audio.filteredFiles.length === 0 ? (
@@ -219,11 +220,11 @@ export default function AudioFiles() {
             {audio.query ? (
               <>
                 <div className="text-sm font-medium">
-                  Ничего не найдено
+                  {t("audio.import.noResults")}
                 </div>
 
                 <div className="mt-1 text-xs text-muted-foreground">
-                  Попробуйте изменить поисковый запрос.
+                  {t("audio.import.searchHint")}
                 </div>
               </>
             ) : (
@@ -233,12 +234,11 @@ export default function AudioFiles() {
                 </div>
 
                 <div className="mt-3 text-sm font-medium">
-                  Аудиофайлов пока нет
+                  {t("audio.import.empty")}
                 </div>
 
                 <div className="mt-1 max-w-md text-xs text-muted-foreground">
-                  Добавьте MP3 или WAV, чтобы использовать
-                  их в комнатах и сценариях.
+                  {t("audio.import.emptyDescription")}
                 </div>
 
                 <Button
@@ -255,8 +255,8 @@ export default function AudioFiles() {
                   )}
 
                   {filePicker.isOpening
-                    ? "Открытие..."
-                    : "Добавить файл"}
+                    ? t("audio.toolbar.opening")
+                    : t("audio.toolbar.add")}
                 </Button>
               </>
             )}
@@ -325,11 +325,11 @@ export default function AudioFiles() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              Переименовать аудиофайл
+              {t("audio.rename.title")}
             </DialogTitle>
 
             <DialogDescription>
-              Измените отображаемое название файла.
+              {t("audio.rename.description")}
             </DialogDescription>
           </DialogHeader>
 
@@ -338,7 +338,7 @@ export default function AudioFiles() {
               htmlFor="audio-file-name"
               className="text-sm font-medium"
             >
-              Название
+              {t("audio.rename.name")}
             </label>
 
             <Input
@@ -347,7 +347,7 @@ export default function AudioFiles() {
               onChange={(event) =>
                 setRenameName(event.target.value)
               }
-              placeholder="Название аудиофайла"
+              placeholder={t("audio.rename.placeholder")}
               autoFocus
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
@@ -359,7 +359,9 @@ export default function AudioFiles() {
 
             {renameFile && (
               <div className="text-xs text-muted-foreground">
-                Файл: {renameFile.filename}
+                {t("audio.rename.file", {
+                  filename: renameFile.filename,
+                })}
               </div>
             )}
           </div>
@@ -373,7 +375,7 @@ export default function AudioFiles() {
               }}
               disabled={audio.isRenaming}
             >
-              Отмена
+              {t("common.cancel")}
             </Button>
 
             <Button
@@ -389,7 +391,7 @@ export default function AudioFiles() {
                 <CheckCircle2 className="size-4" />
               )}
 
-              Сохранить
+              {t("common.save")}
             </Button>
           </DialogFooter>
         </DialogContent>

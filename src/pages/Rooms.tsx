@@ -6,6 +6,7 @@ import type { RoomOperation } from "@/types"
 import { toast } from "@/lib/toast"
 
 import Header from "@/components/Header"
+import { t } from "@/i18n"
 import RoomDialog, {
   type RoomFormData,
 } from "@/components/rooms/RoomDialog"
@@ -158,14 +159,18 @@ export default function Rooms({
         data,
       )
 
-      toast.success("Комната сохранена", {
-        description: `Изменения комнаты «${editingRoom.name}» сохранены.`,
+      toast.success(t("rooms.notifications.saved"), {
+        description: t("rooms.notifications.savedDescription", {
+          name: editingRoom.name,
+        }),
       })
     } else {
       onAddRoom(data)
 
-      toast.success("Комната создана", {
-        description: `Комната «${data.name}» добавлена.`,
+      toast.success(t("rooms.notifications.created"), {
+        description: t("rooms.notifications.createdDescription", {
+          name: data.name,
+        }),
       })
     }
 
@@ -175,17 +180,21 @@ export default function Rooms({
 
   const handleDelete = (room: Room) => {
     confirmation.confirm({
-      title: "Удалить комнату?",
-      description: `Комната «${room.name}» будет удалена. Это действие нельзя отменить.`,
-      confirmLabel: "Удалить",
-      cancelLabel: "Отмена",
+      title: t("rooms.confirmDelete.title"),
+      description: t("rooms.confirmDelete.description", {
+        name: room.name,
+      }),
+      confirmLabel: t("common.delete"),
+      cancelLabel: t("common.cancel"),
       variant: "destructive",
 
       onConfirm: async () => {
         onDeleteRoom(room.id)
 
-        toast.success("Комната удалена", {
-          description: `Комната «${room.name}» успешно удалена.`,
+        toast.success(t("rooms.notifications.deleted"), {
+          description: t("rooms.notifications.deletedDescription", {
+            name: room.name,
+          }),
         })
       },
     })
@@ -194,16 +203,18 @@ export default function Rooms({
   const handleDuplicate = (room: Room) => {
     onDuplicateRoom(room.id)
 
-    toast.success("Комната дублирована", {
-      description: `Создана копия комнаты «${room.name}».`,
+    toast.success(t("rooms.notifications.duplicated"), {
+      description: t("rooms.notifications.duplicatedDescription", {
+        name: room.name,
+      }),
     })
   }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <Header
-        title="Комнаты"
-        subtitle="Управление аудиолиниями комнат"
+        title={t("pages.rooms.title")}
+        subtitle={t("pages.rooms.subtitle")}
       />
 
       <main className="min-h-0 flex-1 overflow-auto p-4">

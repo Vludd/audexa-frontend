@@ -2,6 +2,7 @@ import { useMemo, useState } from "react"
 
 import type { LogEntry } from "@/types"
 import Header from "@/components/Header"
+import { t } from "@/i18n"
 import LogsToolbar, {
   type LogFilter,
 } from "@/components/logs/LogsToolbar"
@@ -59,8 +60,8 @@ export default function Logs({ logs, onClear }: Props) {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <Header
-        title="Журнал событий"
-        subtitle="Frontend: действия интерфейса, API, сеть и ошибки выполнения"
+        title={t("pages.logs.title")}
+        subtitle={t("pages.logs.subtitle")}
       />
 
       <LogsToolbar
@@ -78,7 +79,7 @@ export default function Logs({ logs, onClear }: Props) {
         <LogViewer logs={filtered} />
 
         <div className="mt-2 text-xs text-muted-foreground">
-          Записей: {filtered.length} из {logs.length}
+          {t("pages.logs.records")}: {filtered.length} / {logs.length}
         </div>
       </div>
     </div>

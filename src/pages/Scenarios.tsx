@@ -8,6 +8,7 @@ import type {
 } from "@/types"
 
 import Header from "@/components/Header"
+import { t } from "@/i18n"
 import ScenarioEditor from "@/components/scenarios/ScenarioEditor"
 import ScenarioList from "@/components/scenarios/ScenarioList"
 import ScenarioQuickActions from "@/components/scenarios/ScenarioQuickActions"
@@ -105,7 +106,9 @@ export default function Scenarios({
     if (!scenario) return
 
     const confirmed = window.confirm(
-      `Удалить сценарий «${scenario.name}»?`,
+      t("scenarios.list.deleteConfirm", {
+        name: scenario.name,
+      }),
     )
 
     if (!confirmed) return
@@ -133,8 +136,8 @@ export default function Scenarios({
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <Header
-        title="Сценарии"
-        subtitle="Создание и управление аудиосценариями для комнат"
+        title={t("pages.scenarios.title")}
+        subtitle={t("pages.scenarios.subtitle")}
       />
 
       <ScenarioToolbar
@@ -170,11 +173,11 @@ export default function Scenarios({
           <div className="flex min-w-0 flex-1 items-center justify-center">
             <div className="text-center">
               <p className="text-sm font-medium">
-                Сценариев пока нет
+                {t("scenarios.list.emptyTitle")}
               </p>
 
               <p className="mt-1 text-xs text-muted-foreground">
-                Создайте первый сценарий, чтобы начать настройку.
+                {t("scenarios.list.emptyDescription")}
               </p>
             </div>
           </div>

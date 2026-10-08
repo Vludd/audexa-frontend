@@ -9,22 +9,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { t } from "@/i18n"
 
 export default function LoggingSettings() {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-sm">
-          Журналирование
+          {t("settings.logging.title")}
         </CardTitle>
         <CardDescription className="text-xs">
-          Настройка уровня логирования и параметров журнала (В РАЗРАБОТКЕ)
+          {t("settings.logging.description")}
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label>Уровень логирования</Label>
+          <Label>{t("settings.logging.level")}</Label>
 
           <Select defaultValue="INFO" disabled>
             <SelectTrigger className="w-full">
@@ -41,14 +42,14 @@ export default function LoggingSettings() {
         </div>
 
         <div className="space-y-2">
-          <Label>Путь к журналу</Label>
+          <Label>{t("settings.logging.path")}</Label>
 
           <Input defaultValue={"%APPDATA%\\Audexa\\logs\\"} disabled/>
         </div>
 
         <div className="flex items-center justify-between">
           <Label className="font-normal">
-            Ротация файлов (ежедневно)
+            {t("settings.logging.rotation")}
           </Label>
 
           <Switch defaultChecked disabled/>
@@ -56,7 +57,7 @@ export default function LoggingSettings() {
 
         <div className="flex items-center justify-between">
           <Label className="font-normal">
-            Сохранять журнал 30 дней
+            {t("settings.logging.retention")}
           </Label>
 
           <Switch defaultChecked disabled/>

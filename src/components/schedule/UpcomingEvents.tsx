@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 
 import type { ScheduleItem } from "@/types"
+import { t } from "@/i18n"
 
 interface Props {
   items: ScheduleItem[]
@@ -20,7 +21,7 @@ export default function UpcomingEvents({
     <aside className="w-[230px] shrink-0 overflow-auto border-l bg-card p-3.5">
       <div className="mb-4 flex items-center justify-between">
         <div className="text-sm font-semibold">
-          Ближайшие события
+          {t("schedule.upcoming.title")}
         </div>
 
         <Button
@@ -29,19 +30,18 @@ export default function UpcomingEvents({
           size="sm"
           className="h-auto p-0 text-xs"
         >
-          Все события
+          {t("schedule.upcoming.all")}
         </Button>
       </div>
 
       {items.length === 0 ? (
         <div className="rounded-lg border border-dashed p-4 text-center">
           <div className="text-sm font-medium">
-            Нет активных событий
+            {t("schedule.upcoming.empty")}
           </div>
 
           <div className="mt-1 text-xs text-muted-foreground">
-            Добавьте расписание или включите
-            существующее.
+            {t("schedule.upcoming.emptyDescription")}
           </div>
         </div>
       ) : (
@@ -81,7 +81,7 @@ export default function UpcomingEvents({
       <Separator className="my-4" />
 
       <div className="mb-3 text-sm font-semibold">
-        Быстрые действия
+        {t("schedule.upcoming.quickActions")}
       </div>
 
       <div className="space-y-2">
@@ -94,7 +94,7 @@ export default function UpcomingEvents({
             className="size-4"
             fill="currentColor"
           />
-          Запустить сейчас
+          {t("schedule.upcoming.runNow")}
         </Button>
 
         <Button
@@ -106,7 +106,7 @@ export default function UpcomingEvents({
             className="size-4"
             fill="currentColor"
           />
-          Остановить всё
+          {t("schedule.upcoming.stopAll")}
         </Button>
 
         <Button
@@ -115,7 +115,7 @@ export default function UpcomingEvents({
           className="w-full justify-start"
         >
           <Clock className="size-4" />
-          Тест расписания
+          {t("schedule.upcoming.test")}
         </Button>
       </div>
     </aside>

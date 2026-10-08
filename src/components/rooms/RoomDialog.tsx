@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog"
 
 import type { Room } from "@/types"
+import { t } from "@/i18n"
 
 export interface RoomFormData {
   name: string
@@ -65,7 +66,7 @@ export default function RoomDialog({
     const normalizedName = name.trim()
 
     if (!normalizedName) {
-      setNameError("Введите название комнаты")
+      setNameError(t("rooms.dialog.nameRequired"))
       return
     }
 
@@ -94,16 +95,16 @@ export default function RoomDialog({
           <DialogHeader>
             <DialogTitle>
               {isEditing
-                ? "Редактирование комнаты"
-                : "Новая комната"}
+                ? t("rooms.dialog.editTitle")
+                : t("rooms.dialog.createTitle")}
             </DialogTitle>
 
             <DialogDescription>
               {isEditing
-                ? `Изменение параметров комнаты ${String(
-                    room?.id,
-                  ).padStart(2, "0")}.`
-                : "Добавьте новую аудиолинию комнаты."}
+                ? t("rooms.dialog.editDescription", {
+                    id: String(room?.id).padStart(2, "0"),
+                  })
+                : t("rooms.dialog.createDescription")}
             </DialogDescription>
           </DialogHeader>
 
@@ -113,7 +114,7 @@ export default function RoomDialog({
                 htmlFor="room-name"
                 className="text-sm font-medium"
               >
-                Название
+                {t("rooms.dialog.name")}
               </label>
 
               <Input
@@ -126,7 +127,7 @@ export default function RoomDialog({
                     setNameError("")
                   }
                 }}
-                placeholder="Например, Большой зал"
+                placeholder={t("rooms.dialog.namePlaceholder")}
                 autoFocus
                 aria-invalid={Boolean(nameError)}
               />
@@ -143,7 +144,7 @@ export default function RoomDialog({
                 htmlFor="room-audio-file"
                 className="text-sm font-medium"
               >
-                Аудиофайл
+                {t("rooms.dialog.audioFile")}
               </label>
 
               <Input
@@ -156,8 +157,7 @@ export default function RoomDialog({
               />
 
               <p className="text-xs text-muted-foreground">
-                Временно вводится ID аудиофайла. Позже здесь
-                будет селектор Audio Library.
+                {t("rooms.dialog.audioFileHelp")}
               </p>
             </div>
 
@@ -166,7 +166,7 @@ export default function RoomDialog({
                 htmlFor="room-volume"
                 className="text-sm font-medium"
               >
-                Громкость
+                {t("rooms.dialog.volume")}
               </label>
 
               <div className="flex items-center gap-3">
@@ -195,7 +195,7 @@ export default function RoomDialog({
               variant="outline"
               onClick={() => handleOpenChange(false)}
             >
-              Отмена
+              {t("common.cancel")}
             </Button>
 
             <Button type="submit">
@@ -206,8 +206,8 @@ export default function RoomDialog({
               )}
 
               {isEditing
-                ? "Сохранить"
-                : "Добавить"}
+                ? t("common.save")
+                : t("common.add")}
             </Button>
           </DialogFooter>
         </form>

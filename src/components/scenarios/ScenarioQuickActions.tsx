@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 
 import type { Scenario } from "@/types"
 import type { ScenarioValidation } from "@/hooks/useScenarios"
+import { t } from "@/i18n"
 
 interface Props {
   scenario?: Scenario
@@ -43,7 +44,7 @@ export default function ScenarioQuickActions({
     if (!validation?.valid) {
       window.alert(
         [
-          "Сценарий нельзя запустить:",
+          t("scenarios.quickActions.cannotRun"),
           "",
           ...(validation?.errors ?? []),
         ].join("\n"),
@@ -58,7 +59,7 @@ export default function ScenarioQuickActions({
   return (
     <aside className="w-[210px] shrink-0 border-l bg-card p-3.5">
       <div className="mb-3 text-sm font-semibold">
-        Быстрый запуск
+        {t("scenarios.quickActions.title")}
       </div>
 
       <div className="space-y-2">
@@ -73,7 +74,7 @@ export default function ScenarioQuickActions({
             className="size-4"
             fill="currentColor"
           />
-          Запустить сценарий
+          {t("scenarios.quickActions.run")}
         </Button>
 
         <Button
@@ -83,7 +84,7 @@ export default function ScenarioQuickActions({
           disabled={!scenario}
         >
           <Pause className="size-4" />
-          Пауза
+          {t("scenarios.quickActions.pause")}
         </Button>
 
         <Button
@@ -96,7 +97,7 @@ export default function ScenarioQuickActions({
           }
         >
           <Square className="size-4" />
-          Стоп
+          {t("scenarios.quickActions.stop")}
         </Button>
 
         <Button
@@ -113,12 +114,14 @@ export default function ScenarioQuickActions({
             }
 
             window.alert(
-              `Тестовый запуск сценария «${scenario.name}»`,
+              t("scenarios.quickActions.testRun", {
+                name: scenario.name,
+              }),
             )
           }}
         >
           <Headphones className="size-3.5" />
-          Тестовый запуск
+          {t("scenarios.quickActions.test")}
         </Button>
       </div>
 
@@ -129,11 +132,11 @@ export default function ScenarioQuickActions({
           <div className="rounded-md border border-destructive/20 bg-destructive/5 p-2.5">
             <div className="flex items-center gap-2 text-xs font-semibold text-destructive">
               <AlertTriangle className="size-3.5" />
-              Сценарий не готов
+              {t("scenarios.quickActions.notReady")}
             </div>
 
             <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-              Исправьте ошибки перед запуском.
+              {t("scenarios.quickActions.fixErrors")}
             </p>
           </div>
         </>

@@ -7,6 +7,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { t } from "@/i18n"
 
 interface Props {
   query: string
@@ -29,7 +30,7 @@ export default function RoomToolbar({
 
       <Button type="button" onClick={onAddRoom}>
         <Plus className="size-4" />
-        Добавить комнату
+        {t("rooms.toolbar.add")}
       </Button>
 
       <div className="flex-1" />
@@ -41,7 +42,7 @@ export default function RoomToolbar({
           variant={viewGrid ? "secondary" : "ghost"}
           className="size-8"
           onClick={() => onViewChange(true)}
-          aria-label="Показать сетку"
+          aria-label={t("rooms.toolbar.showGrid")}
         >
           <LayoutGrid className="size-4" />
         </Button>
@@ -52,7 +53,7 @@ export default function RoomToolbar({
           variant={!viewGrid ? "secondary" : "ghost"}
           className="size-8"
           onClick={() => onViewChange(false)}
-          aria-label="Показать список"
+          aria-label={t("rooms.toolbar.showList")}
         >
           <List className="size-4" />
         </Button>
@@ -65,7 +66,7 @@ export default function RoomToolbar({
         <Input
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
-          placeholder="Поиск комнаты..."
+          placeholder={t("rooms.toolbar.search")}
           className="pl-9"
         />
       </div>

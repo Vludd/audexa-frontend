@@ -4,21 +4,30 @@ import { mockSchedule } from "@/data/mock"
 import type {
   ScheduleFormData,
   ScheduleItem,
+  Weekday,
 } from "@/types"
+import { t } from "@/i18n"
 
-const DAY_ORDER = [
-  "Пн",
-  "Вт",
-  "Ср",
-  "Чт",
-  "Пт",
-  "Сб",
-  "Вс",
+const DAY_ORDER: Weekday[] = [
+  "mon",
+  "tue",
+  "wed",
+  "thu",
+  "fri",
+  "sat",
+  "sun",
 ]
 
 export function useSchedule() {
   const [schedule, setSchedule] =
-    useState<ScheduleItem[]>(mockSchedule)
+    useState<ScheduleItem[]>(() =>
+      mockSchedule.map((item) => ({
+        ...item,
+        nextRun: item.enabled
+          ? calculateNextRun(item.time, item.days, item.repeat)
+          : "—",
+      })),
+    )
 
   const toggleSchedule = useCallback((id: number) => {
     setSchedule((currentSchedule) =>
@@ -191,7 +200,7 @@ export function useSchedule() {
 
 function calculateNextRun(
   time: string,
-  days: string[],
+  days: Weekday[],
   repeat: ScheduleItem["repeat"],
 ) {
   if (days.length === 0) {
@@ -199,7 +208,7 @@ function calculateNextRun(
   }
 
   if (repeat === "once") {
-    return `Сегодня в ${time}`
+    return t("schedule.nextRun.todayAt", { time })
   }
 
   const now = new Date()
@@ -215,28 +224,32 @@ function calculateNextRun(
     ).padStart(2, "0")}`
 
   const sortedDays = [...days].sort(
-    (a, b) =>
-      DAY_ORDER.indexOf(a) -
-      DAY_ORDER.indexOf(b),
+    (a, b) => DAY_ORDER.indexOf(a) - DAY_ORDER.indexOf(b),
   )
 
   for (const day of sortedDays) {
-    const dayIndex =
-      DAY_ORDER.indexOf(day)
+    const dayIndex = DAY_ORDER.indexOf(day)
+    const localizedDay = t(`schedule.weekdays.${day}`)
 
     if (dayIndex > currentDay) {
-      return `${day} в ${time}`
+      return t("schedule.nextRun.dayAt", {
+        day: localizedDay,
+        time,
+      })
     }
 
     if (
       dayIndex === currentDay &&
       time > currentTime
     ) {
-      return `Сегодня в ${time}`
+      return t("schedule.nextRun.todayAt", { time })
     }
   }
 
-  return `Следующий ${sortedDays[0]} в ${time}`
+  return t("schedule.nextRun.nextDayAt", {
+    day: t(`schedule.weekdays.${sortedDays[0]}`),
+    time,
+  })
 }
 
 function getNextTime(time: string) {

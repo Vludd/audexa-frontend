@@ -16,6 +16,7 @@ import type { AudioFile } from "@/types"
 import { audioApi } from "@/api/audio"
 import { toast } from "@/lib/toast"
 import { logger } from "@/lib/logger"
+import { t } from "@/i18n"
 
 const AUDIO_FILES_QUERY_KEY = ["audio-files"] as const
 
@@ -227,7 +228,7 @@ export function useAudioFiles({
       logger.error(
         "AUDIO",
         "playback.failed",
-        "Не удалось воспроизвести аудиофайл",
+        t("audio.errors.playback"),
         {
           fileId: currentFileId,
           mediaErrorCode: mediaError?.code,
@@ -238,14 +239,14 @@ export function useAudioFiles({
       setPlayback("error")
       setPlaybackError(
         mediaError?.message ||
-          "Не удалось воспроизвести аудиофайл",
+          t("audio.errors.playback"),
       )
     }
 
     audioRef.current = audio
 
     return audio
-  }, [setPlayback, volume])
+  }, [currentFileId, setPlayback, volume])
 
   /*
    * ------------------------------------------------------------
@@ -304,7 +305,7 @@ export function useAudioFiles({
         logger.error(
           "AUDIO",
           "playback.start_failed",
-          "Не удалось запустить воспроизведение аудиофайла",
+          t("audio.errors.playbackStart"),
           {
             fileId,
             error: error instanceof Error ? error.message : String(error),
@@ -314,7 +315,7 @@ export function useAudioFiles({
         setIsPlaying(false)
         setPlaybackState("error")
         setPlaybackError(
-          "Не удалось воспроизвести аудиофайл",
+          t("audio.errors.playback"),
         )
       }
     },
@@ -503,13 +504,13 @@ export function useAudioFiles({
         queryKey: AUDIO_FILES_QUERY_KEY,
       })
 
-      toast.success("Аудиофайл добавлен", {
+      toast.success(t("audio.notifications.added"), {
         description: file.name,
       })
     },
 
     onError: (error, file) => {
-      toast.error("Не удалось добавить аудиофайл", {
+      toast.error(t("audio.errors.upload"), {
         description:
           error instanceof Error
             ? error.message
@@ -526,9 +527,11 @@ export function useAudioFiles({
 
       for (const file of incomingFiles) {
         if (!isSupportedAudioFile(file)) {
-          toast.error("Формат не поддерживается", {
+          toast.error(t("audio.errors.unsupportedFormat"), {
             description:
-              `${file.name}. Используйте MP3 или WAV.`,
+              t("audio.errors.supportedFormatsHint", {
+                name: file.name,
+              }),
           })
 
           continue
@@ -567,13 +570,13 @@ export function useAudioFiles({
         queryKey: AUDIO_FILES_QUERY_KEY,
       })
 
-      toast.success("Аудиофайл переименован", {
+      toast.success(t("audio.notifications.renamed"), {
         description: file.name,
       })
     },
 
     onError: (error) => {
-      toast.error("Не удалось переименовать аудиофайл", {
+      toast.error(t("audio.errors.rename"), {
         description:
           error instanceof Error
             ? error.message
@@ -587,7 +590,7 @@ export function useAudioFiles({
       const normalizedName = name.trim()
 
       if (!normalizedName) {
-        toast.warning("Название не может быть пустым")
+        toast.warning(t("audio.errors.emptyName"))
         return false
       }
 
@@ -622,7 +625,7 @@ export function useAudioFiles({
     },
 
     onError: (error) => {
-      toast.error("Не удалось удалить аудиофайл", {
+      toast.error(t("audio.errors.delete"), {
         description:
           error instanceof Error
             ? error.message
@@ -651,7 +654,7 @@ export function useAudioFiles({
     },
 
     onError: (error) => {
-      toast.error("Не удалось удалить выбранные файлы", {
+      toast.error(t("audio.errors.deleteSelected"), {
         description:
           error instanceof Error
             ? error.message
@@ -692,7 +695,7 @@ export function useAudioFiles({
           ),
         )
 
-        toast.success("Аудиофайл удалён", {
+        toast.success(t("audio.notifications.deleted"), {
           description: file?.name,
         })
 
@@ -743,9 +746,10 @@ export function useAudioFiles({
 
         setSelectedIds([])
 
-        toast.success("Аудиофайлы удалены", {
-          description:
-            `Удалено файлов: ${idsToDelete.length}`,
+        toast.success(t("audio.notifications.deletedMany"), {
+          description: t("audio.notifications.deletedCount", {
+            count: idsToDelete.length,
+          }),
         })
 
         return true
@@ -848,7 +852,7 @@ export function useAudioFiles({
     queryError instanceof Error
       ? queryError.message
       : queryError
-        ? "Не удалось загрузить аудиофайлы"
+        ? t("audio.import.loadError")
         : null
 
   /*

@@ -1,4 +1,5 @@
 import { logger } from "@/lib/logger"
+import { t } from "@/i18n"
 
 let installed = false
 
@@ -10,7 +11,7 @@ export function installRuntimeLogging() {
   installed = true
 
   const handleError = (event: ErrorEvent) => {
-    logger.error("APP", "runtime.error", event.message || "Неизвестная ошибка JavaScript", {
+    logger.error("APP", "runtime.error", event.message || t("logs.messages.unknownRuntimeError"), {
       filename: event.filename,
       line: event.lineno,
       column: event.colno,
@@ -20,18 +21,18 @@ export function installRuntimeLogging() {
 
   const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
     const reason = event.reason
-    logger.error("APP", "runtime.unhandled_rejection", "Необработанное исключение Promise", {
+    logger.error("APP", "runtime.unhandled_rejection", t("logs.messages.unhandledPromise"), {
       reason: reason instanceof Error ? reason.message : String(reason),
       stack: reason instanceof Error ? reason.stack : undefined,
     })
   }
 
   const handleOnline = () => {
-    logger.info("NETWORK", "browser.online", "Сетевое соединение восстановлено")
+    logger.info("NETWORK", "browser.online", t("logs.messages.connectionRestored"))
   }
 
   const handleOffline = () => {
-    logger.warn("NETWORK", "browser.offline", "Браузер сообщает об отсутствии сети")
+    logger.warn("NETWORK", "browser.offline", t("logs.messages.noNetwork"))
   }
 
   window.addEventListener("error", handleError)
@@ -39,7 +40,7 @@ export function installRuntimeLogging() {
   window.addEventListener("online", handleOnline)
   window.addEventListener("offline", handleOffline)
 
-  logger.info("APP", "app.started", "Frontend Audexa запущен", {
+  logger.info("APP", "app.started", t("logs.messages.appStarted"), {
     apiBaseUrl: import.meta.env.VITE_API_URL ?? "http://localhost:5081",
     userAgent: navigator.userAgent,
   })

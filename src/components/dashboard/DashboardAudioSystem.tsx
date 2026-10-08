@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import type { SystemStatus } from "@/types"
+import { t } from "@/i18n"
 
 interface DashboardAudioSystemProps {
   system: SystemStatus
@@ -12,18 +13,18 @@ export default function DashboardAudioSystem({
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
       <div className="flex items-center border-b px-4 py-3">
         <h3 className="text-sm font-semibold">
-          Аудиосистема
+          {t("dashboard.audioSystem.title")}
         </h3>
       </div>
 
       <div className="grid grid-cols-2 gap-x-4 gap-y-3 p-3.5">
         <InfoRow
-          label="Устройство"
+          label={t("dashboard.audioSystem.device")}
           value={system.device}
         />
 
         <InfoRow
-          label="Статус"
+          label={t("dashboard.audioSystem.status")}
           value={
             <Badge
               variant={system.online ? "success" : "destructive"}
@@ -34,18 +35,18 @@ export default function DashboardAudioSystem({
         />
 
         <InfoRow
-          label="Выходы"
+          label={t("dashboard.audioSystem.outputs")}
           value={system.outputs}
         />
 
         <InfoRow
-          label="Частота"
+          label={t("dashboard.audioSystem.frequency")}
           value={`${system.sampleRate / 1000} kHz`}
         />
 
         <InfoRow
-          label="Буфер"
-          value={`${system.bufferSize} samples`}
+          label={t("dashboard.audioSystem.buffer")}
+          value={`${system.bufferSize} ${t("dashboard.audioSystem.samples")}`}
         />
       </div>
     </div>

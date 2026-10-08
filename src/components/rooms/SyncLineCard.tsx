@@ -3,12 +3,12 @@ import { Loader2, Play, Square } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
-import type { Room } from "@/types"
-import type { RoomOperation } from "@/hooks/useRooms"
+import type { Room, RoomOperation } from "@/types"
 
 import StatusBadge from "@/components/StatusBadge"
 import { cn } from "cn"
-import { ReactNode } from "react"
+import type { ReactNode } from "react"
+import { t } from "@/i18n"
 
 interface Props {
   room: Room
@@ -19,9 +19,9 @@ interface Props {
 }
 
 const OPERATION_LABELS: Record<RoomOperation, string> = {
-  starting: "Запуск...",
-  stopping: "Остановка...",
-  pausing: "Пауза...",
+  starting: t("common.starting"),
+  stopping: t("common.stopping"),
+  pausing: t("common.pausing"),
 }
 
 export default function SyncLineCard({
@@ -76,10 +76,10 @@ export default function SyncLineCard({
               <Play className="size-3" />
             )}
             label={operation === "starting"
-              ? "Запуск..."
+              ? t("common.starting")
               : room.status === "playing"
-                ? "Играет"
-                : "Запуск"}
+                ? t("rooms.status.playing")
+                : t("common.play")}
             variant="success"
             onClick={() => onPlay()}
             disabled={isPending || room.status === "playing"}
@@ -91,7 +91,7 @@ export default function SyncLineCard({
             ) : (
               <Square className="size-3" />
             )}
-            label={operation === "stopping" ? "Остановка..." : "Стоп"}
+            label={operation === "stopping" ? t("common.stopping") : t("common.stop")}
             variant="secondary"
             onClick={() => onStop()}
             disabled={isPending || room.status !== "playing" && room.status !== "paused"}

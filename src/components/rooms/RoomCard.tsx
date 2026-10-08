@@ -19,6 +19,7 @@ import type { Room, RoomOperation } from "@/types"
 import StatusBadge from "@/components/StatusBadge"
 import { cn } from "cn"
 import { Slider } from "../ui/slider"
+import { t } from "@/i18n"
 
 interface Props {
   room: Room
@@ -35,9 +36,9 @@ interface Props {
 }
 
 const OPERATION_LABELS: Record<RoomOperation, string> = {
-  starting: "Запуск...",
-  stopping: "Остановка...",
-  pausing: "Пауза...",
+  starting: t("common.starting"),
+  stopping: t("common.stopping"),
+  pausing: t("common.pausing"),
 }
 
 export default function RoomCard({
@@ -123,7 +124,7 @@ export default function RoomCard({
               variant="ghost"
               size="icon"
               className="size-8 shrink-0 text-muted-foreground"
-              aria-label="Дополнительные действия"
+              aria-label={t("rooms.table.actions")}
               aria-expanded={menuOpen}
               disabled={isPending}
               onClick={() => setMenuOpen((open) => !open)}
@@ -135,7 +136,7 @@ export default function RoomCard({
               <div className="absolute right-0 top-9 z-50 w-44 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
                 <MenuItem
                   icon={<Pencil className="size-3.5" />}
-                  label="Редактировать"
+                  label={t("common.edit")}
                   onClick={() => {
                     closeMenu()
                     onEdit()
@@ -144,7 +145,7 @@ export default function RoomCard({
 
                 <MenuItem
                   icon={<Copy className="size-3.5" />}
-                  label="Дублировать"
+                  label={t("common.duplicate")}
                   onClick={() => {
                     closeMenu()
                     onDuplicate()
@@ -161,7 +162,7 @@ export default function RoomCard({
                       <Play className="size-3.5" />
                     )
                   }
-                  label={isPlaying ? "Пауза" : "Запуск"}
+                  label={isPlaying ? t("common.pause") : t("common.play")}
                   hidden={hideMediaControls}
                   onClick={() => {
                     closeMenu()
@@ -176,7 +177,7 @@ export default function RoomCard({
 
                 <MenuItem
                   icon={<Square className="size-3.5" />}
-                  label="Остановить"
+                  label={t("common.stop")}
                   hidden={hideMediaControls}
                   onClick={() => {
                     closeMenu()
@@ -189,7 +190,7 @@ export default function RoomCard({
 
                 <MenuItem
                   icon={<Trash2 className="size-3.5" />}
-                  label="Удалить"
+                  label={t("common.delete")}
                   onClick={() => {
                     closeMenu()
                     onDelete()
@@ -202,7 +203,7 @@ export default function RoomCard({
         </div>
 
         <div className="mb-2.5 truncate text-[11px] text-muted-foreground">
-          {room.audioFileId ?? "Файл не назначен"}
+          {room.audioFileId ?? t("common.fileNotAssigned")}
         </div>
 
         <div className="mb-3">
@@ -215,7 +216,9 @@ export default function RoomCard({
           <div
             className="h-1.5 overflow-hidden rounded-full bg-muted-foreground/25"
             role="progressbar"
-            aria-label={`Прогресс воспроизведения комнаты ${room.id}`}
+            aria-label={t("rooms.table.playbackProgress", {
+              id: room.id,
+            })}
             aria-valuemin={0}
             aria-valuemax={room.duration}
             aria-valuenow={room.position}
@@ -244,7 +247,9 @@ export default function RoomCard({
                 onVolumeChange(room.id, volume)
               }
             }}
-            aria-label={`Громкость комнаты ${room.name}`}
+            aria-label={t("rooms.table.roomVolume", {
+              name: room.name,
+            })}
             className="w-24"
           />
 
@@ -276,7 +281,7 @@ export default function RoomCard({
           {operation === "starting" ? (
             <ActionButton
               icon={<Loader2 className="size-3 animate-spin" />}
-              label="Запуск..."
+              label={t("common.starting")}
               variant="success"
               hidden={hideMediaControls}
               disabled
@@ -284,7 +289,7 @@ export default function RoomCard({
           ) : operation === "pausing" ? (
             <ActionButton
               icon={<Loader2 className="size-3 animate-spin" />}
-              label="Пауза..."
+              label={t("common.pausing")}
               variant="primary"
               hidden={hideMediaControls}
               disabled
@@ -292,7 +297,7 @@ export default function RoomCard({
           ) : operation === "stopping" ? (
             <ActionButton
               icon={<Loader2 className="size-3 animate-spin" />}
-              label="Остановка..."
+              label={t("common.stopping")}
               variant="secondary"
               hidden={hideMediaControls}
               disabled
@@ -300,7 +305,7 @@ export default function RoomCard({
           ) : isPlaying ? (
             <ActionButton
               icon={<Pause className="size-3" />}
-              label="Пауза"
+              label={t("common.pause")}
               variant="primary"
               hidden={hideMediaControls}
               onClick={() => onPause(room.id)}
@@ -308,7 +313,7 @@ export default function RoomCard({
           ) : (
             <ActionButton
               icon={<Play className="size-3" />}
-              label="Запуск"
+              label={t("common.play")}
               variant="success"
               hidden={hideMediaControls}
               onClick={() => onPlay(room.id)}
@@ -317,7 +322,7 @@ export default function RoomCard({
 
           <ActionButton
             icon={<Square className="size-3" />}
-            label="Стоп"
+            label={t("common.stop")}
             variant="secondary"
             onClick={() => onStop(room.id)}
             disabled={isPending || room.status !== "playing" && room.status !== "paused"}
@@ -330,7 +335,9 @@ export default function RoomCard({
             hidden
             size="icon"
             className="size-8 shrink-0"
-            aria-label={`Редактировать комнату ${room.id}`}
+            aria-label={t("rooms.table.roomActions", {
+              name: room.name,
+            })}
             onClick={onEdit}
             disabled={isPending}
           >

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table"
 
 import type { ScheduleItem } from "@/types"
+import { t } from "@/i18n"
 
 interface Props {
   schedule: ScheduleItem[]
@@ -29,15 +30,15 @@ export default function ScheduleTable({
         <TableHeader>
           <TableRow className="bg-muted/40">
             <TableHead className="w-16">
-              Вкл.
+              {t("schedule.toolbar.enabled")}
             </TableHead>
 
-            <TableHead>Время</TableHead>
-            <TableHead>Сценарий</TableHead>
-            <TableHead>Дни</TableHead>
-            <TableHead>Повтор</TableHead>
-            <TableHead>Следующий запуск</TableHead>
-            <TableHead>Статус</TableHead>
+            <TableHead>{t("schedule.toolbar.time")}</TableHead>
+            <TableHead>{t("schedule.toolbar.scenario")}</TableHead>
+            <TableHead>{t("schedule.toolbar.days")}</TableHead>
+            <TableHead>{t("schedule.toolbar.repeat")}</TableHead>
+            <TableHead>{t("schedule.toolbar.nextRun")}</TableHead>
+            <TableHead>{t("schedule.toolbar.status")}</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -48,7 +49,7 @@ export default function ScheduleTable({
                 colSpan={7}
                 className="h-32 text-center text-muted-foreground"
               >
-                Расписаний пока нет
+                {t("schedule.toolbar.noSchedules")}
               </TableCell>
             </TableRow>
           ) : (
@@ -82,7 +83,9 @@ export default function ScheduleTable({
                       onCheckedChange={() =>
                         onToggle(item.id)
                       }
-                      aria-label={`Включить расписание ${item.id}`}
+                      aria-label={t("schedule.toolbar.enable", {
+                        id: item.id,
+                      })}
                     />
                   </TableCell>
 
@@ -96,16 +99,14 @@ export default function ScheduleTable({
 
                   <TableCell className="text-sm">
                     {item.days.length === 7
-                      ? "Пн – Вс"
-                      : item.days.join(", ")}
+                      ? t("schedule.toolbar.everyDay")
+                      : item.days
+                          .map((day) => t(`schedule.weekdays.${day}`))
+                          .join(", ")}
                   </TableCell>
 
                   <TableCell className="text-sm">
-                    {item.repeat === "daily"
-                      ? "Ежедневно"
-                      : item.repeat === "weekly"
-                        ? "Еженедельно"
-                        : "Однократно"}
+                    {t(`schedule.repeat.${item.repeat}`)}
                   </TableCell>
 
                   <TableCell className="text-xs text-muted-foreground">
@@ -125,8 +126,8 @@ export default function ScheduleTable({
                       </span>
 
                       {active
-                        ? "Активно"
-                        : "Отключено"}
+                        ? t("schedule.status.active")
+                        : t("schedule.status.inactive")}
                     </span>
                   </TableCell>
                 </TableRow>

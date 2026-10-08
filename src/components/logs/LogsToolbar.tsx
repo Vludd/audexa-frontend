@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { LogEntry } from "@/types"
 import { exportLogs } from "@/lib/logger"
+import { t, type TranslationKey } from "@/i18n"
 
 export type LogFilter = "all" | "INFO" | "WARNING" | "ERROR"
 
@@ -20,11 +21,11 @@ interface Props {
   onClear?: () => void
 }
 
-const FILTERS: { value: LogFilter; label: string }[] = [
-  { value: "all", label: "Все" },
-  { value: "INFO", label: "Информация" },
-  { value: "WARNING", label: "Предупреждения" },
-  { value: "ERROR", label: "Ошибки" },
+const FILTERS: { value: LogFilter; labelKey: TranslationKey }[] = [
+  { value: "all", labelKey: "logs.filters.all" },
+  { value: "INFO", labelKey: "logs.filters.info" },
+  { value: "WARNING", labelKey: "logs.filters.warning" },
+  { value: "ERROR", labelKey: "logs.filters.error" },
 ]
 
 const ACTIVE_CLASS: Record<LogFilter, string> = {
@@ -93,7 +94,7 @@ export default function LogsToolbar({
           <Input
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
-            placeholder="Поиск по журналу..."
+            placeholder={t("logs.filters.search")}
             className="h-8 pl-8 text-xs"
           />
         </div>
@@ -110,7 +111,7 @@ export default function LogsToolbar({
                 className={active ? ACTIVE_CLASS[item.value] : ""}
                 onClick={() => onFilterChange(item.value)}
               >
-                {item.label} ({count(item.value)})
+                {t(item.labelKey)} ({count(item.value)})
               </Button>
             )
           })}
@@ -120,12 +121,12 @@ export default function LogsToolbar({
 
         <Button variant="outline" size="sm" onClick={onRefresh}>
           <RefreshCw className="size-3.5" />
-          Обновить
+          {t("logs.filters.refresh")}
         </Button>
 
         <Button variant="outline" size="sm" onClick={handleExport}>
           <Download className="size-3.5" />
-          Экспорт
+          {t("logs.filters.export")}
         </Button>
 
         <Button
@@ -135,14 +136,14 @@ export default function LogsToolbar({
           onClick={onClear}
         >
           <Trash2 className="size-3.5" />
-          Очистить
+          {t("logs.filters.clear")}
         </Button>
       </div>
 
       {/* Additional Filters */}
       <div className="mt-2 flex items-center gap-4 border-t pt-2">
         <span className="text-xs font-medium text-muted-foreground">
-          Дополнительные фильтры
+          {t("logs.filters.additional")}
         </span>
 
         <label className="flex cursor-pointer items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground">
@@ -155,7 +156,7 @@ export default function LogsToolbar({
             className="size-3.5 accent-primary"
           />
 
-          <span>Включить DEBUG</span>
+          <span>{t("logs.filters.includeDebug")}</span>
         </label>
       </div>
     </div>

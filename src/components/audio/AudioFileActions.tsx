@@ -1,6 +1,7 @@
 import { Pencil, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { t } from "@/i18n"
 
 interface Props {
   onRename?: () => void
@@ -16,7 +17,7 @@ export default function AudioFileActions({
       <Button
         variant="ghost"
         size="icon-xs"
-        title="Переименовать"
+        title={t("audio.actions.rename")}
         className="text-muted-foreground hover:text-foreground"
         onClick={(event) => {
           event.stopPropagation()
@@ -29,7 +30,7 @@ export default function AudioFileActions({
       <Button
         variant="ghost"
         size="icon-xs"
-        title="Удалить"
+        title={t("audio.actions.delete")}
         className="text-muted-foreground hover:text-destructive"
         onClick={(event) => {
           event.stopPropagation()

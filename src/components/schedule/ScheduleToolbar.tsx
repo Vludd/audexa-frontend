@@ -7,6 +7,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { t } from "@/i18n"
 
 interface Props {
   selectedDate: string
@@ -33,7 +34,7 @@ export default function ScheduleToolbar({
         onClick={onAdd}
       >
         <Plus className="size-3.5" />
-        Добавить расписание
+        {t("schedule.toolbar.add")}
       </Button>
 
       <Button
@@ -44,7 +45,7 @@ export default function ScheduleToolbar({
         onClick={onEdit}
       >
         <Edit2 className="size-3.5" />
-        Редактировать
+        {t("common.edit")}
       </Button>
 
       <Button
@@ -56,7 +57,7 @@ export default function ScheduleToolbar({
         onClick={onDelete}
       >
         <Trash2 className="size-3.5" />
-        Удалить
+        {t("common.delete")}
       </Button>
 
       <Button
@@ -67,7 +68,7 @@ export default function ScheduleToolbar({
         onClick={onDuplicate}
       >
         <Copy className="size-3.5" />
-        Дублировать
+        {t("common.duplicate")}
       </Button>
 
       <div className="flex-1" />

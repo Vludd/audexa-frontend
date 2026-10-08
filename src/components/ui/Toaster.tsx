@@ -8,6 +8,7 @@ import {
   type ToastItem,
 } from "@/lib/toast"
 import { cn } from "@/lib/utils"
+import { t } from "@/i18n"
 
 const variantStyles = {
   success: {
@@ -51,7 +52,7 @@ function ToastCard({ item }: { item: ToastItem }) {
 
       <button
         type="button"
-        aria-label="Закрыть уведомление"
+        aria-label={t("common.closeNotification")}
         className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground opacity-70 transition-opacity hover:bg-muted hover:text-foreground hover:opacity-100"
         onClick={() => toast.dismiss(item.id)}
       >

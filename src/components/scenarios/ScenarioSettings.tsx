@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 import type { Scenario } from "@/types"
 import type { ScenarioUpdate } from "@/hooks/useScenarios"
+import { t } from "@/i18n"
 
 interface Props {
   scenario: Scenario
@@ -20,10 +21,10 @@ export default function ScenarioSettings({
     <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
       <div className="rounded-lg border bg-card p-3.5">
         <div className="mb-3 text-sm font-semibold">
-          Основные настройки
+          {t("scenarios.settings.general")}
         </div>
 
-        <FieldRow label="Название">
+        <FieldRow label={t("scenarios.settings.name")}>
           <Input
             value={scenario.name}
             onChange={(event) =>
@@ -35,7 +36,7 @@ export default function ScenarioSettings({
           />
         </FieldRow>
 
-        <FieldRow label="Описание">
+        <FieldRow label={t("scenarios.settings.description")}>
           <Textarea
             value={scenario.description}
             onChange={(event) =>
@@ -47,50 +48,48 @@ export default function ScenarioSettings({
           />
         </FieldRow>
 
-        <FieldRow label="Режим воспроизведения">
+        <FieldRow label={t("scenarios.settings.playbackMode")}>
           <select
             value={scenario.playMode}
             onChange={(event) =>
               onUpdate({
-                playMode: event.target.value,
+                playMode:
+                  event.target.value === "parallel"
+                    ? "parallel"
+                    : "sequential",
               })
             }
             className="h-9 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
           >
-            <option value={scenario.playMode}>
-              {scenario.playMode}
-            </option>
-
             <option value="sequential">
-              Последовательно
+              {t("scenarios.settings.sequential")}
             </option>
 
             <option value="parallel">
-              Параллельно
+              {t("scenarios.settings.parallel")}
             </option>
           </select>
         </FieldRow>
 
-        <FieldRow label="Повтор">
+        <FieldRow label={t("scenarios.settings.repeat")}>
           <select
             value={scenario.repeat}
             onChange={(event) =>
               onUpdate({
-                repeat: event.target.value,
+                repeat:
+                  event.target.value === "loop"
+                    ? "loop"
+                    : "once",
               })
             }
             className="h-9 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
           >
-            <option value={scenario.repeat}>
-              {scenario.repeat}
-            </option>
-
             <option value="once">
-              Один раз
+              {t("scenarios.settings.once")}
             </option>
 
             <option value="loop">
-              Зациклить
+              {t("scenarios.settings.loop")}
             </option>
           </select>
         </FieldRow>
@@ -98,11 +97,11 @@ export default function ScenarioSettings({
 
       <div className="rounded-lg border bg-card p-3.5">
         <div className="mb-3 text-sm font-semibold">
-          Дополнительные опции
+          {t("scenarios.settings.additional")}
         </div>
 
         <CheckRow
-          label="Автоматически запускать по расписанию"
+          label={t("scenarios.settings.autoStart")}
           checked={scenario.autoStart}
           onCheckedChange={(value) =>
             onUpdate({ autoStart: value })
@@ -110,7 +109,7 @@ export default function ScenarioSettings({
         />
 
         <CheckRow
-          label="Останавливать предыдущий сценарий"
+          label={t("scenarios.settings.stopPrevious")}
           checked={scenario.stopPrevious}
           onCheckedChange={(value) =>
             onUpdate({ stopPrevious: value })
@@ -118,7 +117,7 @@ export default function ScenarioSettings({
         />
 
         <CheckRow
-          label="Синхронный перевод (линия 31)"
+          label={t("scenarios.settings.syncTranslation")}
           checked={scenario.syncTranslation}
           onCheckedChange={(value) =>
             onUpdate({ syncTranslation: value })
@@ -126,7 +125,7 @@ export default function ScenarioSettings({
         />
 
         <CheckRow
-          label="Плавное затухание между треками"
+          label={t("scenarios.settings.crossfade")}
           checked={scenario.crossfade}
           onCheckedChange={(value) =>
             onUpdate({ crossfade: value })
@@ -134,7 +133,7 @@ export default function ScenarioSettings({
         />
 
         <CheckRow
-          label="Показывать уведомления"
+          label={t("scenarios.settings.notifications")}
           checked={scenario.notifications}
           onCheckedChange={(value) =>
             onUpdate({ notifications: value })

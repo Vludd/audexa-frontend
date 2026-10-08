@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { cn } from "cn"
+import { t, type TranslationKey } from "@/i18n"
 
 export type RoomFilter = "all" | "playing" | "waiting" | "stopped" | "error"
 
@@ -11,32 +12,32 @@ interface Props {
 
 const filters: {
   value: RoomFilter
-  label: string
+  labelKey: TranslationKey
   dotClass: string
 }[] = [
   {
     value: "all",
-    label: "Все",
+    labelKey: "rooms.filters.all",
     dotClass: "bg-primary",
   },
   {
     value: "playing",
-    label: "Играют",
+    labelKey: "rooms.filters.playing",
     dotClass: "bg-emerald-500",
   },
   {
     value: "waiting",
-    label: "Ожидание",
+    labelKey: "rooms.filters.waiting",
     dotClass: "bg-amber-500",
   },
   {
     value: "stopped",
-    label: "Остановлены",
+    labelKey: "rooms.filters.stopped",
     dotClass: "bg-muted-foreground",
   },
   {
     value: "error",
-    label: "Ошибки",
+    labelKey: "rooms.filters.error",
     dotClass: "bg-destructive",
   },
 ]
@@ -86,7 +87,7 @@ export default function RoomFilters({
               />
             )}
 
-            {filter.label} ({counts[filter.value]})
+            {t(filter.labelKey)} ({counts[filter.value]})
           </Button>
         )
       })}

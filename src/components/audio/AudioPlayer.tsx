@@ -13,6 +13,7 @@ import { useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import type { AudioFile } from "@/types"
+import { t } from "@/i18n"
 
 interface Props {
   file: AudioFile | null
@@ -79,7 +80,7 @@ export default function AudioPlayer({
     return (
       <div className="border-t bg-card px-5 py-3">
         <div className="flex min-h-12 items-center justify-center text-xs text-muted-foreground">
-          Выберите аудиофайл для прослушивания
+          {t("audio.player.chooseFile")}
         </div>
       </div>
     )
@@ -96,8 +97,8 @@ export default function AudioPlayer({
           onClick={isPlaying ? onPause : onPlay}
           title={
             isPlaying
-              ? "Пауза"
-              : "Воспроизвести"
+              ? t("audio.table.pause")
+              : t("audio.table.play")
           }
         >
           {isPlayPending ? (
@@ -153,7 +154,7 @@ export default function AudioPlayer({
 
                 onSeek(v ?? 0)
               }}
-              aria-label="Позиция воспроизведения"
+              aria-label={t("audio.player.position")}
             />
 
             <span className="w-10 shrink-0 font-mono text-[11px] text-muted-foreground">
@@ -165,7 +166,9 @@ export default function AudioPlayer({
             <span>
               {playbackError
                 ? playbackError
-                : `${Math.round(progress)}% воспроизведено`}
+                : t("audio.player.progress", {
+                    percent: Math.round(progress),
+                  })}
             </span>
           </div>
         </div>
@@ -174,7 +177,7 @@ export default function AudioPlayer({
           <Button
             variant="ghost"
             size="icon-sm"
-            title="Назад 10 секунд"
+            title={t("audio.player.back")}
             onClick={() => onSkip(-10)}
           >
             <RotateCcw className="size-4" />
@@ -183,7 +186,7 @@ export default function AudioPlayer({
           <Button
             variant="ghost"
             size="icon-sm"
-            title="Вперёд 10 секунд"
+            title={t("audio.player.forward")}
             onClick={() => onSkip(10)}
           >
             <RotateCw className="size-4" />
@@ -192,7 +195,7 @@ export default function AudioPlayer({
           <Button
             variant="ghost"
             size="icon-sm"
-            title="Остановить"
+            title={t("audio.player.stop")}
             onClick={onStop}
           >
             <Square className="size-4" />
@@ -205,8 +208,8 @@ export default function AudioPlayer({
             size="icon-sm"
             title={
               volume === 0
-                ? "Включить звук"
-                : "Выключить звук"
+                ? t("audio.player.unmute")
+                : t("audio.player.mute")
             }
             onClick={() =>
               onVolumeChange(
@@ -233,7 +236,7 @@ export default function AudioPlayer({
 
               onVolumeChange(v ?? 0)
             }}
-            aria-label="Громкость"
+            aria-label={t("audio.player.volume")}
           />
         </div>
       </div>

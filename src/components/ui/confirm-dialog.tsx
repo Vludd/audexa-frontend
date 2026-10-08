@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { t } from "@/i18n"
 
 interface ConfirmDialogProps {
   open: boolean
@@ -30,8 +31,8 @@ export default function ConfirmDialog({
   onOpenChange,
   title,
   description,
-  confirmLabel = "Подтвердить",
-  cancelLabel = "Отмена",
+  confirmLabel = t("common.confirm"),
+  cancelLabel = t("common.cancel"),
   variant = "default",
   loading = false,
   onConfirm,
@@ -66,7 +67,7 @@ export default function ConfirmDialog({
             onClick={onConfirm}
           >
             {loading
-              ? "Выполнение..."
+              ? t("common.executing")
               : confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>

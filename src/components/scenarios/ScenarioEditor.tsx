@@ -21,6 +21,7 @@ import type {
 
 import ScenarioSettings from "./ScenarioSettings"
 import ScenarioStepsTable from "./ScenarioStepsTable"
+import { t } from "@/i18n"
 
 interface Props {
   scenario: Scenario
@@ -90,7 +91,7 @@ export default function ScenarioEditor({
   const handleAddStep = () => {
     onAddStep(scenario.id, {
       roomId: rooms[0]?.id ?? "",
-      roomName: rooms[0]?.name ?? "Не выбрана",
+      roomName: rooms[0]?.name ?? t("scenarios.editor.notSelected"),
       file: audioFiles[0]?.name ?? "",
       volume: 100,
       delay: 0,
@@ -115,34 +116,34 @@ export default function ScenarioEditor({
               }
             >
               {scenario.status === "active"
-                ? "Активный"
-                : "Неактивный"}
+                ? t("scenarios.editor.active")
+                : t("scenarios.editor.inactive")}
             </Badge>
           </div>
 
           <p className="mt-1 text-xs text-muted-foreground">
             {scenario.description ||
-              "Описание сценария не задано"}
+              t("scenarios.editor.descriptionEmpty")}
           </p>
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
           <InfoPill
-            label="Длительность"
+            label={t("scenarios.editor.duration")}
             value={fmtSec(duration)}
           />
 
           <InfoPill
-            label="Шагов"
+            label={t("scenarios.editor.steps")}
             value={String(scenario.steps.length)}
           />
 
           <InfoPill
-            label="Статус"
+            label={t("scenarios.editor.status")}
             value={
               scenario.status === "active"
-                ? "Активный"
-                : "Неактивный"
+                ? t("scenarios.editor.active")
+                : t("scenarios.editor.inactive")
             }
             active={scenario.status === "active"}
           />
@@ -161,7 +162,7 @@ export default function ScenarioEditor({
             <CheckCircle2 className="size-4 text-emerald-500" />
 
             <span className="text-xs">
-              Сценарий готов к запуску.
+              {t("scenarios.editor.ready")}
             </span>
           </>
         ) : (
@@ -170,7 +171,7 @@ export default function ScenarioEditor({
 
             <div className="min-w-0">
               <div className="text-xs font-semibold">
-                Сценарий требует исправлений
+                {t("scenarios.editor.needsFixes")}
               </div>
 
               <ul className="mt-1 list-inside list-disc text-[11px] text-muted-foreground">
@@ -183,7 +184,9 @@ export default function ScenarioEditor({
 
               {validation.errors.length > 3 && (
                 <div className="mt-1 text-[11px] text-muted-foreground">
-                  И ещё {validation.errors.length - 3}...
+                  {t("scenarios.editor.moreErrors", {
+                    count: validation.errors.length - 3,
+                  })}
                 </div>
               )}
             </div>
@@ -221,13 +224,13 @@ export default function ScenarioEditor({
           onClick={handleAddStep}
         >
           <Plus className="size-3.5" />
-          Добавить шаг
+          {t("scenarios.editor.addStep")}
         </Button>
 
         <div className="flex-1" />
 
         <span className="text-xs text-muted-foreground">
-          Общая длительность:{" "}
+          {t("scenarios.editor.totalDuration")}{" "}
           <strong className="text-foreground">
             {fmtSec(duration)}
           </strong>

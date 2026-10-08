@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { t } from "@/i18n"
 
 interface Props {
   onSave?: () => void
@@ -12,11 +13,11 @@ export default function SettingsActions({
   return (
     <div className="flex gap-2">
       <Button variant="success" onClick={onSave} disabled>
-        Сохранить настройки
+        {t("settings.actions.save")}
       </Button>
 
       <Button variant="outline" onClick={onReset} disabled>
-        Сбросить по умолчанию
+        {t("settings.actions.reset")}
       </Button>
     </div>
   )

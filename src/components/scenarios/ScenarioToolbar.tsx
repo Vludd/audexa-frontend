@@ -8,6 +8,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { t } from "@/i18n"
 
 interface Props {
   query: string
@@ -38,7 +39,7 @@ export default function ScenarioToolbar({
         onClick={onCreate}
       >
         <Plus className="size-3.5" />
-        Создать сценарий
+        {t("scenarios.toolbar.create")}
       </Button>
 
       <Button
@@ -49,7 +50,7 @@ export default function ScenarioToolbar({
         onClick={onDuplicate}
       >
         <Copy className="size-3.5" />
-        Дублировать
+        {t("scenarios.toolbar.duplicate")}
       </Button>
 
       <Button
@@ -60,7 +61,7 @@ export default function ScenarioToolbar({
         onClick={onEdit}
       >
         <Edit2 className="size-3.5" />
-        Редактировать
+        {t("scenarios.toolbar.edit")}
       </Button>
 
       <Button
@@ -72,7 +73,7 @@ export default function ScenarioToolbar({
         onClick={onDelete}
       >
         <Trash2 className="size-3.5" />
-        Удалить
+        {t("scenarios.toolbar.delete")}
       </Button>
 
       <div className="flex-1" />
@@ -85,7 +86,7 @@ export default function ScenarioToolbar({
           onChange={(event) =>
             onQueryChange(event.target.value)
           }
-          placeholder="Поиск сценариев..."
+          placeholder={t("scenarios.toolbar.search")}
           className="h-8 pl-9 text-xs"
         />
       </div>

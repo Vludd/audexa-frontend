@@ -1,0 +1,923 @@
+import type { TranslationTree } from "../types"
+
+import { ru } from "./ru"
+
+type Widen<T> = T extends string ? string : { [K in keyof T]: Widen<T[K]> }
+
+export const en: Widen<typeof ru> = {
+  common: {
+    cancel: "Cancel",
+
+    save: "Save",
+
+    delete: "Delete",
+
+    edit: "Edit",
+
+    duplicate: "Duplicate",
+
+    retry: "Retry",
+
+    settings: "Settings",
+
+    today: "Today",
+
+    online: "ONLINE",
+
+    offline: "OFFLINE",
+
+    close: "Close",
+
+    add: "Add",
+
+    stop: "Stop",
+
+    pause: "Pause",
+
+    play: "Play",
+
+    resume: "Resume",
+
+    starting: "Starting...",
+
+    stopping: "Stopping...",
+
+    pausing: "Pausing...",
+
+    notAssigned: "Not assigned",
+
+    fileNotAssigned: "No file assigned",
+
+    confirm: "Confirm",
+
+    executing: "Working...",
+
+    closeNotification: "Dismiss notification",
+  },
+
+  nav: {
+    dashboard: "Dashboard",
+
+    rooms: "Rooms",
+
+    scenarios: "Scenarios",
+
+    schedule: "Schedule",
+
+    audioFiles: "Audio files",
+
+    settings: "Settings",
+
+    logs: "Event log",
+
+    description: "Centralized audio control and automation platform",
+  },
+
+  header: {
+    systemOk: "System operational",
+
+    systemError: "System error",
+
+    allLinesOk: "All lines are operational",
+
+    checkConnection: "Check the connection",
+  },
+
+  statusBar: {
+    audioDevice: "Audio device",
+
+    outputs: "Outputs",
+
+    available: "available",
+
+    frequency: "Frequency",
+
+    buffer: "Buffer",
+
+    samples: "samples",
+
+    audioSettings: "Audio settings",
+  },
+
+  pages: {
+    dashboard: {
+      title: "Dashboard",
+
+      subtitle: "Centralized audio system control and monitoring",
+    },
+
+    rooms: {
+      title: "Rooms",
+
+      subtitle: "Manage room audio lines",
+    },
+
+    scenarios: {
+      title: "Scenarios",
+
+      subtitle: "Create and manage audio scenarios for rooms",
+    },
+
+    schedule: {
+      title: "Schedule",
+
+      subtitle: "Automatically run scenarios at scheduled times",
+    },
+
+    audioFiles: {
+      title: "Audio files",
+
+      subtitle: "Manage the system's audio files",
+    },
+
+    settings: {
+      title: "Settings",
+
+      subtitle: "Configure the audio system and equipment",
+    },
+
+    logs: {
+      title: "Event log",
+
+      subtitle: "Frontend: UI activity, API, network, and runtime errors",
+
+      records: "Records",
+    },
+  },
+
+  schedule: {
+    weekdays: {
+      mon: "Mon",
+
+      tue: "Tue",
+
+      wed: "Wed",
+
+      thu: "Thu",
+
+      fri: "Fri",
+
+      sat: "Sat",
+
+      sun: "Sun",
+    },
+
+    repeat: {
+      daily: "Daily",
+
+      weekly: "Weekly",
+
+      once: "Once",
+    },
+
+    status: {
+      active: "Active",
+
+      inactive: "Disabled",
+    },
+
+    toolbar: {
+      add: "Add schedule",
+
+      time: "Time",
+
+      scenario: "Scenario",
+
+      days: "Days",
+
+      repeat: "Repeat",
+
+      nextRun: "Next run",
+
+      status: "Status",
+
+      enabled: "On",
+
+      noSchedules: "No schedules yet",
+
+      enable: "Enable schedule {id}",
+
+      everyDay: "Mon – Sun",
+    },
+
+    dialog: {
+      addTitle: "Add schedule",
+
+      editTitle: "Edit schedule",
+
+      time: "Start time",
+
+      scenario: "Scenario",
+
+      chooseScenario: "Select a scenario",
+
+      weekdays: "Days of the week",
+
+      chooseDay: "Select at least one day.",
+
+      repeat: "Repeat",
+
+      enabled: "Enabled",
+
+      autoStart: "Run this schedule automatically",
+
+      saveChanges: "Save changes",
+
+      create: "Create schedule",
+    },
+
+    upcoming: {
+      title: "Upcoming events",
+
+      all: "All events",
+
+      empty: "No active events",
+
+      emptyDescription: "Add a schedule or enable an existing one.",
+
+      quickActions: "Quick actions",
+
+      runNow: "Run now",
+
+      stopAll: "Stop all",
+
+      test: "Test schedule",
+    },
+
+    nextRun: {
+      todayAt: "Today at {time}",
+
+      dayAt: "{day} at {time}",
+
+      nextDayAt: "Next {day} at {time}",
+    },
+
+    confirmDelete: 'Delete the "{scenario}" schedule at {time}?',
+  },
+
+  rooms: {
+    duplicateSuffix: "copy",
+
+    filters: {
+      all: "All",
+
+      playing: "Playing",
+
+      waiting: "Waiting",
+
+      stopped: "Stopped",
+
+      error: "Errors",
+    },
+
+    toolbar: {
+      add: "Add room",
+
+      showGrid: "Show grid",
+
+      showList: "Show list",
+
+      search: "Search rooms...",
+    },
+
+    status: {
+      idle: "Ready",
+
+      playing: "Playing",
+
+      paused: "Paused",
+
+      stopped: "Stopped",
+
+      waiting: "Waiting",
+
+      error: "Error",
+    },
+
+    table: {
+      room: "Room",
+
+      status: "Status",
+
+      file: "File",
+
+      volume: "Volume",
+
+      actions: "Actions",
+
+      playbackProgress: "Playback progress for room {id}",
+
+      roomVolume: "Volume for room {name}",
+
+      roomActions: "Actions for room {name}",
+    },
+
+    dialog: {
+      editTitle: "Edit room",
+
+      createTitle: "New room",
+
+      editDescription: "Edit settings for room {id}.",
+
+      createDescription: "Add a new room audio line.",
+
+      name: "Name",
+
+      namePlaceholder: "For example, Main Hall",
+
+      nameRequired: "Enter a room name",
+
+      audioFile: "Audio file",
+
+      audioFileHelp:
+        "Enter the audio file ID for now. An audio library selector will be added here later.",
+
+      volume: "Volume",
+    },
+
+    confirmDelete: {
+      title: "Delete room?",
+
+      description:
+        'Room "{name}" will be deleted. This action cannot be undone.',
+    },
+
+    notifications: {
+      saved: "Room saved",
+
+      savedDescription: 'Changes to room "{name}" have been saved.',
+
+      created: "Room created",
+
+      createdDescription: 'Room "{name}" has been added.',
+
+      deleted: "Room deleted",
+
+      deletedDescription: 'Room "{name}" has been deleted.',
+
+      duplicated: "Room duplicated",
+
+      duplicatedDescription: 'A copy of room "{name}" has been created.',
+    },
+
+    dashboard: {
+      title: "Room status",
+
+      all: "All rooms →",
+
+      empty: "No active rooms",
+
+      showMoreOne: "Show {count} more room",
+
+      showMoreFew: "Show {count} more rooms",
+
+      showMoreMany: "Show {count} more rooms",
+    },
+  },
+
+  audio: {
+    toolbar: {
+      add: "Add file",
+
+      opening: "Opening...",
+
+      deleteSelected: "Delete selected",
+
+      search: "Search files...",
+    },
+
+    table: {
+      selectAll: "Select all files",
+
+      selectFile: "Select {name}",
+
+      name: "Name",
+
+      filename: "File",
+
+      format: "Format",
+
+      sampleRate: "Sample rate",
+
+      duration: "Duration",
+
+      size: "Size",
+
+      pause: "Pause",
+
+      play: "Play",
+
+      playing: "Now playing",
+
+      starting: "Starting...",
+
+      selected: "Selected",
+    },
+
+    player: {
+      chooseFile: "Select an audio file to listen",
+
+      position: "Playback position",
+
+      progress: "{percent}% played",
+
+      back: "Back 10 seconds",
+
+      forward: "Forward 10 seconds",
+
+      stop: "Stop",
+
+      unmute: "Unmute",
+
+      mute: "Mute",
+
+      volume: "Volume",
+    },
+
+    actions: {
+      rename: "Rename",
+
+      delete: "Delete",
+    },
+
+    import: {
+      drop: "Drop files to import",
+
+      supported: "MP3 and WAV are supported",
+
+      uploading: "Uploading audio file...",
+
+      loadError: "Failed to load audio files",
+
+      noResults: "No results found",
+
+      searchHint: "Try changing your search.",
+
+      empty: "No audio files yet",
+
+      emptyDescription:
+        "Add MP3 or WAV files to use them in rooms and scenarios.",
+
+      retry: "Retry",
+    },
+
+    rename: {
+      title: "Rename audio file",
+
+      description: "Change the display name of the file.",
+
+      name: "Name",
+
+      placeholder: "Audio file name",
+
+      file: "File: {filename}",
+    },
+
+    confirmDelete: {
+      title: "Delete audio file?",
+
+      description:
+        '"{name}" will be removed from the library. This action cannot be undone.',
+
+      selectedTitle: "Delete selected files?",
+
+      selectedDescription:
+        "{count} files will be deleted. This action cannot be undone.",
+    },
+
+    errors: {
+      playback: "Failed to play audio file",
+
+      playbackStart: "Failed to start audio playback",
+
+      upload: "Failed to add audio file",
+
+      unsupportedFormat: "Unsupported format",
+
+      supportedFormatsHint: "{name}. Use MP3 or WAV.",
+
+      rename: "Failed to rename audio file",
+
+      emptyName: "Name cannot be empty",
+
+      delete: "Failed to delete audio file",
+
+      deleteSelected: "Failed to delete selected files",
+    },
+
+    notifications: {
+      added: "Audio file added",
+
+      renamed: "Audio file renamed",
+
+      deleted: "Audio file deleted",
+
+      deletedMany: "Audio files deleted",
+
+      deletedCount: "{count} files deleted",
+    },
+  },
+
+  scenarios: {
+    toolbar: {
+      create: "Create scenario",
+
+      duplicate: "Duplicate",
+
+      edit: "Edit",
+
+      delete: "Delete",
+
+      search: "Search scenarios...",
+    },
+
+    list: {
+      title: "Scenario list",
+
+      noResults: "No results found.",
+
+      step: "step",
+
+      steps: "steps",
+
+      emptyTitle: "No scenarios yet",
+
+      emptyDescription: "Create your first scenario to get started.",
+
+      deleteConfirm: 'Delete scenario "{name}"?',
+    },
+
+    editor: {
+      notSelected: "Not selected",
+
+      active: "Active",
+
+      inactive: "Inactive",
+
+      descriptionEmpty: "No scenario description",
+
+      duration: "Duration",
+
+      steps: "Steps",
+
+      status: "Status",
+
+      ready: "Scenario is ready to run.",
+
+      needsFixes: "Scenario needs attention",
+
+      moreErrors: "And {count} more...",
+
+      addStep: "Add step",
+
+      totalDuration: "Total duration:",
+    },
+
+    settings: {
+      general: "General settings",
+
+      name: "Name",
+
+      description: "Description",
+
+      playbackMode: "Playback mode",
+
+      sequential: "Sequential",
+
+      parallel: "Parallel",
+
+      repeat: "Repeat",
+
+      once: "Once",
+
+      loop: "Loop",
+
+      additional: "Additional options",
+
+      autoStart: "Start automatically on schedule",
+
+      stopPrevious: "Stop the previous scenario",
+
+      syncTranslation: "Simultaneous interpretation (line 31)",
+
+      crossfade: "Crossfade between tracks",
+
+      notifications: "Show notifications",
+    },
+
+    steps: {
+      emptyTitle: "This scenario has no steps yet",
+
+      emptyDescription: "Add a room and an audio file to build a sequence.",
+
+      room: "Room",
+
+      audioFile: "Audio file",
+
+      volume: "Volume",
+
+      delay: "Delay",
+
+      duration: "Duration",
+
+      chooseRoom: "Select a room",
+
+      chooseAudioFile: "Select an audio file",
+    },
+
+    quickActions: {
+      title: "Quick launch",
+
+      run: "Run scenario",
+
+      pause: "Pause",
+
+      stop: "Stop",
+
+      test: "Test run",
+
+      cannotRun: "Scenario cannot be started:",
+
+      testRun: 'Test run of scenario "{name}"',
+
+      notReady: "Scenario is not ready",
+
+      fixErrors: "Fix errors before starting.",
+    },
+
+    validation: {
+      nameRequired: "Enter a scenario name.",
+
+      stepRequired: "Add at least one step.",
+
+      roomRequired: "Step {number}: no room selected.",
+
+      audioRequired: "Step {number}: no audio file selected.",
+
+      volumeRange: "Step {number}: volume must be between 0 and 100%.",
+
+      delayNonnegative: "Step {number}: delay cannot be negative.",
+
+      durationRequired: "Step {number}: audio duration is unknown.",
+    },
+
+    notifications: {
+      newName: "New scenario",
+
+      copySuffix: "(copy)",
+    },
+  },
+
+  dashboard: {
+    health: {
+      system: "System",
+
+      rooms: "Rooms",
+
+      playingRooms: "{count} playing",
+
+      outputs: "Audio outputs",
+
+      available: "available",
+
+      issues: "Issues",
+
+      systemOk: "system is operational",
+
+      attention: "need attention",
+    },
+
+    playback: {
+      title: "Current playback",
+
+      playing: "PLAYING",
+
+      pause: "Pause",
+
+      stop: "Stop",
+
+      openRoom: "Open room",
+
+      empty: "Nothing is playing",
+
+      openRooms: "Open rooms →",
+    },
+
+    schedule: {
+      title: "Upcoming schedule",
+
+      all: "Full schedule →",
+
+      empty: "No scheduled events",
+
+      open: "Open schedule →",
+    },
+
+    quickActions: {
+      title: "Quick actions",
+
+      runScenario: "Run scenario",
+
+      testOutputs: "Test outputs",
+    },
+
+    audioSystem: {
+      title: "Audio system",
+
+      device: "Device",
+
+      status: "Status",
+
+      outputs: "Outputs",
+
+      frequency: "Sample rate",
+
+      buffer: "Buffer",
+
+      samples: "samples",
+    },
+
+    issues: {
+      title: "Recent issues",
+
+      openLog: "Open event log",
+
+      empty: "No issues found",
+
+      emergencyStop: "Emergency stop",
+
+      stopDescription: "Stop playback in all active rooms",
+
+      stopAll: "Stop all",
+    },
+
+    emergencyStop: {
+      title: "Emergency stop",
+
+      description: "Stop playback in all active rooms",
+
+      confirmTitle: "Stop everything?",
+
+      confirmDescription: "Playback will stop in all active rooms.",
+
+      playingNow: "Currently playing",
+
+      room: "room",
+
+      roomsFew: "rooms",
+
+      roomsMany: "rooms",
+
+      stopAll: "Stop all",
+    },
+  },
+
+  settings: {
+    audioDevice: {
+      title: "Audio device",
+
+      description:
+        "Configure the audio device and its parameters (IN DEVELOPMENT)",
+
+      device: "Device",
+
+      refresh: "Refresh",
+
+      sampleRate: "Sample rate (Hz)",
+
+      bufferSize: "Buffer size",
+
+      connected: "Device is connected and working",
+    },
+
+    logging: {
+      title: "Logging",
+
+      description:
+        "Configure the logging level and log settings (IN DEVELOPMENT)",
+
+      level: "Log level",
+
+      path: "Log path",
+
+      rotation: "Rotate files daily",
+
+      retention: "Keep logs for 30 days",
+    },
+
+    startup: {
+      title: "Startup and recovery",
+
+      description: "Configure app startup and recovery (IN DEVELOPMENT)",
+
+      autoStart: "Start with Windows",
+
+      recovery: "Recover after a failure",
+
+      restoreProfile: "Apply the last profile on startup",
+
+      errorNotifications: "Send notifications about errors",
+    },
+
+    lineMapping: {
+      title: "Line mapping",
+
+      description:
+        "Map rooms to physical audio device outputs (IN DEVELOPMENT)",
+
+      summary: "Rooms: {rooms} · outputs: {outputs}",
+
+      assigned: "Assigned",
+
+      free: "Free",
+
+      conflicts: "Conflicts",
+
+      rooms: "Rooms",
+
+      room: "Room",
+
+      output: "Output",
+
+      status: "Status",
+
+      conflict: "Conflict",
+
+      testOutput: "Test output",
+
+      testNamedOutput: "Test {name}",
+
+      specialLines: "Special lines",
+
+      translation: "Simultaneous interpretation",
+
+      dedicatedOutput: "Dedicated physical output",
+
+      unsaved: "You have unsaved changes",
+
+      saved: "All changes saved",
+
+      undo: "Undo",
+
+      save: "Save",
+    },
+
+    actions: {
+      save: "Save settings",
+
+      reset: "Restore defaults",
+    },
+  },
+
+  logs: {
+    messages: {
+      unknownRuntimeError: "Unknown JavaScript error",
+
+      unhandledPromise: "Unhandled promise rejection",
+
+      connectionRestored: "Network connection restored",
+
+      noNetwork: "The browser reports that it is offline",
+
+      appStarted: "Audexa frontend started",
+
+      contextSerializationError: "Failed to serialize log context",
+    },
+
+    columns: {
+      time: "TIME",
+
+      level: "LEVEL",
+
+      source: "SOURCE",
+
+      event: "EVENT",
+
+      message: "MESSAGE",
+    },
+
+    empty: "No entries",
+
+    filters: {
+      all: "All",
+
+      info: "Info",
+
+      warning: "Warnings",
+
+      error: "Errors",
+
+      search: "Search logs...",
+
+      refresh: "Refresh",
+
+      export: "Export",
+
+      clear: "Clear",
+
+      additional: "Additional filters",
+
+      includeDebug: "Include DEBUG",
+    },
+  },
+} satisfies Widen<typeof ru> & TranslationTree

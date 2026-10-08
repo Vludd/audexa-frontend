@@ -7,6 +7,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { t } from "@/i18n"
 
 interface Props {
   query: string
@@ -40,7 +41,9 @@ export default function AudioToolbar({
           <Plus className="size-4" />
         )}
 
-        {isAddPending ? "Открытие..." : "Добавить файл"}
+        {isAddPending
+          ? t("audio.toolbar.opening")
+          : t("audio.toolbar.add")}
       </Button>
 
       {selectedCount > 0 && (
@@ -54,7 +57,7 @@ export default function AudioToolbar({
             onClick={onDeleteSelected}
           >
             <Trash2 className="size-4" />
-            Удалить выбранные
+            {t("audio.toolbar.deleteSelected")}
 
             <span className="rounded bg-muted px-1.5 py-0.5 text-[11px] font-medium">
               {selectedCount}
@@ -73,7 +76,7 @@ export default function AudioToolbar({
           onChange={(event) =>
             onQueryChange(event.target.value)
           }
-          placeholder="Поиск файлов..."
+          placeholder={t("audio.toolbar.search")}
           className="h-8 pl-8 text-xs"
         />
       </div>

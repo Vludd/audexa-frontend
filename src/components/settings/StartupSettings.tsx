@@ -1,23 +1,24 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { t } from "@/i18n"
 
 const OPTIONS = [
-  "Автозапуск вместе с Windows",
-  "Восстановление после сбоя",
-  "Применять последний профиль при запуске",
-  "Отправлять уведомления при ошибках",
-]
+  "settings.startup.autoStart",
+  "settings.startup.recovery",
+  "settings.startup.restoreProfile",
+  "settings.startup.errorNotifications",
+] as const
 
 export default function StartupSettings() {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-sm">
-          Автозапуск и восстановление
+          {t("settings.startup.title")}
         </CardTitle>
         <CardDescription className="text-xs">
-          Настройка автозапуска и восстановления приложения (В РАЗРАБОТКЕ)
+          {t("settings.startup.description")}
         </CardDescription>
       </CardHeader>
 
@@ -28,7 +29,7 @@ export default function StartupSettings() {
             className="flex items-center justify-between gap-4"
           >
             <Label className="cursor-pointer font-normal">
-              {label}
+              {t(label)}
             </Label>
 
             <Switch defaultChecked disabled/>

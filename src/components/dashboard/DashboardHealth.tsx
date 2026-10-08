@@ -8,6 +8,7 @@ import {
 
 import { Card } from "@/components/ui/card"
 import type { LogEntry, Room, SystemStatus } from "@/types"
+import { t } from "@/i18n"
 
 interface DashboardHealthProps {
   rooms: Room[]
@@ -32,33 +33,35 @@ export default function DashboardHealth({
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <HealthCard
         icon={system.online ? CheckCircle2 : XCircle}
-        label="Система"
+        label={t("dashboard.health.system")}
         value={system.online ? "ONLINE" : "OFFLINE"}
         status={system.online ? "success" : "error"}
       />
 
       <HealthCard
         icon={Volume2}
-        label="Комнаты"
+        label={t("dashboard.health.rooms")}
         value={rooms.length}
-        description={`${playingRooms.length} воспроизводят`}
+        description={t("dashboard.health.playingRooms", {
+          count: playingRooms.length,
+        })}
       />
 
       <HealthCard
         icon={Radio}
-        label="Аудиовыходы"
+        label={t("dashboard.health.outputs")}
         value={system.outputs}
-        description="доступны"
+        description={t("dashboard.health.available")}
       />
 
       <HealthCard
         icon={AlertTriangle}
-        label="Проблемы"
+        label={t("dashboard.health.issues")}
         value={issues.length}
         description={
           issues.length === 0
-            ? "система в норме"
-            : "требуют внимания"
+            ? t("dashboard.health.systemOk")
+            : t("dashboard.health.attention")
         }
         status={issues.length > 0 ? "warning" : "success"}
       />

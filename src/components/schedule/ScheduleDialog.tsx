@@ -1,3 +1,5 @@
+import { t } from "@/i18n"
+
 import { Calendar } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -22,6 +24,7 @@ import { Switch } from "@/components/ui/switch"
 import type {
   Scenario,
   ScheduleFormData,
+  Weekday,
 } from "@/types"
 
 interface Props {
@@ -34,14 +37,14 @@ interface Props {
   onSave: () => void
 }
 
-const DAYS = [
-  "Пн",
-  "Вт",
-  "Ср",
-  "Чт",
-  "Пт",
-  "Сб",
-  "Вс",
+const DAYS: Weekday[] = [
+  "mon",
+  "tue",
+  "wed",
+  "thu",
+  "fri",
+  "sat",
+  "sun",
 ]
 
 export default function ScheduleDialog({
@@ -53,7 +56,7 @@ export default function ScheduleDialog({
   onChange,
   onSave,
 }: Props) {
-  const toggleDay = (day: string) => {
+  const toggleDay = (day: Weekday) => {
     onChange({
       ...form,
       days: form.days.includes(day)
@@ -80,13 +83,13 @@ export default function ScheduleDialog({
             <Calendar className="size-5 text-primary" />
 
             {editing
-              ? "Редактировать расписание"
-              : "Добавить расписание"}
+              ? t("schedule.dialog.editTitle")
+              : t("schedule.dialog.addTitle")}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 py-1">
-          <FormRow label="Время запуска">
+          <FormRow label={t("schedule.dialog.time")}>
             <Input
               type="time"
               value={form.time}
@@ -99,7 +102,7 @@ export default function ScheduleDialog({
             />
           </FormRow>
 
-          <FormRow label="Сценарий">
+          <FormRow label={t("schedule.dialog.scenario")}>
             <Select
               value={
                 form.scenarioId
@@ -114,7 +117,7 @@ export default function ScheduleDialog({
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Выберите сценарий" />
+                <SelectValue placeholder={t("schedule.dialog.chooseScenario")} />
               </SelectTrigger>
 
               <SelectContent>
@@ -130,15 +133,15 @@ export default function ScheduleDialog({
             </Select>
           </FormRow>
 
-          <FormRow label="Дни недели">
+          <FormRow label={t("schedule.dialog.weekdays")}>
             <div className="flex flex-wrap gap-2">
-              {DAYS.map((day) => {
+              {DAYS.map((dayKey) => {
                 const active =
-                  form.days.includes(day)
+                  form.days.includes(dayKey)
 
                 return (
                   <Button
-                    key={day}
+                    key={dayKey}
                     type="button"
                     size="sm"
                     variant={
@@ -147,11 +150,11 @@ export default function ScheduleDialog({
                         : "outline"
                     }
                     onClick={() =>
-                      toggleDay(day)
+                      toggleDay(dayKey)
                     }
                     className="min-w-10"
                   >
-                    {day}
+                    {t(`schedule.weekdays.${dayKey}`)}
                   </Button>
                 )
               })}
@@ -159,12 +162,12 @@ export default function ScheduleDialog({
 
             {form.days.length === 0 && (
               <p className="text-xs text-destructive">
-                Выберите хотя бы один день.
+                {t("schedule.dialog.chooseDay")}
               </p>
             )}
           </FormRow>
 
-          <FormRow label="Повтор">
+          <FormRow label={t("schedule.dialog.repeat")}>
             <Select
               value={form.repeat}
               onValueChange={(value) =>
@@ -181,15 +184,15 @@ export default function ScheduleDialog({
 
               <SelectContent>
                 <SelectItem value="daily">
-                  Ежедневно
+                  {t("schedule.repeat.daily")}
                 </SelectItem>
 
                 <SelectItem value="weekly">
-                  Еженедельно
+                  {t("schedule.repeat.weekly")}
                 </SelectItem>
 
                 <SelectItem value="once">
-                  Однократно
+                  {t("schedule.repeat.once")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -198,11 +201,11 @@ export default function ScheduleDialog({
           <div className="flex items-center justify-between rounded-lg border bg-muted/30 px-3 py-3">
             <div>
               <div className="text-sm font-medium">
-                Активно
+                {t("schedule.dialog.enabled")}
               </div>
 
               <div className="text-xs text-muted-foreground">
-                Запускать расписание автоматически
+                {t("schedule.dialog.autoStart")}
               </div>
             </div>
 
@@ -226,7 +229,7 @@ export default function ScheduleDialog({
               onOpenChange(false)
             }
           >
-            Отмена
+            {t("common.cancel")}
           </Button>
 
           <Button
@@ -235,8 +238,8 @@ export default function ScheduleDialog({
             onClick={onSave}
           >
             {editing
-              ? "Сохранить изменения"
-              : "Создать расписание"}
+              ? t("schedule.dialog.saveChanges")
+              : t("schedule.dialog.create")}
           </Button>
         </DialogFooter>
       </DialogContent>

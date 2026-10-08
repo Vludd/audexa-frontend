@@ -9,6 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import type { Room } from "@/types"
+import { t, type TranslationKey } from "@/i18n"
 
 interface DashboardRoomsProps {
   rooms: Room[]
@@ -42,28 +43,28 @@ function getRoomStatus(room: Room) {
   switch (room.status) {
     case "playing":
       return {
-        label: "PLAYING",
+        labelKey: "rooms.status.playing" as const,
         variant: "success" as const,
         icon: Play,
       }
 
     case "paused":
       return {
-        label: "PAUSED",
+        labelKey: "rooms.status.paused" as const,
         variant: "secondary" as const,
         icon: Pause,
       }
 
     case "error":
       return {
-        label: "ERROR",
+        labelKey: "rooms.status.error" as const,
         variant: "destructive" as const,
         icon: XCircle,
       }
 
     default:
       return {
-        label: "STOPPED",
+        labelKey: "rooms.status.stopped" as const,
         variant: "secondary" as const,
         icon: Square,
       }
@@ -97,12 +98,18 @@ export default function DashboardRooms({
     0,
     activeRooms.length - MAX_VISIBLE_ROOMS,
   )
+  const showMoreKey: TranslationKey =
+    hiddenRoomsCount === 1
+      ? "rooms.dashboard.showMoreOne"
+      : hiddenRoomsCount < 5
+        ? "rooms.dashboard.showMoreFew"
+        : "rooms.dashboard.showMoreMany"
 
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
       <div className="flex items-center justify-between border-b px-4 py-3">
         <h3 className="text-sm font-semibold">
-          Состояние комнат
+          {t("rooms.dashboard.title")}
           {activeRooms.length > 0 && (
             <span className="ml-1.5 text-muted-foreground">
               ({activeRooms.length})
@@ -115,7 +122,7 @@ export default function DashboardRooms({
           className="h-auto p-0 text-xs"
           onClick={() => onNavigate("rooms")}
         >
-          Все комнаты →
+          {t("rooms.dashboard.all")}
         </Button>
       </div>
 
@@ -125,7 +132,7 @@ export default function DashboardRooms({
             <PlayCircle className="mb-2 size-7 text-muted-foreground/50" />
 
             <div className="text-sm text-muted-foreground">
-              Нет активных комнат
+              {t("rooms.dashboard.empty")}
             </div>
           </div>
         ) : (
@@ -151,7 +158,7 @@ export default function DashboardRooms({
                       </div>
 
                       <div className="truncate text-xs text-muted-foreground">
-                        {room.audioFileId ?? "Файл не назначен"}
+                        {room.audioFileId ?? t("common.fileNotAssigned")}
                       </div>
                     </div>
 
@@ -167,7 +174,7 @@ export default function DashboardRooms({
                         className="gap-1"
                       >
                         <StatusIcon className="size-3" />
-                        {status.label}
+                        {t(status.labelKey)}
                       </Badge>
                     </div>
                   </button>
@@ -186,12 +193,7 @@ export default function DashboardRooms({
                 className="mt-2 w-full text-xs"
                 onClick={() => onNavigate("rooms")}
               >
-                Показать ещё {hiddenRoomsCount}{" "}
-                {hiddenRoomsCount === 1
-                  ? "комнату"
-                  : hiddenRoomsCount < 5
-                    ? "комнаты"
-                    : "комнат"}
+                {t(showMoreKey, { count: hiddenRoomsCount })}
               </Button>
             )}
           </div>

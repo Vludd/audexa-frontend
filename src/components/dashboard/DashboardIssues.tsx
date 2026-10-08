@@ -3,6 +3,7 @@ import { AlertTriangle, ExternalLink, Square, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { LogEntry, Room } from "@/types"
+import { t } from "@/i18n"
 
 interface DashboardIssuesProps {
   logs: LogEntry[]
@@ -33,7 +34,7 @@ export default function DashboardIssues({
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
       <div className="flex items-center justify-between border-b px-4 py-3">
         <h3 className="text-sm font-semibold">
-          Последние проблемы
+          {t("dashboard.issues.title")}
         </h3>
 
         <Button
@@ -41,7 +42,7 @@ export default function DashboardIssues({
           className="h-auto gap-1 p-0 text-xs"
           onClick={() => onNavigate("logs")}
         >
-          Открыть журнал
+          {t("dashboard.issues.openLog")}
           <ExternalLink className="size-3" />
         </Button>
       </div>
@@ -53,7 +54,7 @@ export default function DashboardIssues({
               ✓
             </span>
 
-            Проблем не обнаружено
+            {t("dashboard.issues.empty")}
           </div>
         ) : (
           <div>
@@ -125,11 +126,11 @@ export default function DashboardIssues({
 
           <div className="min-w-0">
             <div className="text-sm font-semibold">
-              Экстренная остановка
+              {t("dashboard.issues.emergencyStop")}
             </div>
 
             <div className="truncate text-xs text-muted-foreground">
-              Остановить воспроизведение во всех активных комнатах
+              {t("dashboard.issues.stopDescription")}
             </div>
           </div>
         </div>
@@ -145,7 +146,7 @@ export default function DashboardIssues({
             className="size-3.5"
             fill="currentColor"
           />
-          Остановить всё
+          {t("dashboard.issues.stopAll")}
         </Button>
       </div>
     </div>

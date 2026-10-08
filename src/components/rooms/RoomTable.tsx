@@ -32,6 +32,7 @@ import type { Room, RoomOperation } from "@/types"
 import StatusBadge from "@/components/StatusBadge"
 import { Slider } from "../ui/slider"
 import { formatTime, getProgress } from "@/lib/audio"
+import { t } from "@/i18n"
 
 type RoomListItem = {
   room: Room
@@ -71,11 +72,11 @@ export default function RoomTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-16 text-center">#</TableHead>
-            <TableHead>Комната</TableHead>
-            <TableHead className="w-16">Статус</TableHead>
-            <TableHead>Файл</TableHead>
-            <TableHead>Громкость</TableHead>
-            <TableHead className="w-72">Действия</TableHead>
+            <TableHead>{t("rooms.table.room")}</TableHead>
+            <TableHead className="w-16">{t("rooms.table.status")}</TableHead>
+            <TableHead>{t("rooms.table.file")}</TableHead>
+            <TableHead>{t("rooms.table.volume")}</TableHead>
+            <TableHead className="w-72">{t("rooms.table.actions")}</TableHead>
             <TableHead className="w-12" />
           </TableRow>
         </TableHeader>
@@ -105,7 +106,9 @@ export default function RoomTable({
                   <div
                     className="mb-2 h-1.5 overflow-hidden rounded-full bg-muted-foreground/25"
                     role="progressbar"
-                    aria-label={`Прогресс воспроизведения комнаты ${room.id}`}
+                    aria-label={t("rooms.table.playbackProgress", {
+                      id: room.id,
+                    })}
                     aria-valuemin={0}
                     aria-valuemax={room.duration}
                     aria-valuenow={room.position}
@@ -127,7 +130,7 @@ export default function RoomTable({
 
                 <TableCell className="max-w-[280px]">
                   <span className="block truncate text-xs text-muted-foreground">
-                    {room.audioFileId ?? "Файл не назначен"}
+                    {room.audioFileId ?? t("common.fileNotAssigned")}
                   </span>
                 </TableCell>
 
@@ -149,7 +152,9 @@ export default function RoomTable({
                           onVolumeChange(room.id, volume)
                         }
                       }}
-                      aria-label={`Громкость комнаты ${room.name}`}
+                      aria-label={t("rooms.table.roomVolume", {
+                        name: room.name,
+                      })}
                       className="w-24"
                     />
 
@@ -162,7 +167,7 @@ export default function RoomTable({
                   <div className="flex gap-1.5">
                     {operation === "starting" ? (
                       <SmallButton
-                        label="Запуск..."
+                        label={t("common.starting")}
                         variant="success"
                         disabled
                         icon={
@@ -171,7 +176,7 @@ export default function RoomTable({
                       />
                     ) : operation === "pausing" ? (
                       <SmallButton
-                        label="Пауза..."
+                        label={t("common.pausing")}
                         variant="primary"
                         disabled
                         icon={
@@ -180,7 +185,7 @@ export default function RoomTable({
                       />
                     ) : room.status === "playing" ? (
                       <SmallButton
-                        label="Пауза"
+                        label={t("common.pause")}
                         variant="primary"
                         onClick={() => onPause(room.id)}
                         disabled={isPending}
@@ -188,7 +193,7 @@ export default function RoomTable({
                       />
                     ) : room.status === "paused" ? (
                       <SmallButton
-                        label="Продолжить"
+                        label={t("common.resume")}
                         variant="success"
                         onClick={() => onPlay(room.id)}
                         disabled={isPending}
@@ -198,7 +203,7 @@ export default function RoomTable({
                       />
                     ) : (
                       <SmallButton
-                        label="Запуск"
+                        label={t("common.play")}
                         variant="success"
                         onClick={() => onPlay(room.id)}
                         disabled={isPending}
@@ -208,7 +213,7 @@ export default function RoomTable({
 
                     {operation === "stopping" ? (
                       <SmallButton
-                        label="Остановка..."
+                        label={t("common.stopping")}
                         variant="secondary"
                         disabled
                         icon={
@@ -217,7 +222,7 @@ export default function RoomTable({
                       />
                     ) : (
                       <SmallButton
-                        label="Стоп"
+                        label={t("common.stop")}
                         variant="secondary"
                         onClick={() => onStop(room.id)}
                         disabled={
@@ -242,7 +247,9 @@ export default function RoomTable({
                           variant="ghost"
                           size="icon"
                           className="size-8"
-                          aria-label={`Действия для комнаты ${room.name}`}
+                          aria-label={t("rooms.table.roomActions", {
+                            name: room.name,
+                          })}
                         >
                           <Ellipsis className="size-4" />
                         </Button>
@@ -257,14 +264,14 @@ export default function RoomTable({
                         onClick={() => onEdit(room)}
                       >
                         <Edit className="size-4" />
-                        Редактировать
+                        {t("common.edit")}
                       </DropdownMenuItem>
 
                       <DropdownMenuItem
                         onClick={() => onDuplicate(room)}
                       >
                         <Copy className="size-4" />
-                        Дублировать
+                        {t("common.duplicate")}
                       </DropdownMenuItem>
 
                       <DropdownMenuSeparator />
@@ -274,7 +281,7 @@ export default function RoomTable({
                         onClick={() => onDelete(room)}
                       >
                         <Trash2 className="size-4" />
-                        Удалить
+                        {t("common.delete")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

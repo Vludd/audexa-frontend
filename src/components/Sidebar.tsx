@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { t, type TranslationKey } from "@/i18n"
 import type { Page } from "../types"
 
 interface Props {
@@ -16,14 +17,14 @@ interface Props {
   onChange: (page: Page) => void
 }
 
-const NAV: { page: Page; label: string; Icon: typeof Home }[] = [
-  { page: "dashboard", label: "Главная", Icon: Home },
-  { page: "rooms", label: "Комнаты", Icon: DoorOpen },
-  { page: "scenarios", label: "Сценарии", Icon: List },
-  { page: "schedule", label: "Расписание", Icon: Calendar },
-  { page: "audiofiles", label: "Аудиофайлы", Icon: Music },
-  { page: "settings", label: "Настройки", Icon: Settings },
-  { page: "logs", label: "Журнал событий", Icon: ScrollText },
+const NAV: { page: Page; labelKey: TranslationKey; Icon: typeof Home }[] = [
+  { page: "dashboard", labelKey: "nav.dashboard", Icon: Home },
+  { page: "rooms", labelKey: "nav.rooms", Icon: DoorOpen },
+  { page: "scenarios", labelKey: "nav.scenarios", Icon: List },
+  { page: "schedule", labelKey: "nav.schedule", Icon: Calendar },
+  { page: "audiofiles", labelKey: "nav.audioFiles", Icon: Music },
+  { page: "settings", labelKey: "nav.settings", Icon: Settings },
+  { page: "logs", labelKey: "nav.logs", Icon: ScrollText },
 ]
 
 export default function Sidebar({ current, onChange }: Props) {
@@ -46,12 +47,12 @@ export default function Sidebar({ current, onChange }: Props) {
         </div>
 
         <p className="mt-2 text-[10px] leading-3.5 text-muted-foreground">
-          Платформа центрального управления и автоматизации звука
+          {t("nav.description")}
         </p>
       </div>
 
       <nav className="flex flex-1 flex-col gap-0.5 p-2">
-        {NAV.map(({ page, label, Icon }) => {
+        {NAV.map(({ page, labelKey, Icon }) => {
           const active = current === page
           return (
             <button
@@ -67,7 +68,7 @@ export default function Sidebar({ current, onChange }: Props) {
               )}
             >
               <Icon className="size-4 shrink-0" />
-              <span>{label}</span>
+              <span>{t(labelKey)}</span>
             </button>
           )
         })}

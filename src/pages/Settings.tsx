@@ -1,4 +1,5 @@
 import Header from "@/components/Header"
+import { t } from "@/i18n"
 
 import AudioDeviceSettings from "@/components/settings/AudioDeviceSettings"
 import LineMappingSettings from "@/components/settings/LineMappingSettings"
@@ -10,8 +11,8 @@ export default function Settings() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <Header
-        title="Настройки"
-        subtitle="Конфигурация аудиосистемы и оборудования"
+        title={t("pages.settings.title")}
+        subtitle={t("pages.settings.subtitle")}
       />
 
       <div className="min-h-0 flex-1 overflow-auto p-4">

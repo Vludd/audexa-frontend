@@ -2,6 +2,7 @@ import { useCallback, useState } from "react"
 
 import { mockRooms, syncLine as defaultSyncLine } from "@/data/mock"
 import type { Room, RoomOperation } from "@/types"
+import { t } from "@/i18n"
 
 function createEntityId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -115,7 +116,7 @@ export function useRooms() {
       const duplicatedRoom: Room = {
         ...source,
         id: createEntityId(),
-        name: `${source.name} — копия`,
+        name: `${source.name} — ${t("rooms.duplicateSuffix")}`,
         status: "stopped",
         position: 0,
       }

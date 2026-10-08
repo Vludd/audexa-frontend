@@ -1,6 +1,7 @@
 import { PlayCircle, Radio } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { t } from "@/i18n"
 
 interface DashboardQuickActionsProps {
   onNavigate: (page: string) => void
@@ -13,7 +14,7 @@ export default function DashboardQuickActions({
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
       <div className="flex items-center border-b px-4 py-3">
         <h3 className="text-sm font-semibold">
-          Быстрые действия
+          {t("dashboard.quickActions.title")}
         </h3>
       </div>
 
@@ -25,7 +26,7 @@ export default function DashboardQuickActions({
           onClick={() => onNavigate("scenarios")}
         >
           <PlayCircle className="size-4" />
-          Запустить сценарий
+          {t("dashboard.quickActions.runScenario")}
         </Button>
 
         <Button
@@ -34,7 +35,7 @@ export default function DashboardQuickActions({
           className="w-full justify-start gap-2.5"
         >
           <Radio className="size-4" />
-          Тест выходов
+          {t("dashboard.quickActions.testOutputs")}
         </Button>
       </div>
     </div>

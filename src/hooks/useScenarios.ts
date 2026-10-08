@@ -2,6 +2,7 @@ import { useCallback, useState } from "react"
 
 import { mockScenarios } from "@/data/mock"
 import type { Room, Scenario, ScenarioStep } from "@/types"
+import { t } from "@/i18n"
 
 interface RoomActions {
   updateRoom: (id: string, patch: Partial<Room>) => void
@@ -15,8 +16,8 @@ export interface ScenarioUpdate {
   name?: string
   description?: string
   status?: Scenario["status"]
-  playMode?: string
-  repeat?: string
+  playMode?: Scenario["playMode"]
+  repeat?: Scenario["repeat"]
   autoStart?: boolean
   stopPrevious?: boolean
   syncTranslation?: boolean
@@ -75,7 +76,7 @@ export function useScenarios({
 
       const scenario: Scenario = {
         id: newId,
-        name: "Новый сценарий",
+        name: t("scenarios.notifications.newName"),
         description: "",
         steps: [],
         status: "inactive",
@@ -134,7 +135,7 @@ export function useScenarios({
       const copy: Scenario = {
         ...structuredClone(source),
         id: newId,
-        name: `${source.name} (копия)`,
+        name: `${source.name} ${t("scenarios.notifications.copySuffix")}`,
         status: "inactive",
         steps: source.steps.map((step, index) => ({
           ...step,
@@ -169,7 +170,7 @@ export function useScenarios({
           const newStep: ScenarioStep = {
             id: nextId,
             roomId: step?.roomId ?? "",
-            roomName: step?.roomName ?? "Не выбрана",
+            roomName: step?.roomName ?? t("scenarios.editor.notSelected"),
             file: step?.file ?? "",
             volume: step?.volume ?? 100,
             delay: step?.delay ?? 0,
@@ -285,39 +286,43 @@ export function useScenarios({
       const warnings: string[] = []
 
       if (!scenario.name.trim()) {
-        errors.push("Укажите название сценария.")
+        errors.push(t("scenarios.validation.nameRequired"))
       }
 
       if (scenario.steps.length === 0) {
-        errors.push("Добавьте хотя бы один шаг.")
+        errors.push(t("scenarios.validation.stepRequired"))
       }
 
       scenario.steps.forEach((step, index) => {
         const number = index + 1
 
         if (!step.roomId) {
-          errors.push(`Шаг ${number}: не выбрана комната.`)
+          errors.push(
+            t("scenarios.validation.roomRequired", { number }),
+          )
         }
 
         if (!step.file) {
-          errors.push(`Шаг ${number}: не выбран аудиофайл.`)
+          errors.push(
+            t("scenarios.validation.audioRequired", { number }),
+          )
         }
 
         if (step.volume < 0 || step.volume > 100) {
           errors.push(
-            `Шаг ${number}: громкость должна быть от 0 до 100%.`,
+            t("scenarios.validation.volumeRange", { number }),
           )
         }
 
         if (step.delay < 0) {
           errors.push(
-            `Шаг ${number}: задержка не может быть отрицательной.`,
+            t("scenarios.validation.delayNonnegative", { number }),
           )
         }
 
         if (step.duration <= 0) {
           warnings.push(
-            `Шаг ${number}: длительность аудио не определена.`,
+            t("scenarios.validation.durationRequired", { number }),
           )
         }
       })

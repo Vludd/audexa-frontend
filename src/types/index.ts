@@ -35,6 +35,8 @@ export interface ScenarioStep {
 }
 
 export type ScenarioStatus = "active" | "inactive"
+export type ScenarioPlayMode = "sequential" | "parallel"
+export type ScenarioRepeat = "once" | "loop"
 
 export interface Scenario {
   id: number
@@ -42,8 +44,8 @@ export interface Scenario {
   description: string
   steps: ScenarioStep[]
   status: ScenarioStatus
-  playMode: string
-  repeat: string
+  playMode: ScenarioPlayMode
+  repeat: ScenarioRepeat
   autoStart: boolean
   stopPrevious: boolean
   syncTranslation: boolean
@@ -53,6 +55,14 @@ export interface Scenario {
 
 export type ScheduleRepeat = "daily" | "weekly" | "once"
 export type ScheduleStatus = "active" | "inactive"
+export type Weekday =
+  | "mon"
+  | "tue"
+  | "wed"
+  | "thu"
+  | "fri"
+  | "sat"
+  | "sun"
 
 export interface ScheduleItem {
   id: number
@@ -60,7 +70,7 @@ export interface ScheduleItem {
   time: string
   scenarioId: number
   scenarioName: string
-  days: string[]
+  days: Weekday[]
   repeat: ScheduleRepeat
   nextRun: string
   status: ScheduleStatus
@@ -70,7 +80,7 @@ export interface ScheduleFormData {
   time: string
   scenarioId: number
   scenarioName: string
-  days: string[]
+  days: Weekday[]
   repeat: ScheduleRepeat
   enabled: boolean
 }

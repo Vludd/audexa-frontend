@@ -1,5 +1,6 @@
 import type { Scenario } from "@/types"
 import { cn } from "cn"
+import { t } from "@/i18n"
 
 interface Props {
   scenarios: Scenario[]
@@ -29,12 +30,12 @@ export default function ScenarioList({
   return (
     <aside className="w-[240px] shrink-0 overflow-auto border-r bg-card">
       <div className="border-b px-3.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-        Список сценариев
+        {t("scenarios.list.title")}
       </div>
 
       {scenarios.length === 0 ? (
         <div className="p-4 text-xs text-muted-foreground">
-          Ничего не найдено.
+          {t("scenarios.list.noResults")}
         </div>
       ) : (
         scenarios.map((scenario, index) => {
@@ -88,8 +89,8 @@ export default function ScenarioList({
                 <span>
                   {scenario.steps.length}{" "}
                   {scenario.steps.length === 1
-                    ? "шаг"
-                    : "шагов"}
+                    ? t("scenarios.list.step")
+                    : t("scenarios.list.steps")}
                 </span>
 
                 <span>·</span>

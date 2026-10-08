@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react"
 
 import Header from "@/components/Header"
+import { formatDate, t } from "@/i18n"
 import ScheduleDialog from "@/components/schedule/ScheduleDialog"
 import ScheduleTable from "@/components/schedule/ScheduleTable"
 import ScheduleToolbar from "@/components/schedule/ScheduleToolbar"
@@ -29,7 +30,13 @@ const INITIAL_FORM: ScheduleFormData = {
   time: "10:00",
   scenarioId: 0,
   scenarioName: "",
-  days: ["Пн", "Вт", "Ср", "Чт", "Пт"],
+  days: [
+    "mon",
+    "tue",
+    "wed",
+    "thu",
+    "fri",
+  ],
   repeat: "daily",
   enabled: true,
 }
@@ -151,7 +158,10 @@ export default function Schedule({
 
     const confirmed =
       window.confirm(
-        `Удалить расписание "${selectedItem.scenarioName}" в ${selectedItem.time}?`,
+        t("schedule.confirmDelete", {
+          scenario: selectedItem.scenarioName,
+          time: selectedItem.time,
+        }),
       )
 
     if (!confirmed) {
@@ -183,12 +193,16 @@ export default function Schedule({
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <Header
-        title="Расписание"
-        subtitle="Автоматический запуск сценариев по времени"
+        title={t("pages.schedule.title")}
+        subtitle={t("pages.schedule.subtitle")}
       />
 
       <ScheduleToolbar
-        selectedDate="22.09.2026 (Сегодня)"
+        selectedDate={`${formatDate(new Date(), {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })} (${t("common.today")})`}
         hasSelection={selectedItem !== null}
         onAdd={openCreate}
         onEdit={openEdit}

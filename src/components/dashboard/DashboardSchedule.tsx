@@ -2,6 +2,7 @@ import { Clock3 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import type { ScheduleItem } from "@/types"
+import { t } from "@/i18n"
 
 interface DashboardScheduleProps {
   schedule: ScheduleItem[]
@@ -20,7 +21,7 @@ export default function DashboardSchedule({
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
       <div className="flex items-center justify-between border-b px-4 py-3">
         <h3 className="text-sm font-semibold">
-          Ближайшее расписание
+          {t("dashboard.schedule.title")}
         </h3>
 
         <Button
@@ -28,7 +29,7 @@ export default function DashboardSchedule({
           className="h-auto p-0 text-xs"
           onClick={() => onNavigate("schedule")}
         >
-          Всё расписание →
+          {t("dashboard.schedule.all")}
         </Button>
       </div>
 
@@ -38,7 +39,7 @@ export default function DashboardSchedule({
             <Clock3 className="mb-2 size-7 text-muted-foreground/50" />
 
             <div className="text-sm text-muted-foreground">
-              Нет запланированных событий
+              {t("dashboard.schedule.empty")}
             </div>
 
             <Button
@@ -46,7 +47,7 @@ export default function DashboardSchedule({
               className="mt-1 h-auto p-0 text-xs"
               onClick={() => onNavigate("schedule")}
             >
-              Открыть расписание →
+              {t("dashboard.schedule.open")}
             </Button>
           </div>
         ) : (

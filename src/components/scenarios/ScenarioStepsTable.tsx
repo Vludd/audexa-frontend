@@ -21,6 +21,7 @@ import type {
   Room,
   ScenarioStep,
 } from "@/types"
+import { t } from "@/i18n"
 
 interface Props {
   steps: ScenarioStep[]
@@ -65,7 +66,7 @@ export default function ScenarioStepsTable({
 
     onUpdateStep(step.id, {
       roomId,
-      roomName: room?.name ?? "Не выбрана",
+      roomName: room?.name ?? t("scenarios.editor.notSelected"),
     })
   }
 
@@ -87,12 +88,11 @@ export default function ScenarioStepsTable({
     return (
       <div className="rounded-lg border border-dashed bg-card p-8 text-center">
         <p className="text-sm font-medium">
-          В сценарии пока нет шагов
+          {t("scenarios.steps.emptyTitle")}
         </p>
 
         <p className="mt-1 text-xs text-muted-foreground">
-          Добавьте комнату и аудиофайл, чтобы сформировать
-          последовательность.
+          {t("scenarios.steps.emptyDescription")}
         </p>
       </div>
     )
@@ -105,16 +105,16 @@ export default function ScenarioStepsTable({
           <TableRow className="bg-muted/40">
             <TableHead className="w-10" />
             <TableHead className="w-10">#</TableHead>
-            <TableHead>Комната</TableHead>
-            <TableHead>Аудиофайл</TableHead>
+            <TableHead>{t("scenarios.steps.room")}</TableHead>
+            <TableHead>{t("scenarios.steps.audioFile")}</TableHead>
             <TableHead className="w-[150px]">
-              Громкость
+              {t("scenarios.steps.volume")}
             </TableHead>
             <TableHead className="w-[100px]">
-              Задержка
+              {t("scenarios.steps.delay")}
             </TableHead>
             <TableHead className="w-[100px]">
-              Длительность
+              {t("scenarios.steps.duration")}
             </TableHead>
             <TableHead className="w-[90px]" />
           </TableRow>
@@ -170,7 +170,7 @@ export default function ScenarioStepsTable({
                   className="h-8 w-full min-w-[150px] rounded-md border bg-background px-2 text-xs outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="">
-                    Выбрать комнату
+                    {t("scenarios.steps.chooseRoom")}
                   </option>
 
                   {rooms.map((room) => (
@@ -200,7 +200,7 @@ export default function ScenarioStepsTable({
                   className="h-8 w-full min-w-[180px] rounded-md border bg-background px-2 text-xs outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="">
-                    Выбрать аудиофайл
+                    {t("scenarios.steps.chooseAudioFile")}
                   </option>
 
                   {audioFiles.map((file) => (

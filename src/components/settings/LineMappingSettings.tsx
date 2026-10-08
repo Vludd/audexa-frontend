@@ -23,6 +23,7 @@ import {
   RotateCcw,
   Save,
 } from "lucide-react"
+import { t } from "@/i18n"
 
 type Room = {
   id: string
@@ -43,7 +44,7 @@ type Mapping = {
 const rooms: Room[] = Array.from({ length: 30 }, (_, index) => ({
   id: `room-${index + 1}`,
   number: index + 1,
-  name: `Комната ${String(index + 1).padStart(2, "0")}`,
+  name: `${t("settings.lineMapping.room")} ${String(index + 1).padStart(2, "0")}`,
 }))
 
 const outputs: Output[] = Array.from({ length: 31 }, (_, index) => ({
@@ -225,7 +226,7 @@ export default function LineMappingSettings() {
         }
       >
         <SelectTrigger className="h-8 w-full border-0 bg-transparent px-2 shadow-none hover:bg-muted focus:ring-0">
-          <SelectValue placeholder="Не назначено" />
+          <SelectValue placeholder={t("common.notAssigned")} />
         </SelectTrigger>
 
         <SelectContent>
@@ -273,12 +274,11 @@ export default function LineMappingSettings() {
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <CardTitle className="text-sm">
-              Карта линий
+              {t("settings.lineMapping.title")}
             </CardTitle>
 
             <CardDescription className="mt-1 text-xs">
-              Настройка соответствия комнат физическим выходам
-              аудиоустройства (В РАЗРАБОТКЕ)
+              {t("settings.lineMapping.description")}
             </CardDescription>
           </div>
 
@@ -286,7 +286,10 @@ export default function LineMappingSettings() {
             variant="outline"
             className="shrink-0"
           >
-            {rooms.length} комнат · {outputs.length} выходов
+            {t("settings.lineMapping.summary", {
+              rooms: rooms.length,
+              outputs: outputs.length,
+            })}
           </Badge>
         </div>
       </CardHeader>
@@ -297,7 +300,7 @@ export default function LineMappingSettings() {
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           <div className="rounded-md border bg-muted/20 px-3 py-2">
             <div className="text-xs text-muted-foreground">
-              Назначено
+              {t("settings.lineMapping.assigned")}
             </div>
 
             <div className="mt-1 text-sm font-semibold">
@@ -307,7 +310,7 @@ export default function LineMappingSettings() {
 
           <div className="rounded-md border bg-muted/20 px-3 py-2">
             <div className="text-xs text-muted-foreground">
-              Свободно
+              {t("settings.lineMapping.free")}
             </div>
 
             <div className="mt-1 text-sm font-semibold">
@@ -324,7 +327,7 @@ export default function LineMappingSettings() {
             ].join(" ")}
           >
             <div className="text-xs text-muted-foreground">
-              Конфликты
+              {t("settings.lineMapping.conflicts")}
             </div>
 
             <div className="mt-1 flex items-center gap-1.5 text-sm font-semibold">
@@ -347,7 +350,7 @@ export default function LineMappingSettings() {
 
         <div className="space-y-2">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Комнаты
+            {t("settings.lineMapping.rooms")}
           </div>
 
           <div className="overflow-hidden rounded-md border">
@@ -369,9 +372,9 @@ export default function LineMappingSettings() {
               "
             >
               <span>#</span>
-              <span>Комната</span>
-              <span>Выход</span>
-              <span>Статус</span>
+              <span>{t("settings.lineMapping.room")}</span>
+              <span>{t("settings.lineMapping.output")}</span>
+              <span>{t("settings.lineMapping.status")}</span>
               <span />
             </div>
 
@@ -447,7 +450,7 @@ export default function LineMappingSettings() {
                           variant="destructive"
                           className="text-[10px]"
                         >
-                          Конфликт
+                          {t("settings.lineMapping.conflict")}
                         </Badge>
                       ) : output ? (
                         <Badge
@@ -462,7 +465,7 @@ export default function LineMappingSettings() {
                           variant="outline"
                           className="text-[10px]"
                         >
-                          Не назначено
+                          {t("common.notAssigned")}
                         </Badge>
                       )}
                     </div>
@@ -484,8 +487,10 @@ export default function LineMappingSettings() {
                       }}
                       title={
                         output
-                          ? `Проверить ${output.name}`
-                          : "Проверить выход"
+                          ? t("settings.lineMapping.testNamedOutput", {
+                              name: output.name,
+                            })
+                          : t("settings.lineMapping.testOutput")
                       }
                       hidden
                     >
@@ -508,7 +513,7 @@ export default function LineMappingSettings() {
 
         <div className="space-y-2">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Специальные линии
+            {t("settings.lineMapping.specialLines")}
           </div>
 
           <div className="overflow-hidden rounded-md border">
@@ -525,11 +530,11 @@ export default function LineMappingSettings() {
             >
               <div className="min-w-0">
                 <div className="truncate text-sm font-medium">
-                  Синхронный перевод
+                  {t("settings.lineMapping.translation")}
                 </div>
 
                 <div className="truncate text-xs text-muted-foreground">
-                  Отдельный физический выход
+                  {t("settings.lineMapping.dedicatedOutput")}
                 </div>
               </div>
 
@@ -539,7 +544,7 @@ export default function LineMappingSettings() {
                   onValueChange={setTranslationOutput}
                 >
                   <SelectTrigger className="h-8 w-full border-0 bg-transparent px-2 shadow-none focus:ring-0">
-                    <SelectValue placeholder="Не назначено" />
+                    <SelectValue placeholder={t("common.notAssigned")} />
                   </SelectTrigger>
 
                   <SelectContent>
@@ -583,7 +588,7 @@ export default function LineMappingSettings() {
                     variant="destructive"
                     className="text-[10px]"
                   >
-                    Конфликт
+                    {t("settings.lineMapping.conflict")}
                   </Badge>
                 ) : (
                   <Badge
@@ -609,7 +614,7 @@ export default function LineMappingSettings() {
                     handleTest(translationOutput)
                   }
                 }}
-                title="Проверить выход"
+                title={t("settings.lineMapping.testOutput")}
                 hidden
               >
                 {isTesting === translationOutput ? (
@@ -628,10 +633,10 @@ export default function LineMappingSettings() {
           <div className="text-xs text-muted-foreground">
             {isDirty ? (
               <span className="text-foreground">
-                Есть несохранённые изменения
+                {t("settings.lineMapping.unsaved")}
               </span>
             ) : (
-              "Все изменения сохранены"
+              t("settings.lineMapping.saved")
             )}
           </div>
 
@@ -642,7 +647,7 @@ export default function LineMappingSettings() {
                 size="sm"
                 onClick={handleReset}
               >
-                Отменить
+                {t("common.cancel")}
               </Button>
             )}
 
@@ -652,7 +657,7 @@ export default function LineMappingSettings() {
               onClick={handleSave}
             >
               <Save className="mr-2 size-3.5" />
-              Сохранить
+              {t("common.save")}
             </Button>
           </div>
         </div>

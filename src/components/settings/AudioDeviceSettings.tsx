@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { bufferSizes, sampleRates } from "@/data/audio"
+import { t } from "@/i18n"
 
 export default function AudioDeviceSettings() {
   const sampleRate = sampleRates[1]
@@ -26,19 +27,18 @@ export default function AudioDeviceSettings() {
     <Card>
       <CardHeader>
         <CardTitle className="text-sm">
-          Аудиоустройство
+          {t("settings.audioDevice.title")}
         </CardTitle>
 
         <CardDescription className="text-xs">
-          Настройка аудиоустройства и его параметров
-          (В РАЗРАБОТКЕ)
+          {t("settings.audioDevice.description")}
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
         <div className="flex gap-2">
           <div className="flex-1 space-y-2">
-            <Label>Устройство</Label>
+            <Label>{t("settings.audioDevice.device")}</Label>
 
             <Select defaultValue="umc1820">
               <SelectTrigger className="w-full">
@@ -56,13 +56,13 @@ export default function AudioDeviceSettings() {
           <div className="pt-6">
             <Button variant="outline" size="sm">
               <RefreshCw className="size-3.5" />
-              Обновить
+              {t("settings.audioDevice.refresh")}
             </Button>
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label>Частота дискретизации (Hz)</Label>
+          <Label>{t("settings.audioDevice.sampleRate")}</Label>
 
           <Select
             defaultValue={sampleRate.toString()}
@@ -86,7 +86,7 @@ export default function AudioDeviceSettings() {
         </div>
 
         <div className="space-y-2">
-          <Label>Размер буфера</Label>
+          <Label>{t("settings.audioDevice.bufferSize")}</Label>
 
           <Select
             defaultValue={bufferSize.toString()}
@@ -118,7 +118,7 @@ export default function AudioDeviceSettings() {
           </span>
 
           <span className="ml-2 text-muted-foreground">
-            Устройство подключено и работает
+            {t("settings.audioDevice.connected")}
           </span>
         </div>
       </CardContent>

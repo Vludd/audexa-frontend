@@ -1,6 +1,7 @@
 import type { LogEntry, Room, ScheduleItem, SystemStatus } from "@/types"
 
 import Header from "@/components/Header"
+import { t } from "@/i18n"
 import DashboardHealth from "@/components/dashboard/DashboardHealth"
 import DashboardPlayback from "@/components/dashboard/DashboardPlayback"
 import DashboardRooms from "@/components/dashboard/DashboardRooms"
@@ -34,8 +35,8 @@ export default function Dashboard({
     <>
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <Header
-          title="Главная"
-          subtitle="Центральное управление и мониторинг аудиосистемы"
+          title={t("pages.dashboard.title")}
+          subtitle={t("pages.dashboard.subtitle")}
         />
 
         <main className="min-h-0 flex-1 overflow-auto p-4">

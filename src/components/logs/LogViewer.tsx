@@ -1,5 +1,6 @@
 import { useState } from "react"
 import type { LogEntry } from "@/types"
+import { t } from "@/i18n"
 
 interface Props {
   logs: LogEntry[]
@@ -25,11 +26,11 @@ export default function LogViewer({ logs }: Props) {
   return (
     <div className="overflow-hidden rounded-lg border border-slate-700 bg-[#0f1b2e] font-mono">
       <div className="grid grid-cols-[90px_82px_72px_200px_1fr] bg-[#1e2d42] px-4 py-2 text-[11px] font-bold tracking-wider text-[#8fa8c8]">
-        <span>ВРЕМЯ</span>
-        <span>УРОВЕНЬ</span>
-        <span>ИСТОЧНИК</span>
-        <span>СОБЫТИЕ</span>
-        <span>СООБЩЕНИЕ</span>
+        <span>{t("logs.columns.time")}</span>
+        <span>{t("logs.columns.level")}</span>
+        <span>{t("logs.columns.source")}</span>
+        <span>{t("logs.columns.event")}</span>
+        <span>{t("logs.columns.message")}</span>
       </div>
 
       {logs.map((entry, index) => {
@@ -88,7 +89,7 @@ export default function LogViewer({ logs }: Props) {
 
       {logs.length === 0 && (
         <div className="px-4 py-10 text-center text-[13px] text-[#5a7a9a]">
-          Нет записей
+          {t("logs.empty")}
         </div>
       )}
     </div>

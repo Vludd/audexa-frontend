@@ -3,6 +3,7 @@ import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import type { Room } from "@/types"
+import { t } from "@/i18n"
 
 interface DashboardEmergencyStopProps {
   rooms: Room[]
@@ -29,11 +30,11 @@ export default function DashboardEmergencyStop({
       <div className="flex items-center justify-between gap-4 rounded-lg border border-destructive/20 bg-destructive/[0.03] px-4 py-3">
         <div className="min-w-0">
           <div className="text-sm font-semibold">
-            Экстренная остановка
+            {t("dashboard.emergencyStop.title")}
           </div>
 
           <div className="text-xs text-muted-foreground">
-            Остановить воспроизведение во всех активных комнатах
+            {t("dashboard.emergencyStop.description")}
           </div>
         </div>
 
@@ -48,7 +49,7 @@ export default function DashboardEmergencyStop({
             className="size-3.5"
             fill="currentColor"
           />
-          Остановить всё
+          {t("dashboard.emergencyStop.stopAll")}
         </Button>
       </div>
 
@@ -70,12 +71,11 @@ export default function DashboardEmergencyStop({
                   id="stop-all-title"
                   className="text-base font-semibold"
                 >
-                  Остановить всё?
+                  {t("dashboard.emergencyStop.confirmTitle")}
                 </h2>
 
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Будет остановлено воспроизведение во всех активных
-                  комнатах.
+                  {t("dashboard.emergencyStop.confirmDescription")}
                 </p>
               </div>
 
@@ -83,7 +83,7 @@ export default function DashboardEmergencyStop({
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowDialog(false)}
-                aria-label="Закрыть"
+                aria-label={t("common.close")}
               >
                 <X className="size-4" />
               </Button>
@@ -91,16 +91,18 @@ export default function DashboardEmergencyStop({
 
             <div className="mt-4 rounded-md border bg-muted/40 p-3">
               <div className="text-xs text-muted-foreground">
-                Сейчас воспроизводится
+                {t("dashboard.emergencyStop.playingNow")}
               </div>
 
               <div className="mt-1 text-lg font-semibold tabular-nums">
                 {playingRooms.length}{" "}
-                {playingRooms.length === 1
-                  ? "комната"
-                  : playingRooms.length < 5
-                    ? "комнаты"
-                    : "комнат"}
+                {t(
+                  playingRooms.length === 1
+                    ? "dashboard.emergencyStop.room"
+                    : playingRooms.length < 5
+                      ? "dashboard.emergencyStop.roomsFew"
+                      : "dashboard.emergencyStop.roomsMany",
+                )}
               </div>
             </div>
 
@@ -109,7 +111,7 @@ export default function DashboardEmergencyStop({
                 variant="outline"
                 onClick={() => setShowDialog(false)}
               >
-                Отмена
+                {t("common.cancel")}
               </Button>
 
               <Button
@@ -120,7 +122,7 @@ export default function DashboardEmergencyStop({
                   className="size-3.5"
                   fill="currentColor"
                 />
-                Остановить всё
+                {t("dashboard.emergencyStop.stopAll")}
               </Button>
             </div>
           </div>

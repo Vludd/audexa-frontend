@@ -1,4 +1,5 @@
 import type { LogEntry, LogLevel, LogSource } from "@/types"
+import { formatTime as formatLocalizedTime, t } from "@/i18n"
 
 const STORAGE_KEY = "audexa.frontend.logs.v1"
 
@@ -106,11 +107,7 @@ function emit() {
 }
 
 function formatTime(timestamp: Date) {
-  return timestamp.toLocaleTimeString("ru-RU", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  })
+  return formatLocalizedTime(timestamp)
 }
 
 function sanitizeContext(context?: LogContext) {
@@ -123,7 +120,7 @@ function sanitizeContext(context?: LogContext) {
     return context
   } catch {
     return {
-      serializationError: "Не удалось сериализовать контекст",
+      serializationError: t("logs.messages.contextSerializationError"),
     }
   }
 }
