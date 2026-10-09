@@ -50,11 +50,6 @@ export function useAudioFiles({
 }: UseAudioFilesOptions) {
   const queryClient = useQueryClient()
 
-  /*
-   * ------------------------------------------------------------
-   * Library / server state
-   * ------------------------------------------------------------
-   */
 
   const {
     data: files = initialFiles,
@@ -66,11 +61,6 @@ export function useAudioFiles({
     queryFn: audioApi.getAll,
   })
 
-  /*
-   * ------------------------------------------------------------
-   * UI state
-   * ------------------------------------------------------------
-   */
 
   const [query, setQuery] = useState("")
 
@@ -80,21 +70,11 @@ export function useAudioFiles({
 
   const [selectedIds, setSelectedIds] = useState<string[]>([])
 
-  /*
-   * ------------------------------------------------------------
-   * Drag & Drop
-   * ------------------------------------------------------------
-   */
 
   const [isDragging, setIsDragging] = useState(false)
 
   const dragCounterRef = useRef(0)
 
-  /*
-   * ------------------------------------------------------------
-   * Player state
-   * ------------------------------------------------------------
-   */
 
   const [currentFileId, setCurrentFileId] = useState<
     string | null
@@ -118,19 +98,9 @@ export function useAudioFiles({
 
   const [volume, setVolumeState] = useState(1)
 
-  /*
-   * ------------------------------------------------------------
-   * Refs
-   * ------------------------------------------------------------
-   */
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
-  /*
-   * ------------------------------------------------------------
-   * Derived state
-   * ------------------------------------------------------------
-   */
 
   const selectedFile = useMemo(
     () =>
@@ -166,11 +136,6 @@ export function useAudioFiles({
     [],
   )
 
-  /*
-   * ------------------------------------------------------------
-   * Audio element initialization
-   * ------------------------------------------------------------
-   */
 
   const ensureAudioElement = useCallback(() => {
     if (audioRef.current) {
@@ -248,11 +213,6 @@ export function useAudioFiles({
     return audio
   }, [currentFileId, setPlayback, volume])
 
-  /*
-   * ------------------------------------------------------------
-   * Player
-   * ------------------------------------------------------------
-   */
 
   const play = useCallback(
     async (fileId: string) => {
@@ -432,21 +392,11 @@ export function useAudioFiles({
     }
   }, [])
 
-  /*
-   * ------------------------------------------------------------
-   * Single selection
-   * ------------------------------------------------------------
-   */
 
   const selectFile = useCallback((id: string) => {
     setSelectedId(id)
   }, [])
 
-  /*
-   * ------------------------------------------------------------
-   * Multi selection
-   * ------------------------------------------------------------
-   */
 
   const toggleSelection = useCallback((id: string) => {
     setSelectedIds((current) =>
@@ -489,11 +439,6 @@ export function useAudioFiles({
     setSelectedIds([])
   }, [])
 
-  /*
-   * ------------------------------------------------------------
-   * Import / Upload
-   * ------------------------------------------------------------
-   */
 
   const uploadMutation = useMutation({
     mutationFn: (file: File) =>
@@ -547,11 +492,6 @@ export function useAudioFiles({
     [uploadMutation],
   )
 
-  /*
-   * ------------------------------------------------------------
-   * Rename mutation
-   * ------------------------------------------------------------
-   */
 
   const renameMutation = useMutation({
     mutationFn: ({
@@ -608,11 +548,6 @@ export function useAudioFiles({
     [renameMutation],
   )
 
-  /*
-   * ------------------------------------------------------------
-   * Delete mutation
-   * ------------------------------------------------------------
-   */
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) =>
@@ -634,11 +569,6 @@ export function useAudioFiles({
     },
   })
 
-  /*
-   * ------------------------------------------------------------
-   * Delete selected mutation
-   * ------------------------------------------------------------
-   */
 
   const deleteSelectedMutation = useMutation({
     mutationFn: async (ids: string[]) => {
@@ -765,11 +695,6 @@ export function useAudioFiles({
     ],
   )
 
-  /*
-   * ------------------------------------------------------------
-   * Drag & Drop
-   * ------------------------------------------------------------
-   */
 
   const handleDragEnter = useCallback(
     (event: React.DragEvent) => {
@@ -822,11 +747,6 @@ export function useAudioFiles({
     [addFiles],
   )
 
-  /*
-   * ------------------------------------------------------------
-   * Cleanup
-   * ------------------------------------------------------------
-   */
 
   useEffect(() => {
     return () => {
@@ -842,11 +762,6 @@ export function useAudioFiles({
     }
   }, [])
 
-  /*
-   * ------------------------------------------------------------
-   * Error state
-   * ------------------------------------------------------------
-   */
 
   const error =
     queryError instanceof Error
@@ -855,11 +770,6 @@ export function useAudioFiles({
         ? t("audio.import.loadError")
         : null
 
-  /*
-   * ------------------------------------------------------------
-   * Return
-   * ------------------------------------------------------------
-   */
 
   return {
     files,

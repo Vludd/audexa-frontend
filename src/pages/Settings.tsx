@@ -7,15 +7,13 @@ import AudioDeviceSettings from "@/components/settings/AudioDeviceSettings"
 import LineMappingSettings from "@/components/settings/LineMappingSettings"
 import StartupSettings from "@/components/settings/StartupSettings"
 import LoggingSettings from "@/components/settings/LoggingSettings"
-import SettingsActions from "@/components/settings/SettingsActions"
 import ThemeSettings from "@/components/settings/ThemeSettings"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 
-import {
-  audioDevicesApi,
-  type AudioDevice,
-} from "@/api/audioDevices"
+import { audioDevicesApi, type AudioDevice } from "@/api/audioDevices"
+import { audioSettingsApi, type AudioSettingsConfig } from "@/api/audioSettings"
 import type { Room } from "@/types"
+import { toast } from "@/lib/toast"
 
 interface SettingsProps {
   rooms: Room[]
@@ -35,17 +33,11 @@ function SettingsSection({
   return (
     <section className={`space-y-2 ${className}`}>
       <div>
-        <h2 className="text-sm font-semibold tracking-tight">
-          {title}
-        </h2>
-
+        <h2 className="text-sm font-semibold tracking-tight">{title}</h2>
         {description && (
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            {description}
-          </p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>
         )}
       </div>
-
       {children}
     </section>
   )
@@ -53,112 +45,127 @@ function SettingsSection({
 
 export default function Settings({ rooms }: SettingsProps) {
   const [devices, setDevices] = useState<AudioDevice[]>([])
-  const [selectedDeviceId, setSelectedDeviceId] =
-    useState("")
-
-  const [isLoadingDevices, setIsLoadingDevices] =
-    useState(true)
-
-  const [devicesError, setDevicesError] =
-    useState<string | null>(null)
-
-  const [devicesSupported, setDevicesSupported] =
-    useState(true)
+  const [selectedDeviceId, setSelectedDeviceId] = useState("")
+  const [savedAudioConfig, setSavedAudioConfig] = useState<AudioSettingsConfig | null>(null)
+  const [isSavingAudioConfig, setIsSavingAudioConfig] = useState(false)
+  const [isLoadingDevices, setIsLoadingDevices] = useState(true)
+  const [devicesError, setDevicesError] = useState<string | null>(null)
+  const [devicesSupported, setDevicesSupported] = useState(true)
+  const [isLoadingConfig, setIsLoadingConfig] = useState(true)
 
   const selectedDevice = useMemo(
-    () =>
-      devices.find(
-        (device) => device.id === selectedDeviceId,
-      ) ?? null,
+    () => devices.find((device) => device.id === selectedDeviceId) ?? null,
     [devices, selectedDeviceId],
   )
 
   const applyDevicesResponse = useCallback(
-    (response: Awaited<ReturnType<typeof audioDevicesApi.getAll>>) => {
+    (
+      response: Awaited<ReturnType<typeof audioDevicesApi.getAll>>,
+      preferredDeviceId?: string | null,
+    ) => {
       setDevices(response.devices)
       setDevicesSupported(response.supported)
 
       setSelectedDeviceId((current) => {
-        if (
-          current &&
-          response.devices.some(
-            (device) => device.id === current,
-          )
-        ) {
+        if (current && response.devices.some((device) => device.id === current)) {
           return current
         }
 
-        const onlineDevice =
-          response.devices.find(
-            (device) => device.status === "online",
-          )
+        if (
+          preferredDeviceId &&
+          response.devices.some((device) => device.id === preferredDeviceId)
+        ) {
+          return preferredDeviceId
+        }
 
-        return (
-          onlineDevice?.id ??
-          response.devices[0]?.id ??
-          ""
-        )
+        return response.devices.find((device) => device.status === "online")?.id ?? response.devices[0]?.id ?? ""
       })
 
       setDevicesError(
-        response.error && response.devices.length === 0
-          ? response.error
-          : null,
+        response.error && response.devices.length === 0 ? response.error : null,
       )
     },
     [],
   )
 
-  const applyDevicesError = useCallback((error: unknown) => {
-    setDevices([])
-    setSelectedDeviceId("")
-    setDevicesError(
-      error instanceof Error
-        ? error.message
-        : "Не удалось получить аудиоустройства",
-    )
-  }, [])
-
-  const fetchDevices = useCallback(async () => {
+  const fetchDevices = async () => {
     setIsLoadingDevices(true)
     setDevicesError(null)
 
     try {
-      const response =
-        await audioDevicesApi.getAll()
-
-      applyDevicesResponse(response)
+      const response = await audioDevicesApi.getAll()
+      applyDevicesResponse(response, savedAudioConfig?.deviceId)
     } catch (error) {
-      applyDevicesError(error)
+      setDevices([])
+      setSelectedDeviceId("")
+      setDevicesError(
+        error instanceof Error ? error.message : "Не удалось получить аудиоустройства",
+      )
     } finally {
       setIsLoadingDevices(false)
     }
-  }, [applyDevicesError, applyDevicesResponse])
+  }
 
   useEffect(() => {
     let cancelled = false
 
-    audioDevicesApi.getAll()
-      .then((response) => {
-        if (!cancelled) {
-          applyDevicesResponse(response)
+    Promise.allSettled([audioSettingsApi.get(), audioDevicesApi.getAll()]).then(
+      ([configResult, devicesResult]) => {
+        if (cancelled) return
+
+        const config =
+          configResult.status === "fulfilled"
+            ? configResult.value
+            : audioSettingsApi.readLocal()
+
+        setSavedAudioConfig(config)
+        setIsLoadingConfig(false)
+
+        if (devicesResult.status === "fulfilled") {
+          applyDevicesResponse(devicesResult.value, config.deviceId)
+        } else {
+          setDevices([])
+          setSelectedDeviceId(config.deviceId ?? "")
+          setDevicesError(
+            devicesResult.reason instanceof Error
+              ? devicesResult.reason.message
+              : "Не удалось получить аудиоустройства",
+          )
         }
-      })
-      .catch((error: unknown) => {
-        if (!cancelled) {
-          applyDevicesError(error)
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsLoadingDevices(false)
-        }
-      })
+
+        setIsLoadingDevices(false)
+      },
+    )
 
     return () => {
       cancelled = true
     }
-  }, [applyDevicesError, applyDevicesResponse])
+  }, [applyDevicesResponse])
+
+  const handleDeviceChange = (deviceId: string) => {
+    setSelectedDeviceId(deviceId)
+  }
+
+  const handleSaveAudioConfig = async (config: AudioSettingsConfig) => {
+    setIsSavingAudioConfig(true)
+
+    try {
+      const saved = await audioSettingsApi.save(config)
+      setSavedAudioConfig(saved)
+      setSelectedDeviceId(saved.deviceId ?? "")
+      toast.success(t("settings.lineMapping.saveSuccess"))
+    } catch (error) {
+      toast.error(t("settings.lineMapping.saveFailed"), {
+        description:
+          error instanceof Error
+            ? error.message
+            : t("settings.lineMapping.saveFailedDescription"),
+      })
+      throw error
+    } finally {
+      setIsSavingAudioConfig(false)
+    }
+  }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -171,9 +178,7 @@ export default function Settings({ rooms }: SettingsProps) {
         <div className="mx-auto max-w-6xl space-y-6">
           <SettingsSection
             title={t("settings.sections.general.title")}
-            description={t(
-              "settings.sections.general.description",
-            )}
+            description={t("settings.sections.general.description")}
           >
             <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
               <LanguageSwitcher />
@@ -183,9 +188,7 @@ export default function Settings({ rooms }: SettingsProps) {
 
           <SettingsSection
             title={t("settings.sections.application.title")}
-            description={t(
-              "settings.sections.application.description",
-            )}
+            description={t("settings.sections.application.description")}
           >
             <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
               <StartupSettings />
@@ -195,15 +198,13 @@ export default function Settings({ rooms }: SettingsProps) {
 
           <SettingsSection
             title={t("settings.sections.audio.title")}
-            description={t(
-              "settings.sections.audio.description",
-            )}
+            description={t("settings.sections.audio.description")}
           >
             <AudioDeviceSettings
               devices={devices}
               selectedDeviceId={selectedDeviceId}
-              onDeviceChange={setSelectedDeviceId}
-              isLoading={isLoadingDevices}
+              onDeviceChange={handleDeviceChange}
+              isLoading={isLoadingDevices || isLoadingConfig}
               supported={devicesSupported}
               error={devicesError}
               onRefresh={() => void fetchDevices()}
@@ -211,33 +212,22 @@ export default function Settings({ rooms }: SettingsProps) {
           </SettingsSection>
 
           <SettingsSection
-            title={t(
-              "settings.sections.outputMapping.title",
-            )}
-            description={t(
-              "settings.sections.outputMapping.description",
-            )}
+            title={t("settings.sections.outputMapping.title")}
+            description={t("settings.sections.outputMapping.description")}
           >
             <LineMappingSettings
-              key={
-                `${selectedDevice?.id ?? "no-device"}:${selectedDevice?.outputs
-                  .map((output) => output.id)
-                  .join("|") ?? ""}:${rooms
-                  .map((room) => room.id)
-                  .join("|")}`
-              }
+              key={JSON.stringify({
+                deviceId: selectedDevice?.id ?? null,
+                outputIds: selectedDevice?.outputs.map((output) => output.id) ?? [],
+                roomIds: rooms.map((room) => room.id),
+                savedConfig: savedAudioConfig,
+              })}
               rooms={rooms}
               selectedDevice={selectedDevice}
+              savedConfig={savedAudioConfig}
+              isSaving={isSavingAudioConfig}
+              onSave={handleSaveAudioConfig}
             />
-          </SettingsSection>
-
-          <SettingsSection
-            title={t("settings.sections.actions.title")}
-            description={t(
-              "settings.sections.actions.description",
-            )}
-          >
-            <SettingsActions />
           </SettingsSection>
         </div>
       </main>

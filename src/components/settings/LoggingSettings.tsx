@@ -70,8 +70,6 @@ export default function LoggingSettings() {
       </CardHeader>
 
       <CardContent className="space-y-5">
-        {/* Log level */}
-
         <div className="space-y-2">
           <Label>
             {t(
@@ -115,8 +113,6 @@ export default function LoggingSettings() {
           </p>
         </div>
 
-        {/* Storage */}
-
         <div className="space-y-2">
           <Label>
             {t(
@@ -140,8 +136,6 @@ export default function LoggingSettings() {
             )}
           </div>
         </div>
-
-        {/* Retention */}
 
         <div className="space-y-2">
           <Label>

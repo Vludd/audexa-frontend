@@ -6,7 +6,6 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Audexa — compact desktop control panel */
   --background: #f5f7fa;
   --foreground: #1e293b;
 

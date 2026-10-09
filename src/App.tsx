@@ -151,7 +151,6 @@ export default function App() {
         </main>
       </div>
 
-      {/* <StatusBar status={mockSystemStatus} /> */}
       <Toaster />
     </div>
   )

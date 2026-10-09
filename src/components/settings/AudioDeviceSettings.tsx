@@ -1,12 +1,13 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import {
   AlertCircle,
   CheckCircle2,
+  ChevronDown,
+  ChevronRight,
   RefreshCw,
 } from "lucide-react"
 
 import type { AudioDevice } from "@/api/audioDevices"
-
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -23,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
 import { t } from "@/i18n"
 
 interface AudioDeviceSettingsProps {
@@ -45,11 +45,11 @@ export default function AudioDeviceSettings({
   error,
   onRefresh,
 }: AudioDeviceSettingsProps) {
+  const [outputsExpanded, setOutputsExpanded] = useState(false)
+
   const selectedDevice = useMemo(
     () =>
-      devices.find(
-        (device) => device.id === selectedDeviceId,
-      ) ?? null,
+      devices.find((device) => device.id === selectedDeviceId) ?? null,
     [devices, selectedDeviceId],
   )
 
@@ -59,7 +59,6 @@ export default function AudioDeviceSettings({
         <CardTitle className="text-sm">
           {t("settings.audioDevice.title")}
         </CardTitle>
-
         <CardDescription className="text-xs">
           {t("settings.audioDevice.description")}
         </CardDescription>
@@ -68,19 +67,12 @@ export default function AudioDeviceSettings({
       <CardContent className="space-y-4">
         <div className="flex gap-2">
           <div className="flex-1 space-y-2">
-            <Label>
-              {t("settings.audioDevice.device")}
-            </Label>
-
+            <Label>{t("settings.audioDevice.device")}</Label>
             <Select
               value={selectedDeviceId}
-              onValueChange={(value) =>
-                onDeviceChange(value ?? "")
-              }
+              onValueChange={(value) => onDeviceChange(value ?? "")}
               disabled={
-                isLoading ||
-                !supported ||
-                devices.length === 0
+                isLoading || !supported || devices.length === 0
               }
             >
               <SelectTrigger className="w-full">
@@ -97,22 +89,14 @@ export default function AudioDeviceSettings({
                       : t("settings.audioDevice.notFound"))}
                 </SelectValue>
               </SelectTrigger>
-
               <SelectContent>
                 {devices.map((device) => (
-                  <SelectItem
-                    key={device.id}
-                    value={device.id}
-                  >
+                  <SelectItem key={device.id} value={device.id}>
                     <div className="flex min-w-0 items-center gap-2">
-                      <span className="truncate">
-                        {device.name}
-                      </span>
-
+                      <span className="truncate">{device.name}</span>
                       <span className="text-xs text-muted-foreground">
                         {device.type}
                       </span>
-
                       {device.status === "offline" && (
                         <span className="text-xs text-muted-foreground">
                           · {t("settings.audioDevice.offline")}
@@ -133,12 +117,8 @@ export default function AudioDeviceSettings({
               disabled={isLoading}
             >
               <RefreshCw
-                className={[
-                  "size-3.5",
-                  isLoading ? "animate-spin" : "",
-                ].join(" ")}
+                className={["size-3.5", isLoading ? "animate-spin" : ""].join(" ")}
               />
-
               {t("settings.audioDevice.refresh")}
             </Button>
           </div>
@@ -147,27 +127,20 @@ export default function AudioDeviceSettings({
         {error && (
           <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm">
             <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
-
             <div>
               <div className="font-medium">
                 {t("settings.audioDevice.loadError")}
               </div>
-
-              <div className="mt-0.5 text-xs text-muted-foreground">
-                {error}
-              </div>
+              <div className="mt-0.5 text-xs text-muted-foreground">{error}</div>
             </div>
           </div>
         )}
 
-        {!isLoading &&
-          supported &&
-          devices.length === 0 &&
-          !error && (
-            <div className="rounded-md border border-dashed px-3 py-4 text-sm text-muted-foreground">
-              {t("settings.audioDevice.noneFound")}
-            </div>
-          )}
+        {!isLoading && supported && devices.length === 0 && !error && (
+          <div className="rounded-md border border-dashed px-3 py-4 text-sm text-muted-foreground">
+            {t("settings.audioDevice.noneFound")}
+          </div>
+        )}
 
         {!supported && (
           <div className="rounded-md border border-dashed px-3 py-4 text-sm text-muted-foreground">
@@ -178,41 +151,21 @@ export default function AudioDeviceSettings({
         {selectedDevice && (
           <>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-              <div className="rounded-md border bg-muted/20 px-3 py-2">
-                <div className="text-xs text-muted-foreground">
-                  {t("settings.audioDevice.type")}
+              {[
+                [t("settings.audioDevice.type"), selectedDevice.type],
+                [t("settings.audioDevice.outputs"), selectedDevice.outputCount],
+                [t("settings.audioDevice.inputs"), selectedDevice.inputCount],
+              ].map(([label, value]) => (
+                <div key={label} className="rounded-md border bg-muted/20 px-3 py-2">
+                  <div className="text-xs text-muted-foreground">{label}</div>
+                  <div className="mt-1 text-sm font-medium">{value}</div>
                 </div>
-
-                <div className="mt-1 text-sm font-medium">
-                  {selectedDevice.type}
-                </div>
-              </div>
-
-              <div className="rounded-md border bg-muted/20 px-3 py-2">
-                <div className="text-xs text-muted-foreground">
-                  {t("settings.audioDevice.outputs")}
-                </div>
-
-                <div className="mt-1 text-sm font-medium">
-                  {selectedDevice.outputCount}
-                </div>
-              </div>
-
-              <div className="rounded-md border bg-muted/20 px-3 py-2">
-                <div className="text-xs text-muted-foreground">
-                  {t("settings.audioDevice.inputs")}
-                </div>
-
-                <div className="mt-1 text-sm font-medium">
-                  {selectedDevice.inputCount}
-                </div>
-              </div>
+              ))}
 
               <div className="rounded-md border bg-muted/20 px-3 py-2">
                 <div className="text-xs text-muted-foreground">
                   {t("settings.audioDevice.status")}
                 </div>
-
                 <div className="mt-1 flex items-center gap-1.5 text-sm font-medium">
                   {selectedDevice.status === "online" ? (
                     <>
@@ -229,40 +182,53 @@ export default function AudioDeviceSettings({
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>
-                {t("settings.audioDevice.outputChannels")}
-              </Label>
-
-              <div className="max-h-48 overflow-y-auto rounded-md border">
-                {selectedDevice.outputs.length === 0 ? (
-                  <div className="px-3 py-3 text-xs text-muted-foreground">
-                    {t(
-                      "settings.audioDevice.outputChannelsUnavailable",
-                    )}
+            <div className="overflow-hidden rounded-md border">
+              <button
+                type="button"
+                className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors hover:bg-muted/30"
+                onClick={() => setOutputsExpanded((value) => !value)}
+                aria-expanded={outputsExpanded}
+              >
+                <div>
+                  <div className="text-sm font-medium">
+                    {t("settings.audioDevice.outputChannels")}
                   </div>
+                  <div className="text-xs text-muted-foreground">
+                    {t("settings.audioDevice.outputChannelsSummary", {
+                      count: selectedDevice.outputs.length,
+                    })}
+                  </div>
+                </div>
+                {outputsExpanded ? (
+                  <ChevronDown className="size-4 text-muted-foreground" />
                 ) : (
-                  selectedDevice.outputs.map(
-                    (channel) => (
-                      <div
-                        key={channel.id}
-                        className="flex items-center justify-between border-b px-3 py-2 text-sm last:border-b-0"
-                      >
-                        <span className="font-medium">
-                          {channel.name}
-                        </span>
-
-                        <span className="font-mono text-xs text-muted-foreground">
-                          {t("settings.audioDevice.outputAbbreviation")}{" "}
-                          {String(
-                            channel.index + 1,
-                          ).padStart(2, "0")}
-                        </span>
-                      </div>
-                    ),
-                  )
+                  <ChevronRight className="size-4 text-muted-foreground" />
                 )}
-              </div>
+              </button>
+
+              {outputsExpanded && (
+                <div className="border-t">
+                  {selectedDevice.outputs.length === 0 ? (
+                    <div className="px-3 py-3 text-xs text-muted-foreground">
+                      {t("settings.audioDevice.outputChannelsUnavailable")}
+                    </div>
+                  ) : (
+                    <div className="grid max-h-64 grid-cols-1 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                      {selectedDevice.outputs.map((channel) => (
+                        <div
+                          key={channel.id}
+                          className="flex items-center justify-between border-b border-r px-3 py-2 text-sm"
+                        >
+                          <span className="font-medium">{channel.name}</span>
+                          <span className="font-mono text-xs text-muted-foreground">
+                            {t("settings.audioDevice.outputAbbreviation")} {String(channel.index + 1).padStart(2, "0")}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </>
         )}

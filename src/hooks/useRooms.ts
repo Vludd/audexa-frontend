@@ -64,8 +64,7 @@ export function useRooms() {
       }))
 
       try {
-        // Temporary mock delay.
-        // Will be replaced with the real backend/audio-engine request.
+        // Temporary mock delay; replace with the real backend/audio-engine request.
         await new Promise((resolve) =>
           setTimeout(resolve, 400),
         )

@@ -455,6 +455,7 @@ export const en: Widen<typeof ru> = {
       volume: "Volume",
     },
 
+
     actions: {
       rename: "Rename",
 
@@ -820,7 +821,7 @@ export const en: Widen<typeof ru> = {
       title: "Audio device",
 
       description:
-        "Configure the audio device and its parameters (IN DEVELOPMENT)",
+        "Configure the audio device and its parameters",
 
       device: "Device",
 
@@ -849,6 +850,7 @@ export const en: Widen<typeof ru> = {
       offline: "Offline",
 
       outputChannels: "Output channels",
+      outputChannelsSummary: "Available channels: {count}",
 
       outputChannelsUnavailable: "Output channels are unavailable.",
 
@@ -965,6 +967,28 @@ export const en: Widen<typeof ru> = {
       undo: "Undo",
 
       save: "Save",
+
+      saving: "Saving...",
+
+      diagnosticsTitle: "Audio output diagnostics",
+      diagnosticsDescription: "Send a short test signal to assigned physical outputs.",
+      diagnosticsMode: "Signal",
+      diagnosticsVoice: "Voice identification",
+      diagnosticsTone: "Test tone",
+      diagnosticsDuration: "Duration",
+      diagnosticsVolume: "Volume",
+      diagnosticsTest: "Test",
+      diagnosticsTestAssigned: "Test assigned",
+      diagnosticsTesting: "Testing...",
+      diagnosticsSignalSent: "Signal sent",
+      diagnosticsFailed: "Failed",
+      diagnosticsTestFailed: "Output test failed",
+      diagnosticsBackendRequired: "Audio diagnostics backend is required for testing.",
+      diagnosticsNoAssigned: "No assigned outputs to test.",
+      diagnosticsSignalNotice: "A successful result means Audexa sent a signal to the selected output. It does not confirm that the amplifier or physical speaker is working.",
+      saveSuccess: "Audio settings saved",
+      saveFailed: "Failed to save audio settings",
+      saveFailedDescription: "Check the backend connection and try again.",
     },
 
     actions: {

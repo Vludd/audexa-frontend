@@ -86,7 +86,6 @@ export default function LogsToolbar({
 
   return (
     <div className="shrink-0 border-b bg-card px-4 py-2">
-      {/* General filters and actions */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-[220px] flex-1 xl:max-w-[360px]">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
@@ -140,7 +139,6 @@ export default function LogsToolbar({
         </Button>
       </div>
 
-      {/* Additional Filters */}
       <div className="mt-2 flex items-center gap-4 border-t pt-2">
         <span className="text-xs font-medium text-muted-foreground">
           {t("logs.filters.additional")}

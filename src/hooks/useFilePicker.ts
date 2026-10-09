@@ -6,17 +6,13 @@ import {
 } from "react"
 
 interface UseFilePickerOptions {
-  /** Расширения вида ".mp3". MIME-типы лучше не добавлять (см. комментарий ниже). */
+  /** File extensions such as ".mp3". Avoid MIME types; see the input configuration below. */
   accept: string[]
   multiple?: boolean
   onPick: (files: File[]) => void
 }
 
-/*
- * Резолвится после того, как браузер реально отрисовал текущее
- * состояние. Первый rAF срабатывает ДО отрисовки кадра, второй —
- * в начале следующего, то есть когда предыдущий кадр уже показан.
- */
+/** Resolves after the browser has had a chance to paint the current state. */
 function nextPaint(): Promise<void> {
   return new Promise((resolve) => {
     requestAnimationFrame(() => {
@@ -32,8 +28,7 @@ export function useFilePicker({
 }: UseFilePickerOptions) {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Синхронный флаг: state обновляется асинхронно,
-  // а двойной клик должен отсекаться мгновенно.
+  // State updates are asynchronous, so use a synchronous flag to block double clicks.
   const busyRef = useRef(false)
 
   const [isOpening, setIsOpening] = useState(false)
@@ -56,11 +51,10 @@ export function useFilePicker({
       return
     }
 
-    // Выбор файлов.
     const handleChange = () => {
       const files = Array.from(input.files ?? [])
 
-      // Сбрасываем, чтобы повторный выбор того же файла тоже дал change.
+      // Clear the input so selecting the same file again triggers a change event.
       input.value = ""
 
       finish()
@@ -70,7 +64,7 @@ export function useFilePicker({
       }
     }
 
-    // Диалог закрыт без выбора (Chromium 113+, т.е. любой актуальный WebView2).
+    // Chromium 113+ (including current WebView2) fires cancel when the dialog closes without a selection.
     const handleCancel = () => finish()
 
     input.addEventListener("change", handleChange)
@@ -92,12 +86,10 @@ export function useFilePicker({
     busyRef.current = true
     setIsOpening(true)
 
-    // Даём React закоммитить спиннер, а браузеру — показать его.
-    // Нативный диалог может заблокировать UI-поток на время создания,
-    // и без этого спиннер не успевает появиться.
+    // Let React commit the spinner and give the browser a chance to paint it before opening the native dialog.
     await nextPaint()
 
-    // За время ожидания компонент мог размонтироваться.
+    // The component may have unmounted while waiting for the next paint.
     if (!busyRef.current) {
       return
     }
@@ -114,10 +106,7 @@ export function useFilePicker({
     ref: inputRef,
     type: "file" as const,
     multiple,
-    /*
-     * Только расширения. MIME-типы (audio/mpeg и т.п.) Chromium на Windows
-     * резолвит через реестр, и это может заметно тормозить открытие диалога.
-     */
+    // Use extensions only: Chromium on Windows resolves MIME types through the registry, which can delay opening the dialog.
     accept: accept.join(","),
     className: "hidden",
   }

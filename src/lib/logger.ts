@@ -74,9 +74,6 @@ function isLogLevel(value: unknown): value is LogLevel {
   )
 }
 
-/* -------------------------------------------------------------------------- */
-/* Logging settings                                                           */
-/* -------------------------------------------------------------------------- */
 
 function loadLoggingSettings(): LoggingSettings {
   if (typeof window === "undefined") {
@@ -173,9 +170,6 @@ export function subscribeLoggingSettings(
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Log storage                                                                */
-/* -------------------------------------------------------------------------- */
 
 /**
  * Returns information about the actual log storage.
@@ -224,9 +218,6 @@ export function getLogStorageInfo(): LogStorageInfo {
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Log level filtering                                                        */
-/* -------------------------------------------------------------------------- */
 
 function shouldWrite(level: LogLevel) {
   return (
@@ -235,9 +226,6 @@ function shouldWrite(level: LogLevel) {
   )
 }
 
-/* -------------------------------------------------------------------------- */
-/* Log loading / cleanup                                                      */
-/* -------------------------------------------------------------------------- */
 
 function loadLogs(): LogEntry[] {
   if (typeof window === "undefined") {
@@ -313,9 +301,6 @@ function cleanupLogs(
     .slice(-MAX_LOGS)
 }
 
-/* -------------------------------------------------------------------------- */
-/* Persistence                                                                */
-/* -------------------------------------------------------------------------- */
 
 function persist() {
   if (typeof window === "undefined") {
@@ -341,9 +326,6 @@ function emit() {
   listeners.forEach((listener) => listener())
 }
 
-/* -------------------------------------------------------------------------- */
-/* Log creation                                                               */
-/* -------------------------------------------------------------------------- */
 
 function formatTime(timestamp: Date) {
   return formatLocalizedTime(timestamp)
@@ -418,9 +400,6 @@ function write(input: LogInput) {
   return entry
 }
 
-/* -------------------------------------------------------------------------- */
-/* Public logger API                                                          */
-/* -------------------------------------------------------------------------- */
 
 export const logger = {
   debug(
@@ -484,9 +463,6 @@ export const logger = {
   },
 }
 
-/* -------------------------------------------------------------------------- */
-/* Log management                                                             */
-/* -------------------------------------------------------------------------- */
 
 export function getLogs() {
   return entries
@@ -540,9 +516,6 @@ export function subscribeLogs(
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Export                                                                     */
-/* -------------------------------------------------------------------------- */
 
 export function exportLogs(
   format: "json" | "csv" | "txt" = "json",
