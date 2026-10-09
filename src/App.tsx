@@ -145,7 +145,7 @@ export default function App() {
             <AudioFiles />
           )}
 
-          {page === "settings" && <Settings />}
+          {page === "settings" && <Settings rooms={rooms} />}
 
           {page === "logs" && <Logs logs={logs} onClear={clearLogs} />}
         </main>

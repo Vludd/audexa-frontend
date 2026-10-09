@@ -826,6 +826,34 @@ export const en: Widen<typeof ru> = {
 
       refresh: "Refresh",
 
+      loading: "Loading devices...",
+
+      notFound: "Audio device not found",
+
+      loadError: "Failed to load audio devices",
+
+      noneFound: "No audio devices found.",
+
+      unsupported: "Audio device support is unavailable on this platform.",
+
+      type: "Type",
+
+      outputs: "Outputs",
+
+      inputs: "Inputs",
+
+      status: "Status",
+
+      online: "Online",
+
+      offline: "Offline",
+
+      outputChannels: "Output channels",
+
+      outputChannelsUnavailable: "Output channels are unavailable.",
+
+      outputAbbreviation: "OUT",
+
       sampleRate: "Sample rate (Hz)",
 
       bufferSize: "Buffer size",
@@ -908,9 +936,17 @@ export const en: Widen<typeof ru> = {
 
       output: "Output",
 
+      clearOutput: "Clear output for room “{name}”",
+
+      selectDevice: "Select an audio device to configure its output lines.",
+
+      noOutputs: "The selected device has no available output channels.",
+
       status: "Status",
 
       conflict: "Conflict",
+
+      ok: "Assigned",
 
       testOutput: "Test output",
 

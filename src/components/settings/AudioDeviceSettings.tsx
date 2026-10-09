@@ -1,4 +1,11 @@
-import { RefreshCw } from "lucide-react"
+import { useMemo } from "react"
+import {
+  AlertCircle,
+  CheckCircle2,
+  RefreshCw,
+} from "lucide-react"
+
+import type { AudioDevice } from "@/api/audioDevices"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,12 +23,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { bufferSizes, sampleRates } from "@/data/audio"
+
 import { t } from "@/i18n"
 
-export default function AudioDeviceSettings() {
-  const sampleRate = sampleRates[1]
-  const bufferSize = bufferSizes[0]
+interface AudioDeviceSettingsProps {
+  devices: AudioDevice[]
+  selectedDeviceId: string
+  onDeviceChange: (deviceId: string) => void
+  isLoading: boolean
+  supported: boolean
+  error: string | null
+  onRefresh: () => void
+}
+
+export default function AudioDeviceSettings({
+  devices,
+  selectedDeviceId,
+  onDeviceChange,
+  isLoading,
+  supported,
+  error,
+  onRefresh,
+}: AudioDeviceSettingsProps) {
+  const selectedDevice = useMemo(
+    () =>
+      devices.find(
+        (device) => device.id === selectedDeviceId,
+      ) ?? null,
+    [devices, selectedDeviceId],
+  )
 
   return (
     <Card>
@@ -38,89 +68,204 @@ export default function AudioDeviceSettings() {
       <CardContent className="space-y-4">
         <div className="flex gap-2">
           <div className="flex-1 space-y-2">
-            <Label>{t("settings.audioDevice.device")}</Label>
+            <Label>
+              {t("settings.audioDevice.device")}
+            </Label>
 
-            <Select defaultValue="umc1820">
+            <Select
+              value={selectedDeviceId}
+              onValueChange={(value) =>
+                onDeviceChange(value ?? "")
+              }
+              disabled={
+                isLoading ||
+                !supported ||
+                devices.length === 0
+              }
+            >
               <SelectTrigger className="w-full">
-                <SelectValue />
+                <SelectValue
+                  placeholder={
+                    isLoading
+                      ? t("settings.audioDevice.loading")
+                      : t("settings.audioDevice.notFound")
+                  }
+                >
+                  {selectedDevice?.name ??
+                    (isLoading
+                      ? t("settings.audioDevice.loading")
+                      : t("settings.audioDevice.notFound"))}
+                </SelectValue>
               </SelectTrigger>
 
               <SelectContent>
-                <SelectItem value="umc1820">
-                  UMC1820 (ASIO)
-                </SelectItem>
+                {devices.map((device) => (
+                  <SelectItem
+                    key={device.id}
+                    value={device.id}
+                  >
+                    <div className="flex min-w-0 items-center gap-2">
+                      <span className="truncate">
+                        {device.name}
+                      </span>
+
+                      <span className="text-xs text-muted-foreground">
+                        {device.type}
+                      </span>
+
+                      {device.status === "offline" && (
+                        <span className="text-xs text-muted-foreground">
+                          · {t("settings.audioDevice.offline")}
+                        </span>
+                      )}
+                    </div>
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
           <div className="pt-6">
-            <Button variant="outline" size="sm">
-              <RefreshCw className="size-3.5" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onRefresh}
+              disabled={isLoading}
+            >
+              <RefreshCw
+                className={[
+                  "size-3.5",
+                  isLoading ? "animate-spin" : "",
+                ].join(" ")}
+              />
+
               {t("settings.audioDevice.refresh")}
             </Button>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label>{t("settings.audioDevice.sampleRate")}</Label>
+        {error && (
+          <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm">
+            <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
 
-          <Select
-            defaultValue={sampleRate.toString()}
-            disabled
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue />
-            </SelectTrigger>
+            <div>
+              <div className="font-medium">
+                {t("settings.audioDevice.loadError")}
+              </div>
 
-            <SelectContent>
-              {sampleRates.map((rate) => (
-                <SelectItem
-                  key={rate}
-                  value={rate.toString()}
-                >
-                  {rate} Hz
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+              <div className="mt-0.5 text-xs text-muted-foreground">
+                {error}
+              </div>
+            </div>
+          </div>
+        )}
 
-        <div className="space-y-2">
-          <Label>{t("settings.audioDevice.bufferSize")}</Label>
+        {!isLoading &&
+          supported &&
+          devices.length === 0 &&
+          !error && (
+            <div className="rounded-md border border-dashed px-3 py-4 text-sm text-muted-foreground">
+              {t("settings.audioDevice.noneFound")}
+            </div>
+          )}
 
-          <Select
-            defaultValue={bufferSize.toString()}
-            disabled
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue />
-            </SelectTrigger>
+        {!supported && (
+          <div className="rounded-md border border-dashed px-3 py-4 text-sm text-muted-foreground">
+            {t("settings.audioDevice.unsupported")}
+          </div>
+        )}
 
-            <SelectContent>
-              {bufferSizes.map((size) => (
-                <SelectItem
-                  key={size}
-                  value={size.toString()}
-                >
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {selectedDevice && (
+          <>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <div className="rounded-md border bg-muted/20 px-3 py-2">
+                <div className="text-xs text-muted-foreground">
+                  {t("settings.audioDevice.type")}
+                </div>
 
-        <div
-          hidden
-          className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm dark:border-emerald-900 dark:bg-emerald-950/40"
-        >
-          <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-            ● ONLINE
-          </span>
+                <div className="mt-1 text-sm font-medium">
+                  {selectedDevice.type}
+                </div>
+              </div>
 
-          <span className="ml-2 text-muted-foreground">
-            {t("settings.audioDevice.connected")}
-          </span>
-        </div>
+              <div className="rounded-md border bg-muted/20 px-3 py-2">
+                <div className="text-xs text-muted-foreground">
+                  {t("settings.audioDevice.outputs")}
+                </div>
+
+                <div className="mt-1 text-sm font-medium">
+                  {selectedDevice.outputCount}
+                </div>
+              </div>
+
+              <div className="rounded-md border bg-muted/20 px-3 py-2">
+                <div className="text-xs text-muted-foreground">
+                  {t("settings.audioDevice.inputs")}
+                </div>
+
+                <div className="mt-1 text-sm font-medium">
+                  {selectedDevice.inputCount}
+                </div>
+              </div>
+
+              <div className="rounded-md border bg-muted/20 px-3 py-2">
+                <div className="text-xs text-muted-foreground">
+                  {t("settings.audioDevice.status")}
+                </div>
+
+                <div className="mt-1 flex items-center gap-1.5 text-sm font-medium">
+                  {selectedDevice.status === "online" ? (
+                    <>
+                      <CheckCircle2 className="size-3.5 text-emerald-600" />
+                      {t("settings.audioDevice.online")}
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="size-3.5 text-destructive" />
+                      {t("settings.audioDevice.offline")}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>
+                {t("settings.audioDevice.outputChannels")}
+              </Label>
+
+              <div className="max-h-48 overflow-y-auto rounded-md border">
+                {selectedDevice.outputs.length === 0 ? (
+                  <div className="px-3 py-3 text-xs text-muted-foreground">
+                    {t(
+                      "settings.audioDevice.outputChannelsUnavailable",
+                    )}
+                  </div>
+                ) : (
+                  selectedDevice.outputs.map(
+                    (channel) => (
+                      <div
+                        key={channel.id}
+                        className="flex items-center justify-between border-b px-3 py-2 text-sm last:border-b-0"
+                      >
+                        <span className="font-medium">
+                          {channel.name}
+                        </span>
+
+                        <span className="font-mono text-xs text-muted-foreground">
+                          {t("settings.audioDevice.outputAbbreviation")}{" "}
+                          {String(
+                            channel.index + 1,
+                          ).padStart(2, "0")}
+                        </span>
+                      </div>
+                    ),
+                  )
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   )
