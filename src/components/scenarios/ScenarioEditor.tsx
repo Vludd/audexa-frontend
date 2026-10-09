@@ -22,6 +22,8 @@ import type {
 import ScenarioSettings from "./ScenarioSettings"
 import ScenarioStepsTable from "./ScenarioStepsTable"
 import { t } from "@/i18n"
+import { formatTime } from "@/lib/audio"
+import { getScenarioDuration } from "@/lib/scenarios"
 
 interface Props {
   scenario: Scenario
@@ -60,20 +62,6 @@ interface Props {
   ) => ScenarioValidation
 }
 
-function fmtSec(seconds: number) {
-  const minutes = Math.floor(seconds / 60)
-  const sec = seconds % 60
-
-  return `${String(minutes).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
-}
-
-function totalDuration(scenario: Scenario) {
-  return scenario.steps.reduce(
-    (sum, step) => sum + step.duration + step.delay,
-    0,
-  )
-}
-
 export default function ScenarioEditor({
   scenario,
   rooms,
@@ -85,7 +73,7 @@ export default function ScenarioEditor({
   onMoveStep,
   onValidate,
 }: Props) {
-  const duration = totalDuration(scenario)
+  const duration = getScenarioDuration(scenario)
   const validation = onValidate(scenario)
 
   const handleAddStep = () => {
@@ -130,7 +118,7 @@ export default function ScenarioEditor({
         <div className="flex shrink-0 items-center gap-2">
           <InfoPill
             label={t("scenarios.editor.duration")}
-            value={fmtSec(duration)}
+            value={formatTime(duration)}
           />
 
           <InfoPill
@@ -232,7 +220,7 @@ export default function ScenarioEditor({
         <span className="text-xs text-muted-foreground">
           {t("scenarios.editor.totalDuration")}{" "}
           <strong className="text-foreground">
-            {fmtSec(duration)}
+            {formatTime(duration)}
           </strong>
         </span>
       </div>

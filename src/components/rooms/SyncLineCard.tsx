@@ -9,6 +9,7 @@ import StatusBadge from "@/components/StatusBadge"
 import { cn } from "cn"
 import type { ReactNode } from "react"
 import { t } from "@/i18n"
+import { getRoomOperationLabel } from "@/lib/rooms"
 
 interface Props {
   room: Room
@@ -16,12 +17,6 @@ interface Props {
 
   onPlay: () => void
   onStop: () => void
-}
-
-const OPERATION_LABELS: Record<RoomOperation, string> = {
-  starting: t("common.starting"),
-  stopping: t("common.stopping"),
-  pausing: t("common.pausing"),
 }
 
 export default function SyncLineCard({
@@ -66,7 +61,7 @@ export default function SyncLineCard({
               <span className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Loader2 className="size-3 animate-spin" />
 
-                {OPERATION_LABELS[operation]}
+                {getRoomOperationLabel(operation)}
               </span>
             )}
           </div>

@@ -5,23 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import type { Room } from "@/types"
 import { t } from "@/i18n"
+import { formatTime } from "@/lib/audio"
 
 interface DashboardPlaybackProps {
   rooms: Room[]
   onNavigate: (page: string) => void
   onPauseRoom: (roomId: string) => void
   onStopRoom: (roomId: string) => void
-}
-
-function fmt(seconds: number) {
-  const safeSeconds = Math.max(0, Math.floor(seconds))
-  const minutes = Math.floor(safeSeconds / 60)
-  const sec = safeSeconds % 60
-
-  return `${String(minutes).padStart(2, "0")}:${String(sec).padStart(
-    2,
-    "0",
-  )}`
 }
 
 export default function DashboardPlayback({
@@ -86,8 +76,8 @@ export default function DashboardPlayback({
               />
 
               <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-                {fmt(currentRoom.position)} /{" "}
-                {fmt(currentRoom.duration)}
+                {formatTime(currentRoom.position)} /{" "}
+                {formatTime(currentRoom.duration)}
               </span>
             </div>
 

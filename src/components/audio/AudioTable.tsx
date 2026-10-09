@@ -14,6 +14,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { formatTime } from "@/lib/audio"
 
 import AudioFileActions from "./AudioFileActions"
 
@@ -31,17 +32,6 @@ interface Props {
   onTogglePlay: (id: string) => void
   onRename: (id: string) => void
   onDelete: (id: string) => void
-}
-
-function fmtDur(seconds: number) {
-  if (!Number.isFinite(seconds) || seconds < 0) {
-    return "—"
-  }
-
-  const minutes = Math.floor(seconds / 60)
-  const sec = Math.floor(seconds % 60)
-
-  return `${String(minutes).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
 }
 
 function fmtSize(bytes: number) {
@@ -238,7 +228,9 @@ export default function AudioTable({
                 </TableCell>
 
                 <TableCell className="font-mono text-xs">
-                  {fmtDur(file.duration)}
+                  {Number.isFinite(file.duration) && file.duration >= 0
+                    ? formatTime(file.duration)
+                    : "—"}
                 </TableCell>
 
                 <TableCell className="text-sm text-muted-foreground">

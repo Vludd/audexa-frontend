@@ -18,6 +18,8 @@ import type { Room, RoomOperation } from "@/types"
 
 import StatusBadge from "@/components/StatusBadge"
 import { cn } from "cn"
+import { formatTime } from "@/lib/audio"
+import { getRoomOperationLabel } from "@/lib/rooms"
 import { Slider } from "../ui/slider"
 import { t } from "@/i18n"
 
@@ -33,12 +35,6 @@ interface Props {
   onEdit: () => void
   onDuplicate: () => void
   onDelete: () => void
-}
-
-const OPERATION_LABELS: Record<RoomOperation, string> = {
-  starting: t("common.starting"),
-  stopping: t("common.stopping"),
-  pausing: t("common.pausing"),
 }
 
 export default function RoomCard({
@@ -116,7 +112,7 @@ export default function RoomCard({
               {operation && (
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Loader2 className="size-3 animate-spin" />
-                  {OPERATION_LABELS[operation]}
+                  {getRoomOperationLabel(operation)}
                 </span>
               )}
             </div>
@@ -424,18 +420,4 @@ function ActionButton({
       {label}
     </Button>
   )
-}
-
-function formatTime(seconds: number) {
-  if (!Number.isFinite(seconds) || seconds < 0) {
-    return "00:00"
-  }
-
-  const totalSeconds = Math.floor(seconds)
-  const minutes = Math.floor(totalSeconds / 60)
-  const remainingSeconds = totalSeconds % 60
-
-  return `${String(minutes).padStart(2, "0")}:${String(
-    remainingSeconds,
-  ).padStart(2, "0")}`
 }

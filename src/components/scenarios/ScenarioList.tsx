@@ -1,25 +1,13 @@
 import type { Scenario } from "@/types"
 import { cn } from "cn"
 import { t } from "@/i18n"
+import { formatTime } from "@/lib/audio"
+import { getScenarioDuration } from "@/lib/scenarios"
 
 interface Props {
   scenarios: Scenario[]
   selected: number | null
   onSelect: (id: number) => void
-}
-
-function fmtSec(seconds: number) {
-  const minutes = Math.floor(seconds / 60)
-  const sec = seconds % 60
-
-  return `${String(minutes).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
-}
-
-function totalDuration(scenario: Scenario) {
-  return scenario.steps.reduce(
-    (sum, step) => sum + step.duration + step.delay,
-    0,
-  )
 }
 
 export default function ScenarioList({
@@ -96,7 +84,7 @@ export default function ScenarioList({
                 <span>·</span>
 
                 <span>
-                  {fmtSec(totalDuration(scenario))}
+                  {formatTime(getScenarioDuration(scenario))}
                 </span>
               </div>
             </button>

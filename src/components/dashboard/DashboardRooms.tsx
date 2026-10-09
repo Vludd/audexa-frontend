@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import type { Room } from "@/types"
 import { t, type TranslationKey } from "@/i18n"
+import { formatTime } from "@/lib/audio"
 
 interface DashboardRoomsProps {
   rooms: Room[]
@@ -17,14 +18,6 @@ interface DashboardRoomsProps {
 }
 
 const MAX_VISIBLE_ROOMS = 6
-
-function fmt(seconds: number) {
-  const safeSeconds = Math.max(0, Math.floor(seconds))
-  const minutes = Math.floor(safeSeconds / 60)
-  const sec = safeSeconds % 60
-
-  return `${String(minutes).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
-}
 
 function getStatusPriority(status: Room["status"]) {
   switch (status) {
@@ -165,7 +158,7 @@ export default function DashboardRooms({
                     <div className="flex shrink-0 items-center gap-2">
                       {room.status === "playing" && (
                         <span className="text-xs tabular-nums text-muted-foreground">
-                          {fmt(room.position)}
+                          {formatTime(room.position)}
                         </span>
                       )}
 

@@ -22,6 +22,7 @@ import type {
   ScenarioStep,
 } from "@/types"
 import { t } from "@/i18n"
+import { formatTime } from "@/lib/audio"
 
 interface Props {
   steps: ScenarioStep[]
@@ -39,13 +40,6 @@ interface Props {
     fromIndex: number,
     toIndex: number,
   ) => void
-}
-
-function fmtSec(seconds: number) {
-  const minutes = Math.floor(seconds / 60)
-  const sec = seconds % 60
-
-  return `${String(minutes).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
 }
 
 export default function ScenarioStepsTable({
@@ -256,7 +250,7 @@ export default function ScenarioStepsTable({
               </TableCell>
 
               <TableCell className="text-xs text-muted-foreground">
-                {fmtSec(step.duration)}
+                {formatTime(step.duration)}
               </TableCell>
 
               <TableCell>

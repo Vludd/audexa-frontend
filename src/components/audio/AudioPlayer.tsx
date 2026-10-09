@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import type { AudioFile } from "@/types"
 import { t } from "@/i18n"
+import { formatTime } from "@/lib/audio"
 
 interface Props {
   file: AudioFile | null
@@ -29,19 +30,6 @@ interface Props {
   onSeek: (value: number) => void
   onVolumeChange: (value: number) => void
   onSkip: (seconds: number) => void
-}
-
-function formatTime(seconds: number) {
-  if (!Number.isFinite(seconds) || seconds < 0) {
-    return "00:00"
-  }
-
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = Math.floor(seconds % 60)
-
-  return `${String(minutes).padStart(2, "0")}:${String(
-    remainingSeconds,
-  ).padStart(2, "0")}`
 }
 
 export default function AudioPlayer({
