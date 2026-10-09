@@ -74,6 +74,8 @@ export const en: Widen<typeof ru> = {
   units: {
     kilohertz: "kHz",
     megabyte: "MB",
+    decibel: "dB",
+    second: "s",
   },
 
   nav: {
@@ -922,7 +924,7 @@ export const en: Widen<typeof ru> = {
       title: "Line mapping",
 
       description:
-        "Map rooms to physical audio device outputs (IN DEVELOPMENT)",
+        "Map rooms to physical audio device outputs",
 
       summary: "Rooms: {rooms} · outputs: {outputs}",
 
@@ -971,14 +973,22 @@ export const en: Widen<typeof ru> = {
       saving: "Saving...",
 
       diagnosticsTitle: "Audio output diagnostics",
-      diagnosticsDescription: "Send a short test signal to assigned physical outputs.",
+      diagnosticsDescription: "Send a short test signal to available physical outputs.",
       diagnosticsMode: "Signal",
       diagnosticsVoice: "Voice identification",
+      diagnosticsVoiceShort: "Voice",
       diagnosticsTone: "Test tone",
       diagnosticsDuration: "Duration",
+      diagnosticsDuration500: "0.5 {unit}",
+      diagnosticsDuration800: "0.8 {unit}",
+      diagnosticsDuration1000: "1.0 {unit}",
       diagnosticsVolume: "Volume",
+      diagnosticsVolumeMinus20: "-20 {unit}",
+      diagnosticsVolumeMinus12: "-12 {unit}",
+      diagnosticsVolumeMinus6: "-6 {unit}",
       diagnosticsTest: "Test",
       diagnosticsTestAssigned: "Test assigned",
+      diagnosticsTestAll: "Test all",
       diagnosticsTesting: "Testing...",
       diagnosticsSignalSent: "Signal sent",
       diagnosticsFailed: "Failed",
@@ -986,6 +996,7 @@ export const en: Widen<typeof ru> = {
       diagnosticsBackendRequired: "Audio diagnostics backend is required for testing.",
       diagnosticsNoAssigned: "No assigned outputs to test.",
       diagnosticsSignalNotice: "A successful result means Audexa sent a signal to the selected output. It does not confirm that the amplifier or physical speaker is working.",
+      outputFallback: "Output",
       saveSuccess: "Audio settings saved",
       saveFailed: "Failed to save audio settings",
       saveFailedDescription: "Check the backend connection and try again.",

@@ -16,7 +16,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { t } from "@/i18n"
-import OutputDiagnostics from "./OutputDiagnostics"
+// import OutputDiagnostics from "./OutputDiagnostics"
 
 type Mapping = AudioOutputMapping
 
@@ -336,18 +336,20 @@ export default function LineMappingSettings({
                   <div>
                     {translationOutputOwner ? (
                       <Badge variant="destructive" className="text-[10px]">{t("settings.lineMapping.conflict")}</Badge>
-                    ) : (
+                    ) : translationOutput ? (
                       <Badge variant="secondary" className="gap-1 text-[10px]"><Check className="size-3" />{t("settings.lineMapping.ok")}</Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-[10px]">{t("common.notAssigned")}</Badge>
                     )}
                   </div>
                 </div>
               </div>
             </div>
 
-            <OutputDiagnostics
+            {/* <OutputDiagnostics
               device={selectedDevice}
               outputIds={mappings.map((mapping) => mapping.outputId).filter((value): value is string => Boolean(value))}
-            />
+            /> */}
 
             <div className="flex items-center justify-between gap-3 border-t pt-4">
               <div className="text-xs text-muted-foreground">
